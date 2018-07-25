@@ -3,11 +3,13 @@ package org.zcorp.java2.util;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.model.MealWithExceed;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MealsUtil {
     public static void main(String[] args) {
@@ -25,23 +27,16 @@ public class MealsUtil {
     }
 
     public static List<MealWithExceed> getFilteredWithExceeded(List<Meal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> caloriesPerDayMap = new HashMap<>();
-        Map<LocalDate, List<Meal>> mealMap = new HashMap<>();
-        for (Meal meal : mealList) {
-            LocalDate localDate = meal.getDateTime().toLocalDate();
-            caloriesPerDayMap.merge(localDate, meal.getCalories(), (x, y) -> x + y);
-            if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-                mealMap.computeIfAbsent(localDate, key -> new LinkedList<>()).add(meal);
-            }
-        }
         List<MealWithExceed> mealWithExceeds = new LinkedList<>();
-        List<Meal> emptyList = Collections.emptyList();
-        for (Map.Entry<LocalDate, Integer> e : caloriesPerDayMap.entrySet()) {
-            for (Meal meal : mealMap.getOrDefault(e.getKey(), emptyList)) {
-                mealWithExceeds.add(
-                        new MealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), e.getValue() > caloriesPerDay));
-            }
-        }
+        mealList.stream()
+                .collect(Collectors.groupingBy(meal -> meal.getDateTime().toLocalDate()))
+                .forEach((date, list) -> {
+                    boolean exceed = list.stream().mapToInt(Meal::getCalories).sum() > caloriesPerDay;
+                    list.stream()
+                            .filter(meal -> TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime))
+                            .map(meal -> new MealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), exceed))
+                            .forEach(mealWithExceeds::add);
+                });
         return mealWithExceeds;
     }
 }
