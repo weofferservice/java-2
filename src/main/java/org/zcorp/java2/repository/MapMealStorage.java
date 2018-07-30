@@ -15,7 +15,7 @@ public class MapMealStorage implements MealStorage {
     private final Map<Integer, Meal> storage = new ConcurrentHashMap<>();
 
     {
-        MealsUtil.getMeals().forEach(this::save);
+        MealsUtil.MEALS.forEach(this::save);
     }
 
     @Override
