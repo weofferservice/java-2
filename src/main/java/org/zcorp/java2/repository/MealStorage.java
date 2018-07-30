@@ -4,7 +4,7 @@ import org.zcorp.java2.model.Meal;
 
 import java.util.List;
 
-public interface Storage {
+public interface MealStorage {
 
     void save(Meal meal);
 
