@@ -15,6 +15,8 @@
         <th>Date & Time</th>
         <th>Description</th>
         <th>Calories</th>
+        <th></th>
+        <th></th>
     </tr>
     <c:forEach var="meal" items="${mealsWithExceed}">
         <jsp:useBean id="meal" type="org.zcorp.java2.model.MealWithExceed"/>
@@ -23,8 +25,11 @@
             <td>${DateTimeUtil.toString(meal.dateTime)}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
+            <td><a href="meals?id=${meal.id}&action=delete">Delete</a></td>
+            <td><a href="meals?id=${meal.id}&action=update">Update</a></td>
         </tr>
     </c:forEach>
 </table>
+<a href="meals?action=create">Create</a>
 </body>
 </html>
