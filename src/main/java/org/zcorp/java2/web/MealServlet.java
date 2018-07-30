@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -43,39 +42,8 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action == null) {
-            request.setAttribute("mealsWithExceed",
-                    MealsUtil.getFilteredWithExceeded(mealStorage.getAllSorted(), LocalTime.MIN, LocalTime.MAX, 2000));
-            log.debug("forward to meals from doGet");
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-            return;
-        }
-
-        String id = request.getParameter("id");
-        switch (action) {
-            case "delete":
-                mealStorage.delete(parseIdForAction(id, action));
-                log.debug("redirect to meals from doGet");
-                response.sendRedirect("meals");
-                return;
-            case "update":
-                Meal meal = mealStorage.get(parseIdForAction(id, action));
-                request.setAttribute("meal", meal);
-                break;
-            case "create":
-                break;
-            default:
-                throw new IllegalStateException("Action " + action + " is not supported");
-        }
-        log.debug("forward to edit_meal from doGet");
-        request.getRequestDispatcher("/edit_meal.jsp").forward(request, response);
-    }
-
-    private int parseIdForAction(String id, String action) {
-        if (id == null) {
-            throw new IllegalStateException("Action " + action + " must have id");
-        }
-        return Integer.parseInt(id);
+        log.info("getAll");
+        request.setAttribute("meals", MealsUtil.getWithExceeded(MealsUtil.MEALS, MealsUtil.DEFAULT_CALORIES_PER_DAY));
+        request.getRequestDispatcher("/meals.jsp").forward(request, response);
     }
 }
