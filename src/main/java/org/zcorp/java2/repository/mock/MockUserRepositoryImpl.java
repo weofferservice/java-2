@@ -1,6 +1,7 @@
 package org.zcorp.java2.repository.mock;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Repository;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Repository
 public class MockUserRepositoryImpl implements UserRepository {
     private static final Logger log = getLogger(MockUserRepositoryImpl.class);
 

@@ -1,9 +1,11 @@
 package org.zcorp.java2.web.user;
 
+import org.springframework.stereotype.Controller;
 import org.zcorp.java2.model.User;
 
 import static org.zcorp.java2.web.SecurityUtil.authUserId;
 
+@Controller
 public class ProfileRestController extends AbstractUserController {
 
     public User get() {

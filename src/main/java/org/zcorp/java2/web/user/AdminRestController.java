@@ -1,9 +1,11 @@
 package org.zcorp.java2.web.user;
 
+import org.springframework.stereotype.Controller;
 import org.zcorp.java2.model.User;
 
 import java.util.List;
 
+@Controller
 public class AdminRestController extends AbstractUserController {
 
     @Override

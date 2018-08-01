@@ -1,6 +1,7 @@
 package org.zcorp.java2.web.user;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.service.UserService;
 
@@ -13,6 +14,7 @@ import static org.zcorp.java2.util.ValidationUtil.checkNew;
 public abstract class AbstractUserController {
     protected final Logger log = getLogger(getClass());
 
+    @Autowired
     private UserService service;
 
     public List<User> getAll() {
