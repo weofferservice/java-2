@@ -3,7 +3,7 @@ package org.zcorp.java2.web;
 import org.slf4j.Logger;
 
 import org.zcorp.java2.model.Meal;
-import org.zcorp.java2.repository.InMemoryMealRepositoryImpl;
+import org.zcorp.java2.repository.mock.InMemoryMealRepositoryImpl;
 import org.zcorp.java2.repository.MealRepository;
 import org.zcorp.java2.util.MealsUtil;
 

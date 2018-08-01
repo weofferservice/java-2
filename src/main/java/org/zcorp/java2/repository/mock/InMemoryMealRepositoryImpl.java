@@ -1,6 +1,7 @@
-package org.zcorp.java2.repository;
+package org.zcorp.java2.repository.mock;
 
 import org.zcorp.java2.model.Meal;
+import org.zcorp.java2.repository.MealRepository;
 import org.zcorp.java2.util.MealsUtil;
 
 import java.util.Collection;
