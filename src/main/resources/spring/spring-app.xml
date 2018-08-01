@@ -8,7 +8,7 @@
         <bean class="org.zcorp.java2.repository.mock.MockUserRepositoryImpl" id="mockUserRepository"/>
 
         <bean class="org.zcorp.java2.service.UserServiceImpl">
-            <property name="repository" ref="mockUserRepository"/>
+            <constructor-arg name="repository" ref="mockUserRepository"/>
         </bean>
     -->
 
