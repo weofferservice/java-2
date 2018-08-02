@@ -2,14 +2,17 @@ package org.zcorp.java2.repository;
 
 import org.zcorp.java2.model.Meal;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface MealRepository {
-    Meal save(Meal meal);
+    // null if update and not found or if meal of other user
+    Meal save(Meal meal, int userId);
 
-    void delete(int id);
+    // false if not found or if meal of other user
+    boolean delete(int id, int userId);
 
-    Meal get(int id);
+    // null if not found or if meal of other user
+    Meal get(int id, int userId);
 
-    Collection<Meal> getAll();
+    List<Meal> getAll(int userId);
 }
