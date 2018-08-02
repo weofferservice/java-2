@@ -20,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.util.StringUtils.isEmpty;
 import static org.zcorp.java2.web.SecurityUtil.authUserId;
 
 public class MealServlet extends HttpServlet {
@@ -89,16 +90,16 @@ public class MealServlet extends HttpServlet {
                 log.info("getFilteredWithExceeded");
 
                 String startDateStr = request.getParameter("startDate");
-                LocalDate startDate = startDateStr.isEmpty() ? LocalDate.MIN : LocalDate.parse(startDateStr);
+                LocalDate startDate = isEmpty(startDateStr) ? LocalDate.MIN : LocalDate.parse(startDateStr);
 
                 String endDateStr = request.getParameter("endDate");
-                LocalDate endDate = endDateStr.isEmpty() ? LocalDate.MAX : LocalDate.parse(endDateStr);
+                LocalDate endDate = isEmpty(endDateStr) ? LocalDate.MAX : LocalDate.parse(endDateStr);
 
                 String startTimeStr = request.getParameter("startTime");
-                LocalTime startTime = startTimeStr.isEmpty() ? LocalTime.MIN : LocalTime.parse(startTimeStr);
+                LocalTime startTime = isEmpty(startTimeStr) ? LocalTime.MIN : LocalTime.parse(startTimeStr);
 
                 String endTimeStr = request.getParameter("endTime");
-                LocalTime endTime = endTimeStr.isEmpty() ? LocalTime.MAX : LocalTime.parse(endTimeStr);
+                LocalTime endTime = isEmpty(endTimeStr) ? LocalTime.MAX : LocalTime.parse(endTimeStr);
 
                 request.setAttribute("meals", mealRestController.getFilteredWithExceeded(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
