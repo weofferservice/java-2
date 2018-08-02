@@ -1,13 +1,11 @@
 package org.zcorp.java2.web;
 
 import org.slf4j.Logger;
-
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.zcorp.java2.model.Meal;
-import org.zcorp.java2.repository.mock.InMemoryMealRepositoryImpl;
-import org.zcorp.java2.repository.MealRepository;
-import org.zcorp.java2.repository.mock.InMemoryUserRepositoryImpl;
 import org.zcorp.java2.repository.UserRepository;
-import org.zcorp.java2.util.MealsUtil;
+import org.zcorp.java2.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,25 +13,34 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.zcorp.java2.web.SecurityUtil.authUserId;
-import static org.zcorp.java2.web.SecurityUtil.authUserCaloriesPerDay;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
+    private ConfigurableApplicationContext appCtx;
     private UserRepository userRepository;
-    private MealRepository mealRepository;
+    private MealRestController mealRestController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        userRepository = new InMemoryUserRepositoryImpl();
-        mealRepository = new InMemoryMealRepositoryImpl();
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        userRepository = appCtx.getBean(UserRepository.class);
+        mealRestController = appCtx.getBean(MealRestController.class);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        appCtx.close();
     }
 
     @Override
@@ -48,8 +55,13 @@ public class MealServlet extends HttpServlet {
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
 
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        mealRepository.save(meal, authUserId());
+        if (meal.isNew()) {
+            log.info("Create {}", meal);
+            mealRestController.create(meal);
+        } else {
+            log.info("Update {}", meal);
+            mealRestController.update(meal, id);
+        }
         response.sendRedirect("meals");
     }
 
@@ -61,22 +73,34 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = getId(request);
                 log.info("Delete {}", id);
-                mealRepository.delete(id, authUserId());
+                mealRestController.delete(id);
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(authUserId(), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        mealRepository.get(getId(request), authUserId());
+                        mealRestController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "all":
             default:
-                log.info("getAll");
-                request.setAttribute("meals",
-                        MealsUtil.getWithExceeded(mealRepository.getAll(authUserId()), authUserCaloriesPerDay()));
+                log.info("getFilteredWithExceeded");
+
+                String startDateStr = request.getParameter("startDate");
+                LocalDate startDate = startDateStr.isEmpty() ? LocalDate.MIN : LocalDate.parse(startDateStr);
+
+                String endDateStr = request.getParameter("endDate");
+                LocalDate endDate = endDateStr.isEmpty() ? LocalDate.MAX : LocalDate.parse(endDateStr);
+
+                String startTimeStr = request.getParameter("startTime");
+                LocalTime startTime = startTimeStr.isEmpty() ? LocalTime.MIN : LocalTime.parse(startTimeStr);
+
+                String endTimeStr = request.getParameter("endTime");
+                LocalTime endTime = endTimeStr.isEmpty() ? LocalTime.MAX : LocalTime.parse(endTimeStr);
+
+                request.setAttribute("meals", mealRestController.getFilteredWithExceeded(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
