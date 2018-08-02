@@ -1,7 +1,7 @@
 package org.zcorp.java2.util;
 
 import org.zcorp.java2.model.Meal;
-import org.zcorp.java2.model.MealWithExceed;
+import org.zcorp.java2.to.MealWithExceed;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

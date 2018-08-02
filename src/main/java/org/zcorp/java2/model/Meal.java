@@ -3,10 +3,9 @@ package org.zcorp.java2.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
-public class Meal {
-    private Integer id;
-
+public class Meal extends AbstractBaseEntity {
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -18,18 +17,12 @@ public class Meal {
     }
 
     public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
-        this.id = id;
+        super(id);
+        Objects.requireNonNull(dateTime, "dateTime must not be null");
+        Objects.requireNonNull(description, "description must not be null");
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public LocalDateTime getDateTime() {
@@ -50,10 +43,6 @@ public class Meal {
 
     public LocalTime getTime() {
         return dateTime.toLocalTime();
-    }
-
-    public boolean isNew() {
-        return id == null;
     }
 
     @Override

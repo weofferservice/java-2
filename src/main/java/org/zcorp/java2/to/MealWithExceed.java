@@ -1,4 +1,4 @@
-package org.zcorp.java2.model;
+package org.zcorp.java2.to;
 
 import java.time.LocalDateTime;
 
