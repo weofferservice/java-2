@@ -5,6 +5,7 @@ import org.zcorp.java2.model.User;
 import java.util.List;
 
 public interface UserRepository {
+    // null if update and not found
     User save(User user);
 
     // false if not found

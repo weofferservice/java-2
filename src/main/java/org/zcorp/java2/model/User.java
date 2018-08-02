@@ -2,11 +2,12 @@ package org.zcorp.java2.model;
 
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.zcorp.java2.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
-public class User extends AbstractNamedEntity {
+public class User extends AbstractNamedEntity implements Comparable<User> {
 
     private String email;
 
@@ -26,6 +27,9 @@ public class User extends AbstractNamedEntity {
 
     public User(Integer id, String name, String email, String password, int caloriesPerDay, boolean enabled, Set<Role> roles) {
         super(id, name);
+        Objects.requireNonNull(email, "email must not be null");
+        Objects.requireNonNull(password, "password must not be null");
+        Objects.requireNonNull(roles, "roles must not be null");
         this.email = email;
         this.password = password;
         this.caloriesPerDay = caloriesPerDay;
@@ -89,4 +93,9 @@ public class User extends AbstractNamedEntity {
                 ')';
     }
 
+    @Override
+    public int compareTo(User other) {
+        int cmp = name.compareTo(other.name);
+        return cmp == 0 ? id.compareTo(other.id) : cmp;
+    }
 }

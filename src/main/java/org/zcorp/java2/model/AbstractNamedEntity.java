@@ -1,11 +1,14 @@
 package org.zcorp.java2.model;
 
+import java.util.Objects;
+
 public abstract class AbstractNamedEntity extends AbstractBaseEntity {
 
     protected String name;
 
     protected AbstractNamedEntity(Integer id, String name) {
         super(id);
+        Objects.requireNonNull(name, "name must not be null");
         this.name = name;
     }
 
