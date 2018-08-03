@@ -15,26 +15,16 @@ import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
-import static org.zcorp.java2.util.UsersUtil.USER_ID;
-import static org.zcorp.java2.util.UsersUtil.ADMIN_ID;
 
 public class MealsUtil {
-    public static final List<Meal> MEALS;
-    static {
-        Meal meal1 = new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);
-        meal1.setUserId(USER_ID);
-        Meal meal2 = new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000);
-        meal2.setUserId(USER_ID);
-        Meal meal3 = new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500);
-        meal3.setUserId(USER_ID);
-        Meal meal4 = new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000);
-        meal4.setUserId(ADMIN_ID);
-        Meal meal5 = new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500);
-        meal5.setUserId(ADMIN_ID);
-        Meal meal6 = new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510);
-        meal6.setUserId(ADMIN_ID);
-        MEALS = Arrays.asList(meal1, meal2, meal3, meal4, meal5, meal6);
-    }
+    public static final List<Meal> MEALS = Arrays.asList(
+            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
+            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
+            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
+            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
+            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
+            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
+    );
 
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
