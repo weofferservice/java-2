@@ -6,6 +6,7 @@ import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.repository.MealRepository;
 import org.zcorp.java2.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.zcorp.java2.util.ValidationUtil.checkNotFound;
@@ -41,8 +42,8 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public List<Meal> getAll(int userId) {
-        return repository.getAll(userId);
+    public List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId) {
+        return repository.getFiltered(startDate, endDate, userId);
     }
 
     private static String createErrorMessage(Integer id, int userId) {

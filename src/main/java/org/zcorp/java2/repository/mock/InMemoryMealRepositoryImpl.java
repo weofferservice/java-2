@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.repository.MealRepository;
+import org.zcorp.java2.util.DateTimeUtil;
 import org.zcorp.java2.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -64,10 +66,10 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public List<Meal> getAll(int userId) {
-        log.info("getAll for userId={}", userId);
+    public List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId) {
+        log.info("getFiltered with startDate={} and endDate={} for userId={}", startDate, endDate, userId);
         return repository.values().stream()
-                .filter(meal -> meal.getUserId() == userId)
+                .filter(meal -> meal.getUserId() == userId && DateTimeUtil.isBetween(meal.getDate(), startDate, endDate))
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(toList());
     }

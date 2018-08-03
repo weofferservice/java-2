@@ -2,6 +2,7 @@ package org.zcorp.java2.repository;
 
 import org.zcorp.java2.model.Meal;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MealRepository {
@@ -14,5 +15,5 @@ public interface MealRepository {
     // null if not found or if meal of other user
     Meal get(int id, int userId);
 
-    List<Meal> getAll(int userId);
+    List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId);
 }

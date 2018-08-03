@@ -3,6 +3,7 @@ package org.zcorp.java2.service;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MealService {
@@ -15,6 +16,6 @@ public interface MealService {
 
     void update(Meal meal, int userId) throws NotFoundException;
 
-    List<Meal> getAll(int userId);
+    List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId);
 
 }
