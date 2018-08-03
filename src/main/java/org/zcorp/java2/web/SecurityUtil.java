@@ -5,12 +5,18 @@ import static org.zcorp.java2.util.UsersUtil.USER_ID;
 
 public class SecurityUtil {
 
+    private static int authUserId = USER_ID;
+
     public static int authUserId() {
-        return USER_ID;
+        return authUserId;
     }
 
     public static int authUserCaloriesPerDay() {
         return DEFAULT_CALORIES_PER_DAY;
+    }
+
+    public static void setAuthUserId(int userId) {
+        authUserId = userId;
     }
 
 }
