@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.zcorp.java2.model.Meal;
-import org.zcorp.java2.repository.UserRepository;
 import org.zcorp.java2.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -21,37 +20,31 @@ import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.StringUtils.isEmpty;
-import static org.zcorp.java2.web.SecurityUtil.authUserId;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
     private ConfigurableApplicationContext appCtx;
-    private UserRepository userRepository;
     private MealRestController mealRestController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-        userRepository = appCtx.getBean(UserRepository.class);
         mealRestController = appCtx.getBean(MealRestController.class);
     }
 
     @Override
     public void destroy() {
-        super.destroy();
         appCtx.close();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        String idStr = request.getParameter("id");
+        String id = request.getParameter("id");
 
-        Integer id = idStr.isEmpty() ? null : Integer.valueOf(idStr);
-        Meal meal = new Meal(id,
-                id == null ? authUserId() : userRepository.get(id).getId(),
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
@@ -61,7 +54,7 @@ public class MealServlet extends HttpServlet {
             mealRestController.create(meal);
         } else {
             log.info("Update {}", meal);
-            mealRestController.update(meal, id);
+            mealRestController.update(meal, meal.getId());
         }
         response.sendRedirect("meals");
     }
@@ -80,7 +73,7 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(authUserId(), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                         mealRestController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
