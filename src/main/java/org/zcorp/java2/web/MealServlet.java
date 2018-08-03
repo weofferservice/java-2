@@ -83,16 +83,16 @@ public class MealServlet extends HttpServlet {
                 log.info("getFilteredWithExceeded");
 
                 String startDateStr = request.getParameter("startDate");
-                LocalDate startDate = isEmpty(startDateStr) ? LocalDate.MIN : LocalDate.parse(startDateStr);
+                LocalDate startDate = isEmpty(startDateStr) ? null : LocalDate.parse(startDateStr);
 
                 String endDateStr = request.getParameter("endDate");
-                LocalDate endDate = isEmpty(endDateStr) ? LocalDate.MAX : LocalDate.parse(endDateStr);
+                LocalDate endDate = isEmpty(endDateStr) ? null : LocalDate.parse(endDateStr);
 
                 String startTimeStr = request.getParameter("startTime");
-                LocalTime startTime = isEmpty(startTimeStr) ? LocalTime.MIN : LocalTime.parse(startTimeStr);
+                LocalTime startTime = isEmpty(startTimeStr) ? null : LocalTime.parse(startTimeStr);
 
                 String endTimeStr = request.getParameter("endTime");
-                LocalTime endTime = isEmpty(endTimeStr) ? LocalTime.MAX : LocalTime.parse(endTimeStr);
+                LocalTime endTime = isEmpty(endTimeStr) ? null : LocalTime.parse(endTimeStr);
 
                 request.setAttribute("meals", mealRestController.getFilteredWithExceeded(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
