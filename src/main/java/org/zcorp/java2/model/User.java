@@ -7,7 +7,7 @@ import java.util.Set;
 
 import static org.zcorp.java2.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
-public class User extends AbstractNamedEntity implements Comparable<User> {
+public class User extends AbstractNamedEntity {
 
     private String email;
 
@@ -93,9 +93,4 @@ public class User extends AbstractNamedEntity implements Comparable<User> {
                 ')';
     }
 
-    @Override
-    public int compareTo(User other) {
-        int cmp = name.compareTo(other.name);
-        return cmp == 0 ? id.compareTo(other.id) : cmp;
-    }
 }

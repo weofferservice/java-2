@@ -5,15 +5,15 @@ import org.springframework.stereotype.Repository;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.zcorp.java2.util.UsersUtil.ADMIN;
-import static org.zcorp.java2.util.UsersUtil.USER;
 
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
@@ -21,11 +21,6 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     private Map<Integer, User> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
-
-    {
-        save(USER);
-        save(ADMIN);
-    }
 
     @Override
     public boolean delete(int id) {
@@ -53,14 +48,17 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return repository.values().stream().sorted().collect(toList());
+        return repository.values().stream()
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
+                .collect(toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         return repository.values().stream()
-                .filter(user -> user.getEmail().equals(email))
-                .findFirst().orElse(null);
+                .filter(user -> Objects.equals(email, user.getEmail()))
+                .findFirst()
+                .orElse(null);
     }
 }
