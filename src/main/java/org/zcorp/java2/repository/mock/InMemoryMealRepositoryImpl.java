@@ -8,6 +8,8 @@ import org.zcorp.java2.repository.MealRepository;
 import org.zcorp.java2.util.DateTimeUtil;
 import org.zcorp.java2.util.MealsUtil;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collections;
@@ -36,6 +38,16 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
         save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510), ADMIN_ID);
         save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500), ADMIN_ID);
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        log.info("+++ PostConstruct");
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        log.info("+++ PreDestroy");
     }
 
     @Override
