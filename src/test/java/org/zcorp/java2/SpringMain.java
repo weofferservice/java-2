@@ -18,8 +18,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.zcorp.java2.util.UsersUtil.ADMIN_ID;
-import static org.zcorp.java2.util.UsersUtil.USER_ID;
+import static org.zcorp.java2.UserTestData.ADMIN_ID;
+import static org.zcorp.java2.UserTestData.USER_ID;
 
 public class SpringMain {
     public static void main(String[] args) {

@@ -22,8 +22,8 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.zcorp.java2.util.UsersUtil.ADMIN_ID;
-import static org.zcorp.java2.util.UsersUtil.USER_ID;
+import static org.zcorp.java2.UserTestData.ADMIN_ID;
+import static org.zcorp.java2.UserTestData.USER_ID;
 
 @Repository
 public class InMemoryMealRepositoryImpl implements MealRepository {
