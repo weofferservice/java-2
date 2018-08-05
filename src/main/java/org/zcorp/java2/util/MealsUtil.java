@@ -121,13 +121,4 @@ public class MealsUtil {
 
         return values.stream().flatMap(identity()).collect(toList());
     }
-
-    public static void main(String[] args) {
-        List<MealWithExceed> mealsWithExceeded = getFilteredWithExceeded(MEALS, 2000, LocalTime.of(7, 0), LocalTime.of(12, 0));
-        mealsWithExceeded.forEach(System.out::println);
-
-        System.out.println(getFilteredWithExceededByCycle(MEALS, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
-        System.out.println(getFilteredWithExceededInOnePass(MEALS, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
-        System.out.println(getFilteredWithExceededInOnePass2(MEALS, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
-    }
 }
