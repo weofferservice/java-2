@@ -7,58 +7,32 @@
 <html>
 <head>
     <title>Meals</title>
-    <style>
-        .normal {
-            color: green;
-        }
-
-        .exceeded {
-            color: red;
-        }
-
-        dl {
-            background: none repeat scroll 0 0 #FAFAFA;
-            margin: 8px 0;
-            padding: 0;
-        }
-
-        dt {
-            display: inline-block;
-            width: 170px;
-        }
-
-        dd {
-            display: inline-block;
-            margin-left: 8px;
-            vertical-align: top;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <section>
     <h3><a href="index.html">Home</a></h3>
     <h2>Meals</h2>
-    <hr>
-    <form method="get" action="meals" enctype="application/x-www-form-urlencoded">
+    <form method="post" action="meals?action=filter" enctype="application/x-www-form-urlencoded">
         <dl>
-            <dt>От даты</dt>
+            <dt>From Date:</dt>
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
         </dl>
         <dl>
-            <dt>До даты</dt>
+            <dt>To Date:</dt>
             <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
         </dl>
         <dl>
-            <dt>От времени</dt>
+            <dt>From Time:</dt>
             <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
         </dl>
         <dl>
-            <dt>До времени</dt>
+            <dt>To Time:</dt>
             <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
         </dl>
-        <button type="submit">Отфильтровать</button>
+        <button type="submit">Filter</button>
     </form>
-    <hr>
+    <hr/>
     <a href="meals?action=create">Add Meal</a>
     <hr/>
     <table border="1" cellpadding="8" cellspacing="0">
@@ -73,7 +47,7 @@
         </thead>
         <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" scope="page" type="org.zcorp.java2.to.MealWithExceed"/>
-            <tr class="${meal.exceed ? 'exceeded' : 'normal'}">
+            <tr data-mealExceed="${meal.exceed}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                         <%--<%=DateTimeUtil.toString(meal.getDateTime())%>--%>
