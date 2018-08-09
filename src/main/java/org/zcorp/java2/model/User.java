@@ -1,9 +1,8 @@
 package org.zcorp.java2.model;
 
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.Set;
+import org.springframework.util.CollectionUtils;
+
+import java.util.*;
 
 import static org.zcorp.java2.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
@@ -15,26 +14,35 @@ public class User extends AbstractNamedEntity {
 
     private boolean enabled;
 
-    private Date registered = new Date();
+    private Date registered;
 
     private Set<Role> roles;
 
     private int caloriesPerDay;
 
-    public User(Integer id, String name, String email, String password, Role role, Role... roles) {
-        this(id, name, email, password, DEFAULT_CALORIES_PER_DAY, true, EnumSet.of(role, roles));
+    public User() {
     }
 
-    public User(Integer id, String name, String email, String password, int caloriesPerDay, boolean enabled, Set<Role> roles) {
+    public User(User u) {
+        this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getCaloriesPerDay(), u.isEnabled(), u.getRegistered(), u.getRoles());
+    }
+
+    public User(Integer id, String name, String email, String password, Role role, Role... roles) {
+        this(id, name, email, password, DEFAULT_CALORIES_PER_DAY, true, new Date(), EnumSet.of(role, roles));
+    }
+
+    public User(Integer id, String name, String email, String password, int caloriesPerDay, boolean enabled, Date registered, Collection<Role> roles) {
         super(id, name);
         Objects.requireNonNull(email, "email must not be null");
         Objects.requireNonNull(password, "password must not be null");
+        Objects.requireNonNull(registered, "registered must not be null");
         Objects.requireNonNull(roles, "roles must not be null");
         this.email = email;
         this.password = password;
         this.caloriesPerDay = caloriesPerDay;
         this.enabled = enabled;
-        this.roles = roles;
+        this.registered = registered;
+        setRoles(roles);
     }
 
     public String getEmail() {
@@ -79,6 +87,10 @@ public class User extends AbstractNamedEntity {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = CollectionUtils.isEmpty(roles) ? Collections.emptySet() : EnumSet.copyOf(roles);
     }
 
     @Override
