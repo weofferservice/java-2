@@ -15,7 +15,7 @@
     <!-- Not necessary, already included with component-scan -->
     <!--<context:annotation-config/>-->
 
-    <context:component-scan base-package="org.zcorp.**.repository"/>
+    <context:component-scan base-package="org.zcorp.**.repository.jdbc"/>
 
     <context:component-scan base-package="org.zcorp.**.service"/>
 
