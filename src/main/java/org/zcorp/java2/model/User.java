@@ -20,7 +20,7 @@ public class User extends AbstractNamedEntity {
 
     private int caloriesPerDay;
 
-    public User() {
+    private User() {
     }
 
     public User(User u) {
