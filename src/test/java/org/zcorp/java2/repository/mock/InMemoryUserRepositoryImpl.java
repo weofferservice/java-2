@@ -15,13 +15,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.zcorp.java2.UserTestData.*;
+import static org.zcorp.java2.model.AbstractBaseEntity.START_SEQ;
 
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
     private static final Logger log = getLogger(InMemoryUserRepositoryImpl.class);
 
     private Map<Integer, User> repository = new ConcurrentHashMap<>();
-    private AtomicInteger counter = new AtomicInteger(100);
+    private AtomicInteger counter = new AtomicInteger(START_SEQ + 1);
 
     public void init() {
         repository.clear();
