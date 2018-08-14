@@ -6,6 +6,6 @@
 
     <import resource="spring-main.xml"/>
 
-    <context:component-scan base-package="org.zcorp.**.repository.jdbc"/>
+    <context:component-scan base-package="org.zcorp.**.repository.mock"/>
 
 </beans>
