@@ -14,7 +14,6 @@ import org.zcorp.java2.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.zcorp.java2.MealTestData.*;
@@ -40,51 +39,46 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal newMeal = service.create(new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "Новая еда", 1000), USER_ID);
-        assertMatch(service.getAll(USER_ID), newMeal, USER_MEAL_6, USER_MEAL_5, USER_MEAL_4, USER_MEAL_3, USER_MEAL_2, USER_MEAL_1);
+        Meal created = service.create(getCreated(), USER_ID);
+        assertMatch(service.getAll(USER_ID), created, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
     }
 
     @Test
     public void delete() {
-        service.delete(USER_MEAL_1_ID, USER_ID);
-        assertMatch(service.getAll(USER_ID), USER_MEAL_6, USER_MEAL_5, USER_MEAL_4, USER_MEAL_3, USER_MEAL_2);
+        service.delete(MEAL1_ID, USER_ID);
+        assertMatch(service.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
     }
 
     @Test(expected = NotFoundException.class)
     public void deleteNotFound() {
-        service.delete(USER_MEAL_1_ID, ADMIN_ID);
+        service.delete(MEAL1_ID, ADMIN_ID);
     }
 
     @Test
     public void get() {
-        assertMatch(service.get(USER_MEAL_1_ID, USER_ID), USER_MEAL_1);
+        assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
     }
 
     @Test(expected = NotFoundException.class)
     public void getNotFound() {
-        service.get(USER_MEAL_1_ID, ADMIN_ID);
+        service.get(MEAL1_ID, ADMIN_ID);
     }
 
     @Test
     public void update() {
-        Meal updated = new Meal(USER_MEAL_1);
-        updated.setCalories(1000);
-        updated.setDescription("Обновленная еда");
+        Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        assertMatch(service.getAll(USER_ID), USER_MEAL_6, USER_MEAL_5, USER_MEAL_4, USER_MEAL_3, USER_MEAL_2, updated);
+        assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
     @Test(expected = NotFoundException.class)
     public void updateNotFound() {
-        Meal updated = new Meal(USER_MEAL_1);
-        updated.setCalories(1000);
-        updated.setDescription("Обновленная еда");
-        service.update(updated, ADMIN_ID);
+        service.update(getUpdated(), ADMIN_ID);
     }
 
     @Test
     public void getAll() {
-        assertMatch(service.getAll(USER_ID), USER_MEAL_6, USER_MEAL_5, USER_MEAL_4, USER_MEAL_3, USER_MEAL_2, USER_MEAL_1);
+        assertMatch(service.getAll(USER_ID), MEALS);
     }
 
     @Test
@@ -92,7 +86,7 @@ public class MealServiceTest {
         List<Meal> meals = service.getBetweenDateTimes(
                 LocalDateTime.of(2015, Month.MAY, 30, 13, 0),
                 LocalDateTime.of(2015, Month.MAY, 31, 13, 0), USER_ID);
-        assertMatch(meals, USER_MEAL_5, USER_MEAL_4, USER_MEAL_3, USER_MEAL_2);
+        assertMatch(meals, MEAL5, MEAL4, MEAL3, MEAL2);
     }
 
     @Test
@@ -100,7 +94,7 @@ public class MealServiceTest {
         List<Meal> meals = service.getBetweenDates(
                 LocalDate.of(2015, Month.MAY, 30),
                 LocalDate.of(2015, Month.MAY, 30), USER_ID);
-        assertMatch(meals, USER_MEAL_3, USER_MEAL_2, USER_MEAL_1);
+        assertMatch(meals, MEAL3, MEAL2, MEAL1);
     }
 
 }

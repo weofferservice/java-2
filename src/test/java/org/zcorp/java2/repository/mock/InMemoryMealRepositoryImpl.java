@@ -6,12 +6,10 @@ import org.springframework.util.CollectionUtils;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.repository.MealRepository;
 import org.zcorp.java2.util.DateTimeUtil;
-import org.zcorp.java2.util.MealsUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -22,8 +20,10 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.zcorp.java2.MealTestData.*;
 import static org.zcorp.java2.UserTestData.ADMIN_ID;
 import static org.zcorp.java2.UserTestData.USER_ID;
+import static org.zcorp.java2.model.AbstractBaseEntity.START_SEQ;
 
 @Repository
 public class InMemoryMealRepositoryImpl implements MealRepository {
@@ -31,13 +31,15 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     // Map userId -> (mealId -> meal)
     private Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
-    private AtomicInteger counter = new AtomicInteger(0);
+    private AtomicInteger counter = new AtomicInteger(START_SEQ + 9);
 
     {
-        MealsUtil.MEALS.forEach(meal -> save(meal, USER_ID));
+        Map<Integer, Meal> meals = repository.computeIfAbsent(USER_ID, ConcurrentHashMap::new);
+        MEALS.forEach(meal -> meals.put(meal.getId(), meal));
 
-        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510), ADMIN_ID);
-        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500), ADMIN_ID);
+        Map<Integer, Meal> adminMeals = repository.computeIfAbsent(ADMIN_ID, ConcurrentHashMap::new);
+        adminMeals.put(ADMIN_MEAL1.getId(), ADMIN_MEAL1);
+        adminMeals.put(ADMIN_MEAL2.getId(), ADMIN_MEAL2);
     }
 
     @PostConstruct
