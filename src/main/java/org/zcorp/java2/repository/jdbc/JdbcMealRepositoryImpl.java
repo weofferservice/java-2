@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.repository.MealRepository;
 
-import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,8 +27,8 @@ public class JdbcMealRepositoryImpl implements MealRepository {
     private final SimpleJdbcInsert insertMeal;
 
     @Autowired
-    public JdbcMealRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.insertMeal = new SimpleJdbcInsert(dataSource)
+    public JdbcMealRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
 
