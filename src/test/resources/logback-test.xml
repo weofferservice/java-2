@@ -16,7 +16,7 @@
     <logger name="org.springframework.jdbc" level="debug"/>
     <logger name="org.zcorp.java2" level="debug"/>
 
-    <root level="WARN">
+    <root level="warn">
         <appender-ref ref="console"/>
     </root>
 
