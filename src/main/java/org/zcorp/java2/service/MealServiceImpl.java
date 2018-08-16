@@ -2,6 +2,7 @@ package org.zcorp.java2.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.repository.MealRepository;
 import org.zcorp.java2.util.exception.NotFoundException;
@@ -23,6 +24,7 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Meal create(Meal meal, int userId) {
+        Assert.notNull(meal, "meal must not be null");
         return repository.save(meal, userId);
     }
 
@@ -38,6 +40,7 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public void update(Meal meal, int userId) throws NotFoundException {
+        Assert.notNull(meal, "meal must not be null");
         checkNotFound(repository.save(meal, userId), createErrorMessage(meal, userId));
     }
 
@@ -48,6 +51,8 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public List<Meal> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
+        Assert.notNull(startDateTime, "startDateTime must not be null");
+        Assert.notNull(endDateTime, "endDateTime must not be null");
         return repository.getBetween(startDateTime, endDateTime, userId);
     }
 

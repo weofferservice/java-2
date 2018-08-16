@@ -2,6 +2,7 @@ package org.zcorp.java2.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
 import org.zcorp.java2.util.exception.NotFoundException;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
+        Assert.notNull(user, "user must not be null");
         return repository.save(user);
     }
 
@@ -38,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByEmail(String email) throws NotFoundException {
+        Assert.notNull(email, "email must not be null");
         return checkNotFound(repository.getByEmail(email), "email=" + email);
     }
 
@@ -48,6 +51,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user) throws NotFoundException {
+        Assert.notNull(user, "user must not be null");
         checkNotFoundWithId(repository.save(user), user.getId());
     }
 
