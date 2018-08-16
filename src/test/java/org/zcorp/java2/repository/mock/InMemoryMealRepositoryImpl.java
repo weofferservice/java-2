@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.repository.MealRepository;
-import org.zcorp.java2.util.DateTimeUtil;
+import org.zcorp.java2.util.Util;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -87,7 +87,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public List<Meal> getBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         log.info("getBetween with startDateTime={} and endDateTime={} for userId={}", startDateTime, endDateTime, userId);
-        return getAllFiltered(userId, meal -> DateTimeUtil.isBetween(meal.getDateTime(), startDateTime, endDateTime));
+        return getAllFiltered(userId, meal -> Util.isBetween(meal.getDateTime(), startDateTime, endDateTime));
     }
 
     private List<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {

@@ -17,12 +17,15 @@ import static java.util.stream.Collectors.toList;
 public class MealsUtil {
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
+    private MealsUtil() {
+    }
+
     public static List<MealWithExceed> getWithExceeded(Collection<Meal> meals, int caloriesPerDay) {
         return getFilteredWithExceeded(meals, caloriesPerDay, meal -> true);
     }
 
     public static List<MealWithExceed> getFilteredWithExceeded(Collection<Meal> meals, int caloriesPerDay, LocalTime startTime, LocalTime endTime) {
-        return getFilteredWithExceeded(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getTime(), startTime, endTime));
+        return getFilteredWithExceeded(meals, caloriesPerDay, meal -> Util.isBetween(meal.getTime(), startTime, endTime));
     }
 
     private static List<MealWithExceed> getFilteredWithExceeded(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
@@ -50,7 +53,7 @@ public class MealsUtil {
 
         final List<MealWithExceed> mealsWithExceeded = new ArrayList<>();
         meals.forEach(meal -> {
-            if (DateTimeUtil.isBetween(meal.getTime(), startTime, endTime)) {
+            if (Util.isBetween(meal.getTime(), startTime, endTime)) {
                 mealsWithExceeded.add(
                         createWithExceed(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay)
                 );
@@ -67,7 +70,7 @@ public class MealsUtil {
                 .flatMap(dayMeals -> {
                             boolean exceed = dayMeals.stream().mapToInt(Meal::getCalories).sum() > caloriesPerDay;
                             return dayMeals.stream()
-                                    .filter(meal -> DateTimeUtil.isBetween(meal.getTime(), startTime, endTime))
+                                    .filter(meal -> Util.isBetween(meal.getTime(), startTime, endTime))
                                     .map(meal -> createWithExceed(meal, exceed));
                         }
                 )
@@ -81,7 +84,7 @@ public class MealsUtil {
 
             private void accumulate(Meal meal) {
                 dailySumOfCalories += meal.getCalories();
-                if (DateTimeUtil.isBetween(meal.getTime(), startTime, endTime)) {
+                if (Util.isBetween(meal.getTime(), startTime, endTime)) {
                     dailyMeals.add(meal);
                 }
             }
