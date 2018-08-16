@@ -1,0 +1,40 @@
+# https://docs.travis-ci.com/user/languages/java/
+language: java
+jdk: oraclejdk8
+
+#https://dzone.com/articles/travis-ci-tutorial-java-projects
+cache:
+  directories:
+  - $HOME/.m2
+
+# https://docs.travis-ci.com/user/database-setup/#PostgreSQL
+before_script:
+- psql -c 'CREATE DATABASE "java-2"' -U postgres
+- psql -c "CREATE USER \"user\" WITH PASSWORD 'password'; GRANT ALL PRIVILEGES ON DATABASE \"java-2\" TO \"user\"" -U postgres
+- psql -f src/main/resources/db/initDB.sql -U user java-2
+#- psql -c 'GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA public TO "user";' -U postgres java-2
+#- psql -c 'GRANT UPDATE ON ALL SEQUENCES IN SCHEMA public TO "user";' -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'meals', 'SELECT');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'meals', 'UPDATE');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'meals', 'INSERT');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'meals', 'DELETE');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'users', 'SELECT');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'users', 'UPDATE');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'users', 'INSERT');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'users', 'DELETE');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'user_roles', 'SELECT');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'user_roles', 'UPDATE');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'user_roles', 'INSERT');" -U postgres java-2
+- psql -c "SELECT has_table_privilege('user', 'user_roles', 'DELETE');" -U postgres java-2
+- psql -c "SELECT has_sequence_privilege('user', 'global_seq', 'UPDATE');" -U postgres java-2
+- psql -c "\ds;" -U postgres java-2
+- psql -c "\dt;" -U postgres java-2
+
+# https://docs.travis-ci.com/user/customizing-the-build#Building-Specific-Branches
+branches:
+  only:
+  - master
+
+# https://docs.travis-ci.com/user/notifications#Configuring-email-notifications
+notifications:
+  email: false
