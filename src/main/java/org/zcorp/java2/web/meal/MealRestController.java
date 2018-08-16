@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.zcorp.java2.util.Util.orElse;
 import static org.zcorp.java2.util.ValidationUtil.assureIdConsistent;
 import static org.zcorp.java2.util.ValidationUtil.checkNew;
 import static org.zcorp.java2.web.SecurityUtil.authUserCaloriesPerDay;
@@ -67,13 +68,11 @@ public class MealRestController {
         log.info("getBetween dates({} - {}) time({} - {}) for userId={}", startDate, endDate, startTime, endTime, userId);
 
         List<Meal> mealsDateFiltered = service.getBetweenDates(
-                startDate != null ? startDate : DateTimeUtil.MIN_DATE,
-                endDate != null ? endDate : DateTimeUtil.MAX_DATE,
+                orElse(startDate, DateTimeUtil.MIN_DATE), orElse(endDate, DateTimeUtil.MAX_DATE),
                 userId);
 
         return MealsUtil.getFilteredWithExceeded(mealsDateFiltered, authUserCaloriesPerDay(),
-                startTime != null ? startTime : LocalTime.MIN,
-                endTime != null ? endTime : LocalTime.MAX);
+                orElse(startTime, LocalTime.MIN), orElse(endTime, LocalTime.MAX));
     }
 
     public List<MealWithExceed> getAll() {
