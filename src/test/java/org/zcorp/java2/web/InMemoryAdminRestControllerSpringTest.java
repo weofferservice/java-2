@@ -17,7 +17,7 @@ import java.util.Collection;
 
 import static org.zcorp.java2.UserTestData.ADMIN;
 
-@ContextConfiguration("classpath:spring/spring-app-test.xml")
+@ContextConfiguration({"classpath:spring/spring-app.xml", "classpath:spring/spring-mock.xml"})
 @RunWith(SpringRunner.class)
 public class InMemoryAdminRestControllerSpringTest {
 
