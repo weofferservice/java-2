@@ -1,26 +1,50 @@
 package org.zcorp.java2.model;
 
+import org.hibernate.validator.constraints.Range;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 import static org.zcorp.java2.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
+@Entity
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
 public class User extends AbstractNamedEntity {
 
+    @Column(name = "email", nullable = false, unique = true)
+    @Email
+    @NotBlank
+    @Size(max = 100)
     private String email;
 
+    @Column(name = "password", nullable = false)
+    @NotBlank
+    @Size(min = 5, max = 100)
     private String password;
 
+    @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
     private boolean enabled;
 
+    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
+    @NotNull
     private Date registered;
 
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", nullable = false))
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
+    @Column(name = "calories_per_day", nullable = false, columnDefinition = "integer default 2000")
+    @Range(min = 10, max = 10000)
     private int caloriesPerDay;
 
-    private User() {
+    public User() {
     }
 
     public User(User u) {
@@ -95,14 +119,14 @@ public class User extends AbstractNamedEntity {
 
     @Override
     public String toString() {
-        return "User (" +
+        return "User{" +
                 "id=" + id +
                 ", email=" + email +
                 ", name=" + name +
                 ", enabled=" + enabled +
                 ", roles=" + roles +
                 ", caloriesPerDay=" + caloriesPerDay +
-                ')';
+                '}';
     }
 
 }
