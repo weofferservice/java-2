@@ -2,6 +2,7 @@ package org.zcorp.java2.repository.jpa;
 
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
 
@@ -10,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
+@Transactional(readOnly = true)
 public class JpaUserRepositoryImpl implements UserRepository {
 
 /*
@@ -25,6 +27,7 @@ public class JpaUserRepositoryImpl implements UserRepository {
     private EntityManager em;
 
     @Override
+    @Transactional
     public User save(User user) {
         if (user.isNew()) {
             em.persist(user);
@@ -40,6 +43,7 @@ public class JpaUserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional
     public boolean delete(int id) {
 //        User ref = em.getReference(User.class, id);
 //        em.remove(ref);
