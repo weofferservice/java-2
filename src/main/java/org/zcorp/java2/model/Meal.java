@@ -1,23 +1,37 @@
 package org.zcorp.java2.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import org.hibernate.validator.constraints.Range;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
+@Entity
+@Table(name = "meals", indexes = @Index(name = "meals_unique_user_id_date_time_idx", unique = true, columnList = "user_id, date_time"))
 public class Meal extends AbstractBaseEntity {
+    @Column(name = "date_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
+    @NotNull
     private LocalDateTime dateTime;
 
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    @NotBlank
+    @Size(max = 1000)
     private String description;
 
+    @Column(name = "calories", nullable = false, columnDefinition = "INTEGER DEFAULT 1000")
+    @Range(min = 10, max = 10000)
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_meals", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;"))
     private User user;
 
-    private Meal() {
+    public Meal() {
     }
 
     public Meal(Meal m) {
