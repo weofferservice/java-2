@@ -9,7 +9,7 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class AbstractNamedEntity extends AbstractBaseEntity {
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR")
     @NotBlank
     @Size(min = 2, max = 100)
     protected String name;

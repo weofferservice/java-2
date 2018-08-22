@@ -25,31 +25,36 @@ public class User extends AbstractNamedEntity {
     public static final String BY_EMAIL = "User.getByEmail";
     public static final String ALL_SORTED = "User.getAllSorted";
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, columnDefinition = "VARCHAR")
     @Email
     @NotBlank
     @Size(max = 100)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, columnDefinition = "VARCHAR")
     @NotBlank
     @Size(min = 5, max = 100)
     private String password;
 
-    @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
+    @Column(name = "enabled", nullable = false, columnDefinition = "BOOL DEFAULT TRUE")
     private boolean enabled;
 
-    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
+    @Column(name = "registered", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
     @NotNull
     private Date registered;
 
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", nullable = false))
-    @Column(name = "role", nullable = false)
+    @CollectionTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", nullable = false),
+            foreignKey = @ForeignKey(name = "fk_user_roles", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;"),
+            uniqueConstraints = @UniqueConstraint(name = "user_roles_idx", columnNames = {"user_id", "role"})
+    )
+    @Column(name = "role", nullable = false, columnDefinition = "VARCHAR")
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @Column(name = "calories_per_day", nullable = false, columnDefinition = "integer default 2000")
+    @Column(name = "calories_per_day", nullable = false, columnDefinition = "INTEGER DEFAULT 2000")
     @Range(min = 10, max = 10000)
     private int caloriesPerDay;
 
