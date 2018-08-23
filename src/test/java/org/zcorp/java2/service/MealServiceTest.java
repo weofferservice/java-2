@@ -1,7 +1,13 @@
 package org.zcorp.java2.service;
 
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,7 +21,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.zcorp.java2.MealTestData.*;
 import static org.zcorp.java2.UserTestData.ADMIN_ID;
 import static org.zcorp.java2.UserTestData.USER_ID;
@@ -28,11 +37,46 @@ import static org.zcorp.java2.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    private static final Logger log = getLogger(MealServiceTest.class);
+
+    private static Map<String, Long> executionTimes = new ConcurrentHashMap<>();
+
     static {
         // Only for postgres driver logging
         // It uses java.util.logging and logged via jul-to-slf4j bridge
         SLF4JBridgeHandler.install();
     }
+
+    @AfterClass
+    public static void afterAllTests() {
+        System.out.println();
+        executionTimes.forEach((methodName, executionTime) -> {
+            System.out.println("Test " + methodName + " completed in " + executionTime + " ms");
+        });
+        System.out.println();
+    }
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Rule
+    public TestWatcher timeWatcher = new TestWatcher() {
+        private long startTime;
+
+        @Override
+        protected void starting(Description description) {
+            startTime = System.currentTimeMillis();
+            log.info("Test " + description.getMethodName() + " started");
+        }
+
+        @Override
+        protected void finished(Description description) {
+            long time = System.currentTimeMillis() - startTime;
+            String methodName = description.getMethodName();
+            executionTimes.put(methodName, time);
+            log.info("Test " + methodName + " finished in " + time + " ms");
+        }
+    };
 
     @Autowired
     private MealService service;
@@ -49,8 +93,9 @@ public class MealServiceTest {
         assertMatch(service.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void deleteNotFound() {
+        thrown.expect(NotFoundException.class);
         service.delete(MEAL1_ID, ADMIN_ID);
     }
 
@@ -59,8 +104,9 @@ public class MealServiceTest {
         assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void getNotFound() {
+        thrown.expect(NotFoundException.class);
         service.get(MEAL1_ID, ADMIN_ID);
     }
 
@@ -71,8 +117,9 @@ public class MealServiceTest {
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void updateNotFound() {
+        thrown.expect(NotFoundException.class);
         service.update(getUpdated(), ADMIN_ID);
     }
 
