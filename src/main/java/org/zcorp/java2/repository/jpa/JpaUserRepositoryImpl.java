@@ -31,10 +31,18 @@ public class JpaUserRepositoryImpl implements UserRepository {
     public User save(User user) {
         if (user.isNew()) {
             em.persist(user);
-            return user;
-        } else {
-            return em.merge(user);
+        } else if (em.createNamedQuery(User.UPDATE)
+                .setParameter("id", user.getId())
+                .setParameter("name", user.getName())
+                .setParameter("email", user.getEmail())
+                .setParameter("password", user.getPassword())
+                .setParameter("enabled", user.isEnabled())
+                .setParameter("registered", user.getRegistered())
+                .setParameter("caloriesPerDay", user.getCaloriesPerDay())
+                .executeUpdate() == 0) {
+            return null;
         }
+        return user;
     }
 
     @Override

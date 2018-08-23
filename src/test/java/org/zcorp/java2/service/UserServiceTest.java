@@ -86,6 +86,13 @@ public class UserServiceTest {
         assertMatch(service.get(USER_ID), updated);
     }
 
+    @Test(expected = NotFoundException.class)
+    public void updateNotFound() {
+        User updated = new User(USER);
+        updated.setId(1);
+        service.update(updated);
+    }
+
     @Test
     public void getAll() throws Exception {
         List<User> all = service.getAll();
