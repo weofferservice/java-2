@@ -11,21 +11,20 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
+@SuppressWarnings("JpaQlInspection")
 @NamedQueries({
-        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user=:user AND m.dateTime BETWEEN :startDateTime AND :endDateTime ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user=:user ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user=:user"),
-        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user=:user"),
-        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime=:dateTime, m.description=:description, m.calories=:calories WHERE m.id=:id AND m.user=:user")
+        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.id=:userId AND m.dateTime BETWEEN :startDateTime AND :endDateTime ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+//        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime=:dateTime, m.description=:description, m.calories=:calories WHERE m.id=:id AND m.user.id=:userId")
 })
 @Entity
 @Table(name = "meals", indexes = @Index(name = "meals_unique_user_id_date_time_idx", unique = true, columnList = "user_id, date_time"))
 public class Meal extends AbstractBaseEntity {
     public static final String BETWEEN = "Meal.getBetween";
     public static final String ALL_SORTED = "Meal.getAllSorted";
-    public static final String GET = "Meal.get";
     public static final String DELETE = "Meal.delete";
-    public static final String UPDATE = "Meal.update";
+//    public static final String UPDATE = "Meal.update";
 
     @Column(name = "date_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
     @NotNull
@@ -33,15 +32,16 @@ public class Meal extends AbstractBaseEntity {
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     @NotBlank
-    @Size(max = 1000)
+    @Size(min = 2, max = 120)
     private String description;
 
     @Column(name = "calories", nullable = false, columnDefinition = "INTEGER DEFAULT 1000")
-    @Range(min = 10, max = 10000)
+    @Range(min = 10, max = 5000)
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_meals", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;"))
+    @NotNull
     private User user;
 
     public Meal() {

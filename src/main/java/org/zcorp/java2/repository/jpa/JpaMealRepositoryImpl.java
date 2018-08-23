@@ -1,6 +1,5 @@
 package org.zcorp.java2.repository.jpa;
 
-import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.zcorp.java2.model.Meal;
@@ -26,51 +25,41 @@ public class JpaMealRepositoryImpl implements MealRepository {
         meal.setUser(user);
         if (meal.isNew()) {
             em.persist(meal);
-        } else if (em.createNamedQuery(Meal.UPDATE)
-                .setParameter("id", meal.getId())
-                .setParameter("user", meal.getUser())
-                .setParameter("dateTime", meal.getDateTime())
-                .setParameter("description", meal.getDescription())
-                .setParameter("calories", meal.getCalories())
-                .executeUpdate() == 0) {
-            return null;
+            return meal;
+        } else {
+            if (get(meal.getId(), userId) == null) {
+                return null;
+            }
+            return em.merge(meal);
         }
-        return meal;
     }
 
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        User user = em.getReference(User.class, userId);
         return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
-                .setParameter("user", user)
+                .setParameter("userId", userId)
                 .executeUpdate() != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        User user = em.getReference(User.class, userId);
-        List<Meal> meals = em.createNamedQuery(Meal.GET, Meal.class)
-                .setParameter("id", id)
-                .setParameter("user", user)
-                .getResultList();
-        return DataAccessUtils.singleResult(meals);
+        Meal meal = em.find(Meal.class, id);
+        return meal != null && meal.getUser().getId() == userId ? meal : null;
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        User user = em.getReference(User.class, userId);
         return em.createNamedQuery(Meal.ALL_SORTED, Meal.class)
-                .setParameter("user", user)
+                .setParameter("userId", userId)
                 .getResultList();
     }
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        User user = em.getReference(User.class, userId);
         return em.createNamedQuery(Meal.BETWEEN, Meal.class)
-                .setParameter("user", user)
+                .setParameter("userId", userId)
                 .setParameter("startDateTime", startDateTime)
                 .setParameter("endDateTime", endDateTime)
                 .getResultList();
