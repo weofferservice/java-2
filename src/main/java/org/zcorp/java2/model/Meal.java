@@ -11,9 +11,22 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
+@NamedQueries({
+        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user=:user AND m.dateTime BETWEEN :startDateTime AND :endDateTime ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user=:user ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user=:user"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user=:user"),
+        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime=:dateTime, m.description=:description, m.calories=:calories WHERE m.id=:id AND m.user=:user")
+})
 @Entity
 @Table(name = "meals", indexes = @Index(name = "meals_unique_user_id_date_time_idx", unique = true, columnList = "user_id, date_time"))
 public class Meal extends AbstractBaseEntity {
+    public static final String BETWEEN = "Meal.getBetween";
+    public static final String ALL_SORTED = "Meal.getAllSorted";
+    public static final String GET = "Meal.get";
+    public static final String DELETE = "Meal.delete";
+    public static final String UPDATE = "Meal.update";
+
     @Column(name = "date_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
     @NotNull
     private LocalDateTime dateTime;
