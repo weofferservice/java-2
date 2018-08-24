@@ -4,7 +4,7 @@ import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,8 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.zcorp.java2.MealTestData.*;
@@ -39,7 +38,7 @@ public class MealServiceTest {
 
     private static final Logger log = getLogger(MealServiceTest.class);
 
-    private static Map<String, Long> executionTimes = new ConcurrentHashMap<>();
+    private static StringBuilder results = new StringBuilder();
 
     static {
         // Only for postgres driver logging
@@ -48,33 +47,25 @@ public class MealServiceTest {
     }
 
     @AfterClass
-    public static void afterAllTests() {
-        System.out.println();
-        executionTimes.forEach((methodName, executionTime) -> {
-            System.out.println("Test " + methodName + " completed in " + executionTime + " ms");
-        });
-        System.out.println();
+    public static void printResult() {
+        log.info("\n---------------------------------" +
+                "\nTest                 Duration, ms" +
+                "\n---------------------------------" +
+                results +
+                "\n---------------------------------");
     }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Rule
-    public TestWatcher timeWatcher = new TestWatcher() {
-        private long startTime;
-
+    //https://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-business-releva
+    public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void starting(Description description) {
-            startTime = System.currentTimeMillis();
-            log.info("Test " + description.getMethodName() + " started");
-        }
-
-        @Override
-        protected void finished(Description description) {
-            long time = System.currentTimeMillis() - startTime;
-            String methodName = description.getMethodName();
-            executionTimes.put(methodName, time);
-            log.info("Test " + methodName + " finished in " + time + " ms");
+        protected void finished(long nanos, Description description) {
+            String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            results.append(result);
+            log.info(result + " ms\n");
         }
     };
 
@@ -120,6 +111,7 @@ public class MealServiceTest {
     @Test
     public void updateNotFound() {
         thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with id=" + MEAL1_ID);
         service.update(getUpdated(), ADMIN_ID);
     }
 
