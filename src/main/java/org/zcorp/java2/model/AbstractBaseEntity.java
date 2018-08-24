@@ -1,5 +1,7 @@
 package org.zcorp.java2.model;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
 
 @MappedSuperclass
@@ -37,17 +39,16 @@ public abstract class AbstractBaseEntity {
         return String.format("Entity %s (%s)", getClass().getName(), id);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || getClass() != Hibernate.getClass(o)) {
             return false;
         }
         AbstractBaseEntity that = (AbstractBaseEntity) o;
-        return id != null && id.equals(that.id);
+        return id != null ? id.equals(that.id) : that.id == null;
     }
 
     @Override
