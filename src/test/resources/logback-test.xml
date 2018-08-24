@@ -8,15 +8,25 @@
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %class{50}.%M:%L - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%class{50}.%M:%L) - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="org.postgresql" level="debug"/>
-    <logger name="org.springframework.jdbc" level="debug"/>
-    <logger name="org.zcorp.java2" level="debug"/>
+    <appender name="result" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%magenta(%msg%n)</pattern>
+        </encoder>
+    </appender>
 
-    <root level="warn">
+    <!--<logger name="org.postgresql" level="debug"/>-->
+    <!--<logger name="org.springframework.jdbc" level="debug"/>-->
+    <logger name="org.zcorp.java2" level="debug"/>
+    <logger name="result" level="info" additivity="false">
+        <appender-ref ref="result"/>
+    </logger>
+
+    <root level="info">
         <appender-ref ref="console"/>
     </root>
 
