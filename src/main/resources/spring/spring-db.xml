@@ -86,4 +86,11 @@
               p:username="${database.username}"
               p:password="${database.password}"/>
     </beans>
+
+    <beans profile="jdbc">
+    </beans>
+    <beans profile="jpa">
+    </beans>
+    <beans profile="datajpa">
+    </beans>
 </beans>
