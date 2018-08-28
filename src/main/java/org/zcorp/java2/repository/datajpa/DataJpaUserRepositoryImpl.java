@@ -17,7 +17,16 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        return crudRepository.save(user);
+        if (user.isNew()) {
+            return crudRepository.save(user);
+        } else {
+            if (crudRepository.update(
+                    user.getId(), user.getName(), user.getEmail(), user.getPassword(),
+                    user.isEnabled(), user.getRegistered(), user.getCaloriesPerDay()) == 0) {
+                return null;
+            }
+            return user;
+        }
     }
 
     @Override
