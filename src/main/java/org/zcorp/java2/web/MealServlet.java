@@ -1,8 +1,9 @@
 package org.zcorp.java2.web;
 
 import org.slf4j.Logger;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.zcorp.java2.Profiles;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.web.meal.MealRestController;
 
@@ -25,13 +26,16 @@ import static org.zcorp.java2.util.DateTimeUtil.parseLocalTime;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
-    private ConfigurableApplicationContext appCtx;
+    private AbstractRefreshableConfigApplicationContext appCtx;
     private MealRestController mealRestController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
+        appCtx = new ClassPathXmlApplicationContext();
+        appCtx.setConfigLocations("spring/spring-app.xml", "spring/spring-db.xml");
+        appCtx.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), "datajpa");
+        appCtx.refresh();
         mealRestController = appCtx.getBean(MealRestController.class);
     }
 

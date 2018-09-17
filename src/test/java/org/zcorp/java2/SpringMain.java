@@ -1,6 +1,6 @@
 package org.zcorp.java2;
 
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.model.Role;
@@ -24,7 +24,11 @@ import static org.zcorp.java2.UserTestData.USER_ID;
 public class SpringMain {
     public static void main(String[] args) {
         // java 7 Automatic resource management
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-mock.xml")) {
+        try (AbstractRefreshableConfigApplicationContext appCtx = new ClassPathXmlApplicationContext()) {
+            appCtx.setConfigLocations("spring/spring-app.xml", "spring/spring-db.xml");
+            appCtx.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), "datajpa");
+            appCtx.refresh();
+
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
 
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
