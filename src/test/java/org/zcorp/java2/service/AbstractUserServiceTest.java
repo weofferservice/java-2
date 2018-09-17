@@ -32,7 +32,7 @@ import static org.zcorp.java2.UserTestData.*;
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Autowired
     private CacheManager cacheManager;
@@ -103,6 +103,11 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     public void getAll() throws Exception {
         List<User> all = service.getAll();
         assertMatch(all, ADMIN, USER);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void getWithMeals() {
+        service.getWithMeals(USER_ID);
     }
 
 }

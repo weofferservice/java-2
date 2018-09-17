@@ -36,7 +36,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Test
     public void create() {
@@ -100,6 +100,12 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
                 LocalDate.of(2015, Month.MAY, 30),
                 LocalDate.of(2015, Month.MAY, 30), USER_ID);
         assertMatch(meals, MEAL3, MEAL2, MEAL1);
+    }
+
+    @Test
+    public void getWithUser() {
+        thrown.expect(UnsupportedOperationException.class);
+        service.getWithUser(MEAL1_ID, USER_ID);
     }
 
 }
