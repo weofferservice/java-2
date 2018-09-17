@@ -1,5 +1,6 @@
 package org.zcorp.java2.repository.datajpa;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -45,6 +46,16 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
         Meal meal = crudRepository.findById(id).orElse(null);
         if (meal == null || meal.getUser().getId() != userId) {
             return null;
+        }
+        return meal;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Meal getWithUser(int id, int userId) {
+        Meal meal = get(id, userId);
+        if (meal != null) {
+            Hibernate.initialize(meal.getUser());
         }
         return meal;
     }

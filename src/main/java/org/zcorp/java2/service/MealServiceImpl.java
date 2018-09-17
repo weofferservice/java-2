@@ -39,6 +39,11 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
+    public Meal getWithUser(int id, int userId) throws NotFoundException {
+        return checkNotFound(repository.getWithUser(id, userId), createErrorMessage(id, userId));
+    }
+
+    @Override
     public void update(Meal meal, int userId) throws NotFoundException {
         Assert.notNull(meal, "meal must not be null");
         checkNotFound(repository.save(meal, userId), createErrorMessage(meal, userId));
