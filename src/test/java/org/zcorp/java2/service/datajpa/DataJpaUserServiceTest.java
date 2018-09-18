@@ -1,13 +1,15 @@
-package org.zcorp.java2.service;
+package org.zcorp.java2.service.datajpa;
 
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import org.zcorp.java2.model.User;
+import org.zcorp.java2.service.AbstractUserServiceTest;
 import org.zcorp.java2.util.exception.NotFoundException;
 
+import static org.zcorp.java2.Profiles.DATAJPA;
 import static org.zcorp.java2.UserTestData.*;
 
-@ActiveProfiles("datajpa")
+@ActiveProfiles(DATAJPA)
 public class DataJpaUserServiceTest extends AbstractUserServiceTest {
 
     @Test
