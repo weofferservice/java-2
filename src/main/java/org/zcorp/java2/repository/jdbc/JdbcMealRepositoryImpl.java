@@ -1,5 +1,7 @@
 package org.zcorp.java2.repository.jdbc;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,13 +10,16 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+import org.zcorp.java2.Profiles;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.repository.MealRepository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public abstract class AbstractJdbcMealRepositoryImpl<T> implements MealRepository {
+public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -26,7 +31,35 @@ public abstract class AbstractJdbcMealRepositoryImpl<T> implements MealRepositor
 
     protected abstract T convertLocalDateTime(LocalDateTime ldt);
 
-    protected AbstractJdbcMealRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    @Repository
+    @Profile(Profiles.POSTGRES_DB)
+    public static class PostgresJdbcMealRepositoryImpl extends JdbcMealRepositoryImpl<LocalDateTime> {
+        @Autowired
+        public PostgresJdbcMealRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+            super(jdbcTemplate, namedParameterJdbcTemplate);
+        }
+
+        @Override
+        protected LocalDateTime convertLocalDateTime(LocalDateTime ldt) {
+            return ldt;
+        }
+    }
+
+    @Repository
+    @Profile(Profiles.HSQL_DB)
+    public static class HsqldbJdbcMealRepositoryImpl extends JdbcMealRepositoryImpl<Timestamp> {
+        @Autowired
+        public HsqldbJdbcMealRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+            super(jdbcTemplate, namedParameterJdbcTemplate);
+        }
+
+        @Override
+        protected Timestamp convertLocalDateTime(LocalDateTime ldt) {
+            return Timestamp.valueOf(ldt);
+        }
+    }
+
+    protected JdbcMealRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
