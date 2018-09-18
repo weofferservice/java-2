@@ -1,16 +1,7 @@
 package org.zcorp.java2.service;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.zcorp.java2.ActiveDbProfileResolver;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.util.exception.NotFoundException;
 
@@ -23,17 +14,7 @@ import static org.zcorp.java2.MealTestData.*;
 import static org.zcorp.java2.UserTestData.ADMIN_ID;
 import static org.zcorp.java2.UserTestData.USER_ID;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
-})
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractMealServiceTest extends AbstractServiceTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Autowired
     protected MealService service;
