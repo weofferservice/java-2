@@ -9,8 +9,6 @@ import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.MealRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,10 +18,10 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     private static final Sort SORT_DATETIME = new Sort(Sort.Direction.DESC, "dateTime");
 
     @Autowired
-    private CrudMealRepository crudRepository;
+    private CrudMealRepository crudMealRepository;
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private CrudUserRepository crudUserRepository;
 
     @Override
     @Transactional
@@ -31,23 +29,19 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
         if (!meal.isNew() && get(meal.getId(), userId) == null) {
             return null;
         }
-        User user = em.getReference(User.class, userId);
+        User user = crudUserRepository.getOne(userId);
         meal.setUser(user);
-        return crudRepository.save(meal);
+        return crudMealRepository.save(meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        return crudRepository.delete(id, userId) != 0;
+        return crudMealRepository.delete(id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        Meal meal = crudRepository.findById(id).orElse(null);
-        if (meal == null || meal.getUser().getId() != userId) {
-            return null;
-        }
-        return meal;
+        return crudMealRepository.findById(id).filter(meal -> meal.getUser().getId() == userId).orElse(null);
     }
 
     @Override
@@ -62,12 +56,12 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return crudRepository.getAll(userId, SORT_DATETIME);
+        return crudMealRepository.getAll(userId, SORT_DATETIME);
     }
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return crudRepository.getBetween(startDateTime, endDateTime, userId, SORT_DATETIME);
+        return crudMealRepository.getBetween(startDateTime, endDateTime, userId, SORT_DATETIME);
     }
 
 }

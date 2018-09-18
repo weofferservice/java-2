@@ -38,4 +38,8 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
     List<User> findAll(Sort sort);
 
     User getByEmail(String email);
+
+    // Применяется в DataJpaMealRepositoryImpl для получения прокси на User-а
+    @Override
+    User getOne(Integer id);
 }
