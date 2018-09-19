@@ -1,6 +1,7 @@
 package org.zcorp.java2.repository.datajpa;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -43,6 +44,9 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
     @Override
     User getOne(Integer id);
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id=?1")
+//    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id=?1")
+    @Query("SELECT u FROM User u WHERE u.id=?1")
+//    @EntityGraph(User.GRAPH_WITH_MEALS)
+    @EntityGraph(attributePaths = {"meals"})
     User getWithMeals(int id);
 }

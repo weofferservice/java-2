@@ -20,8 +20,11 @@ import static org.zcorp.java2.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
         @NamedQuery(name = User.UPDATE, query = "UPDATE User u SET u.name=:name, u.email=:email, u.password=:password, u.enabled=:enabled, u.registered=:registered, u.caloriesPerDay=:caloriesPerDay WHERE u.id=:id")
 })
 @Entity
+//@NamedEntityGraph(name = User.GRAPH_WITH_MEALS, attributeNodes = {@NamedAttributeNode("meals")})
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
 public class User extends AbstractNamedEntity {
+
+//    public static final String GRAPH_WITH_MEALS = "User.withMeals";
 
     public static final String DELETE = "User.delete";
     public static final String BY_EMAIL = "User.getByEmail";
