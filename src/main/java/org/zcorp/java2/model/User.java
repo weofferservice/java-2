@@ -1,5 +1,6 @@
 package org.zcorp.java2.model;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.util.CollectionUtils;
 
@@ -15,7 +16,7 @@ import static org.zcorp.java2.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 @NamedQueries({
         @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
         @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=?1"),
-        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email"),
+        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u ORDER BY u.name, u.email"),
         @NamedQuery(name = User.UPDATE, query = "UPDATE User u SET u.name=:name, u.email=:email, u.password=:password, u.enabled=:enabled, u.registered=:registered, u.caloriesPerDay=:caloriesPerDay WHERE u.id=:id")
 })
 @Entity
@@ -54,6 +55,8 @@ public class User extends AbstractNamedEntity {
     @Column(name = "role", nullable = false, columnDefinition = "VARCHAR")
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
+//    @Fetch(FetchMode.SUBSELECT)
+    @BatchSize(size = 200)
     private Set<Role> roles;
 
     @Column(name = "calories_per_day", nullable = false, columnDefinition = "INTEGER DEFAULT 2000")
