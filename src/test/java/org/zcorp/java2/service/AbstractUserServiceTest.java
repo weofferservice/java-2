@@ -9,6 +9,7 @@ import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.util.exception.NotFoundException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -94,6 +95,15 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test(expected = UnsupportedOperationException.class)
     public void getWithMeals() {
         service.getWithMeals(USER_ID);
+    }
+
+    @Test
+    public void testValidation() {
+        validateRootCause(() -> service.create(new User(null, "    ", "mail@yandex.ru", "password", Role.ROLE_USER)), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new User(null, "User", "              ", "password", Role.ROLE_USER)), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "        ", Role.ROLE_USER)), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "password",     9, true, new Date(), Collections.emptySet())), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Collections.emptySet())), ConstraintViolationException.class);
     }
 
 }

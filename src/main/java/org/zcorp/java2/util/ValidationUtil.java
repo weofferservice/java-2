@@ -41,4 +41,14 @@ public class ValidationUtil {
         }
     }
 
+    //https://stackoverflow.com/questions/17747175/how-can-i-loop-through-exception-getcause-to-find-root-cause-with-detail-messa/28565320#28565320
+    public static Throwable getRootCause(Throwable t) {
+        Throwable result = t;
+        Throwable cause;
+        while (((cause = result.getCause()) != null) && (cause != result)) {
+            result = cause;
+        }
+        return result;
+    }
+
 }
