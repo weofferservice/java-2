@@ -42,4 +42,7 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
     // Применяется в DataJpaMealRepositoryImpl для получения прокси на User-а
     @Override
     User getOne(Integer id);
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id=?1")
+    User getWithMeals(int id);
 }

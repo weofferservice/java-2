@@ -1,10 +1,8 @@
 package org.zcorp.java2.repository.datajpa;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
 
@@ -42,13 +40,8 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public User getWithMeals(int id) {
-        User user = get(id);
-        if (user != null) {
-            Hibernate.initialize(user.getMeals());
-        }
-        return user;
+        return crudRepository.getWithMeals(id);
     }
 
     @Override
