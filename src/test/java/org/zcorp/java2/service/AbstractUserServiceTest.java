@@ -7,6 +7,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
+import org.zcorp.java2.repository.JpaUtil;
 import org.zcorp.java2.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -24,9 +25,13 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
+    @Autowired
+    private JpaUtil jpaUtil;
+
     @Before
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
+        jpaUtil.clear2ndLevelHibernateCache();
     }
 
     @Test
