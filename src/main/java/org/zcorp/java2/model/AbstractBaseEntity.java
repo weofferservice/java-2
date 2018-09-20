@@ -13,6 +13,7 @@ public abstract class AbstractBaseEntity implements Persistable<Integer> {
 
     @Id
     @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
+//    @Column(name = "id", nullable = false, unique = true, columnDefinition = "INTEGER DEFAULT nextval('global_seq')")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
     protected Integer id;
 

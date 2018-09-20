@@ -10,4 +10,4 @@ target
 log
 
 # Игнорируем папку ddl
-ddl
+/config/ddl

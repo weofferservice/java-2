@@ -61,11 +61,25 @@
                 <map>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="${hibernate.format_sql}"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}" value="${hibernate.use_sql_comments}"/>
-                    <!--<entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO}" value="${hibernate.hbm2ddl.auto}"/>-->
+
                     <!--
-                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_ACTION}" value="#{T(org.hibernate.tool.schema.Action).CREATE_DROP}"/>
-                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_DROP_TARGET}" value="${JAVA2_ROOT}/ddl/drop.sql"/>
-                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_CREATE_TARGET}" value="${JAVA2_ROOT}/ddl/create.sql"/>
+                    После подключения библиотеки javax.el валидация Hibernate не только заработала при записи в БД,
+                    но и при создании БД или скриптов по entity появились check-проверки
+                    -->
+                    <!--
+                    Нужно помнить, что мы не можем одновременно генерить скрипты и БД по entity. Мы можем:
+                    1) либо генерить БД:
+                    -->
+                    <!--
+                        <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO}" value="#{T(org.hibernate.tool.schema.Action).CREATE}"/>
+                    -->
+                    <!--
+                    2) либо генерить скрипты:
+                    -->
+                    <!--
+                        <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_ACTION}" value="#{T(org.hibernate.tool.schema.Action).CREATE}"/>
+                        <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_DROP_TARGET}" value="${JAVA2_ROOT}/config/ddl/drop.sql"/>
+                        <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_CREATE_TARGET}" value="${JAVA2_ROOT}/config/ddl/create.sql"/>
                     -->
 
                     <!--https://github.com/hibernate/hibernate-orm/blob/master/documentation/src/main/asciidoc/userguide/chapters/caching/Caching.adoc#caching-provider-jcache-->
