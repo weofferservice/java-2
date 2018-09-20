@@ -70,6 +70,10 @@ public class User extends AbstractNamedEntity {
     @Range(min = 10, max = 10000)
     private int caloriesPerDay;
 
+    /*
+    // Заставить Hibernate выполнять отдельные запросы на удаление дочерних объектов (meals) при удалении родителя (user)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    */
     @OneToMany(mappedBy = "user")
     @OrderBy("dateTime DESC")
     private List<Meal> meals;

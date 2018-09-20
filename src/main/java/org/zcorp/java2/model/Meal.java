@@ -1,5 +1,7 @@
 package org.zcorp.java2.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -39,6 +41,11 @@ public class Meal extends AbstractBaseEntity {
     @Range(min = 10, max = 5000)
     private int calories;
 
+    // 1) Говорим Hibernate-у, что у нас в БД стоит ON DELETE CASCADE, а значит при удалении родителя (user) будут
+    // автоматически удалены дети (meals). Это знание HIbernate использует, чтобы обновить кэш 2-го уровня.
+    // 2) Предположение о том, что эта аннотация при генерации скриптов по entity создаст строку ON DELETE CASCADE
+    // в этих скриптах - ошибочно
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_meals", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;"))
     @NotNull
