@@ -6,13 +6,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Meals</title>
+    <title>Calories management</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <section>
-    <h3><a href="index.html">Home</a></h3>
-    <h2>Meals</h2>
+    <h3>Meals</h3>
     <form method="post" action="meals?action=filter" enctype="application/x-www-form-urlencoded">
         <dl>
             <dt>From Date:</dt>
