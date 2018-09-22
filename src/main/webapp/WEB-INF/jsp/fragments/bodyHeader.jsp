@@ -4,7 +4,7 @@
 <fmt:setBundle basename="messages.app"/>
 
 <header>
-    <a href="index.jsp">
+    <a href="${pageContext.request.contextPath}/">
         <fmt:message key="app.home"/>
     </a>
     &nbsp;|&nbsp;
