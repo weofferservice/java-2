@@ -8,6 +8,4 @@
 
     <context:component-scan base-package="org.zcorp.**.service"/>
 
-    <context:component-scan base-package="org.zcorp.**.web"/>
-
 </beans>
