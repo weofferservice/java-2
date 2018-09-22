@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- The contents of this file will be loaded for each web application -->
+<Context>
+    <!-- Default set of monitored resources. If one of these changes, the
+         web application will be reloaded -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    <Manager pathname=""/>
+    -->
+
+    <!-- Uncomment this to enable Comet connection tacking (provides events
+         on session expiration as well as webapp lifecycle) -->
+    <!--
+    <Valve className="org.apache.catalina.valves.CometConnectionManagerValve"/>
+    -->
+    <Resource name="jdbc/java-2"
+              auth="Container"
+              type="javax.sql.DataSource"
+              driverClassName="org.postgresql.Driver"
+
+              validationQuery="SELECT 1"
+
+              initialSize="2"
+              maxTotal="10"
+              minIdle="2"
+              maxIdle="5"
+              maxWaitMillis="20000"
+
+              testOnBorrow="true"
+              removeAbandonedOnBorrow="true"
+              testWhileIdle="true"
+
+              url="jdbc:postgresql://localhost:5432/java-2"
+              username="user"
+              password="password"/>
+
+    <!--
+              url="<heroku_url>?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory"
+              username="<heroku_username>"
+              password="<heroku_password>"/>
+    -->
+</Context>
