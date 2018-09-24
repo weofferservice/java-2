@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.zcorp.java2.UserTestData;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.mock.InMemoryUserRepositoryImpl;
@@ -17,7 +18,8 @@ import java.util.Collection;
 
 import static org.zcorp.java2.UserTestData.ADMIN;
 
-@ContextConfiguration({"classpath:spring/spring-app.xml", "classpath:spring/spring-mock.xml"})
+@WebAppConfiguration
+@ContextConfiguration({"classpath:spring/spring-mvc.xml", "classpath:spring/spring-app.xml", "classpath:spring/spring-mock.xml"})
 @RunWith(SpringRunner.class)
 public class InMemoryAdminRestControllerSpringTest {
 

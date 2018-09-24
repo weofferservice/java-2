@@ -1,8 +1,12 @@
 package org.zcorp.java2.web;
 
 import org.junit.*;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.zcorp.java2.UserTestData;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.mock.InMemoryUserRepositoryImpl;
@@ -15,12 +19,17 @@ import java.util.Collection;
 import static org.zcorp.java2.UserTestData.ADMIN;
 
 public class InMemoryAdminRestControllerTest {
-    private static ConfigurableApplicationContext appCtx;
+    private static ConfigurableWebApplicationContext appCtx;
     private static AdminRestController controller;
 
     @BeforeClass
     public static void beforeClass() {
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-mock.xml");
+        ApplicationContext parentAppCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-mock.xml");
+        appCtx = new XmlWebApplicationContext();
+        appCtx.setParent(parentAppCtx);
+        appCtx.setConfigLocation("spring/spring-mvc.xml");
+        appCtx.setServletContext(new MockServletContext());
+        appCtx.refresh();
         System.out.println("\n" + Arrays.toString(appCtx.getBeanDefinitionNames()) + "\n");
         controller = appCtx.getBean(AdminRestController.class);
     }
@@ -28,6 +37,7 @@ public class InMemoryAdminRestControllerTest {
     @AfterClass
     public static void afterClass() {
         appCtx.close();
+        ((AbstractApplicationContext) appCtx.getParent()).close();
     }
 
     @Before
