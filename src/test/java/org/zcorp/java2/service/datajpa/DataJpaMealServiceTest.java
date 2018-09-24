@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import org.zcorp.java2.UserTestData;
 import org.zcorp.java2.model.Meal;
-import org.zcorp.java2.service.AbstractMealServiceTest;
+import org.zcorp.java2.service.AbstractJpaDataJpaMealServiceTest;
 import org.zcorp.java2.util.exception.NotFoundException;
 
 import static org.zcorp.java2.MealTestData.*;
@@ -13,7 +13,7 @@ import static org.zcorp.java2.UserTestData.ADMIN;
 import static org.zcorp.java2.UserTestData.ADMIN_ID;
 
 @ActiveProfiles(DATAJPA)
-public class DataJpaMealServiceTest extends AbstractMealServiceTest {
+public class DataJpaMealServiceTest extends AbstractJpaDataJpaMealServiceTest {
 
     @Test
     @Override
