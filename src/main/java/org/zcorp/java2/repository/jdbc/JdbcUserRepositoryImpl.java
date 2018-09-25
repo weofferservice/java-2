@@ -10,12 +10,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
 
 import java.util.List;
 
 @Repository
+@Transactional(readOnly = true)
 public class JdbcUserRepositoryImpl implements UserRepository {
 
     private static final RowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
@@ -37,6 +39,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional
     public User save(User user) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
@@ -52,6 +55,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
     }
