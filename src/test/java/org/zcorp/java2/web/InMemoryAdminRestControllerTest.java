@@ -36,6 +36,9 @@ public class InMemoryAdminRestControllerTest {
 
     @AfterClass
     public static void afterClass() {
+        //May cause during JUnit "Cache is not alive (STATUS_SHUTDOWN)" as JUnit share Spring context for speed
+        //https://stackoverflow.com/questions/16281802/ehcache-shutdown-causing-an-exception-while-running-test-suite
+        //If some tests will fail then you need to comment out lines below
         appCtx.close();
         ((AbstractApplicationContext) appCtx.getParent()).close();
     }
