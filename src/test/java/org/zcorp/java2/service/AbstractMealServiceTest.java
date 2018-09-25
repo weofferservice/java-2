@@ -1,15 +1,18 @@
 package org.zcorp.java2.service;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.util.exception.NotFoundException;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
+import static java.time.LocalDateTime.of;
 import static org.zcorp.java2.MealTestData.*;
 import static org.zcorp.java2.UserTestData.ADMIN_ID;
 import static org.zcorp.java2.UserTestData.USER_ID;
@@ -87,6 +90,15 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     public void getWithUser() {
         thrown.expect(UnsupportedOperationException.class);
         service.getWithUser(MEAL1_ID, USER_ID);
+    }
+
+    @Test
+    public void testValidation() {
+        Assume.assumeTrue(isJpaBased());
+        validateRootCause(() -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "           ",  300), USER_ID), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new Meal(null,                                             null, "Description",  300), USER_ID), NullPointerException.class);
+        validateRootCause(() -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "Description",    9), USER_ID), ConstraintViolationException.class);
+        validateRootCause(() -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "Description", 5001), USER_ID), ConstraintViolationException.class);
     }
 
 }
