@@ -19,7 +19,7 @@ public class UserTestData {
 
     static {
         USER = new User(USER_ID, "User", "user@yandex.ru", "password", Role.ROLE_USER);
-        ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ROLE_ADMIN);
+        ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ROLE_ADMIN, Role.ROLE_USER);
 
         USER.setMeals(MEALS);
         ADMIN.setMeals(Arrays.asList(ADMIN_MEAL1, ADMIN_MEAL2));
