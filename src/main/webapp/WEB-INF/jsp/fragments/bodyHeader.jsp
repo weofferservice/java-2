@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <header>
-    <a href="${pageContext.request.contextPath}/">
+    <a href="">
         <spring:message code="app.home"/>
     </a>
     &nbsp;|&nbsp;
