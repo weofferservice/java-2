@@ -35,11 +35,11 @@ public class UserTestData {
         // В противном случае работать не будет
         assertThat(actual)
                 .usingComparatorForFields((actualMeals, expectedMeals) -> Objects.equals(expectedMeals, actualMeals) ? 0 : 1, "meals")
-                .isEqualToIgnoringGivenFields(expected, "registered", "roles");
+                .isEqualToIgnoringGivenFields(expected, "registered");
     }
 
     public static void assertMatch(User actual, User expected) {
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered", "roles", "meals");
+        assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered", "meals");
     }
 
     public static void assertMatch(Iterable<User> actual, User... expected) {
@@ -47,6 +47,6 @@ public class UserTestData {
     }
 
     public static void assertMatch(Iterable<User> actual, Iterable<User> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields("registered", "roles", "meals").isEqualTo(expected);
+        assertThat(actual).usingElementComparatorIgnoringFields("registered", "meals").isEqualTo(expected);
     }
 }
