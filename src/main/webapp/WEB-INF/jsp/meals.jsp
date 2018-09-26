@@ -3,7 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java2.zcorp.org/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>--%>
-<%--<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>--%>
 <!DOCTYPE html>
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
@@ -30,9 +29,9 @@
         </dl>
         <button type="submit"><spring:message code="common.filter"/></button>
     </form>
-    <hr/>
+    <hr>
     <a href="meals/create"><spring:message code="meal.add"/></a>
-    <hr/>
+    <hr>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
