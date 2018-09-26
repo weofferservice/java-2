@@ -29,7 +29,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @PostMapping
-    public String saveMeal(HttpServletRequest request) {
+    public String updateOrCreate(HttpServletRequest request) {
         String id = request.getParameter("id");
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
@@ -38,48 +38,39 @@ public class JspMealController extends AbstractMealController {
                 Integer.parseInt(request.getParameter("calories")));
 
         if (meal.isNew()) {
-            create(meal);
+            super.create(meal);
         } else {
-            update(meal, meal.getId());
+            super.update(meal, meal.getId());
         }
         return "redirect:/meals";
     }
 
     @PostMapping("/filter")
-    public String filter(HttpServletRequest request) {
+    public String getBetween(HttpServletRequest request) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
-        request.setAttribute("meals", getBetween(startDate, startTime, endDate, endTime));
+        request.setAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
         return "meals";
     }
 
     @GetMapping("/delete")
-    public String deleteMeal(HttpServletRequest request) {
-        int id = getId(request);
-        delete(id);
+    public String delete(HttpServletRequest request) {
+        super.delete(getId(request));
         return "redirect:/meals";
     }
 
     @GetMapping("/create")
-    public String createMeal(Model model) {
+    public String create(Model model) {
         model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000));
-        model.addAttribute("action", "create");
         return "mealForm";
     }
 
     @GetMapping("/update")
-    public String updateMeal(HttpServletRequest request) {
+    public String update(HttpServletRequest request) {
         request.setAttribute("meal", get(getId(request)));
-        request.setAttribute("action", "update");
         return "mealForm";
-    }
-
-    @GetMapping
-    public String meals(Model model) {
-        model.addAttribute("meals", getAll());
-        return "meals";
     }
 
     private int getId(HttpServletRequest request) {
