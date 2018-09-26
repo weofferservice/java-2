@@ -1,6 +1,9 @@
 package org.zcorp.java2;
 
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
@@ -23,10 +26,16 @@ import static org.zcorp.java2.UserTestData.USER_ID;
 public class SpringMain {
     public static void main(String[] args) {
         // java 7 Automatic resource management
-        try (GenericXmlApplicationContext appCtx = new GenericXmlApplicationContext()) {
-            appCtx.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
+        try (GenericXmlApplicationContext parentAppCtx = new GenericXmlApplicationContext();
+             ConfigurableWebApplicationContext appCtx = new XmlWebApplicationContext()) {
+            parentAppCtx.getEnvironment().setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
             // load вызывается прямо перед refresh(), иначе будет ошибка
-            appCtx.load("spring/spring-app.xml", "spring/spring-db.xml");
+            parentAppCtx.load("spring/spring-app.xml", "spring/spring-db.xml");
+            parentAppCtx.refresh();
+
+            appCtx.setParent(parentAppCtx);
+            appCtx.setServletContext(new MockServletContext());
+            appCtx.setConfigLocation("spring/spring-mvc.xml");
             appCtx.refresh();
 
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
