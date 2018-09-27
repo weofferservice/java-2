@@ -39,6 +39,8 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
 //    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id=?1")
     @Query("SELECT u FROM User u WHERE u.id=?1")
 //    @EntityGraph(User.GRAPH_WITH_MEALS)
+    //https://stackoverflow.com/questions/1995080/hibernate-criteria-returns-children-multiple-times-with-fetchtype-eager/46013654#46013654
+    //@EntityGraph(attributePaths = {"meals", "roles"})
     @EntityGraph(attributePaths = {"meals"})
     User getWithMeals(int id);
 }
