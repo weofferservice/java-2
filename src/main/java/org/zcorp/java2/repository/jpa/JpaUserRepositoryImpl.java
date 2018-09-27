@@ -1,5 +1,6 @@
 package org.zcorp.java2.repository.jpa;
 
+import org.hibernate.jpa.QueryHints;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import org.zcorp.java2.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.List;
 
 @Repository
@@ -41,6 +43,17 @@ public class JpaUserRepositoryImpl implements UserRepository {
                 .setParameter("caloriesPerDay", user.getCaloriesPerDay())
                 .executeUpdate() == 0) {
             return null;
+        } else {
+            Query deleteRoles = em.createNativeQuery("DELETE FROM user_roles r WHERE r.user_id=?1");
+            deleteRoles.setParameter(1, user.getId());
+            deleteRoles.executeUpdate();
+
+            Query insertRoles = em.createNativeQuery("INSERT INTO user_roles (user_id, role) VALUES (:id, :role)");
+            user.getRoles().forEach(role -> {
+                insertRoles.setParameter("id", user.getId())
+                        .setParameter("role", role.name())
+                        .executeUpdate();
+            });
         }
         return user;
     }
@@ -68,6 +81,7 @@ public class JpaUserRepositoryImpl implements UserRepository {
     public User getByEmail(String email) {
         List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter(1, email)
+                .setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false)
                 .getResultList();
         return DataAccessUtils.singleResult(users);
     }

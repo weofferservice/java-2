@@ -3,6 +3,7 @@ package org.zcorp.java2.repository.datajpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
 
@@ -16,17 +17,12 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
     private CrudUserRepository crudRepository;
 
     @Override
+    @Transactional
     public User save(User user) {
-        if (user.isNew()) {
-            return crudRepository.save(user);
-        } else {
-            if (crudRepository.update(
-                    user.getId(), user.getName(), user.getEmail(), user.getPassword(),
-                    user.isEnabled(), user.getRegistered(), user.getCaloriesPerDay()) == 0) {
-                return null;
-            }
-            return user;
+        if (!user.isNew() && get(user.getId()) == null) {
+            return null;
         }
+        return crudRepository.save(user);
     }
 
     @Override
