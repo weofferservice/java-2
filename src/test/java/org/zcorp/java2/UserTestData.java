@@ -22,7 +22,7 @@ public class UserTestData {
         ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ROLE_ADMIN, Role.ROLE_USER);
 
         USER.setMeals(MEALS);
-        ADMIN.setMeals(Arrays.asList(ADMIN_MEAL1, ADMIN_MEAL2));
+        ADMIN.setMeals(Arrays.asList(ADMIN_MEAL2, ADMIN_MEAL1));
     }
 
     public static void assertMatchWithMeals(User actual, User expected) {
