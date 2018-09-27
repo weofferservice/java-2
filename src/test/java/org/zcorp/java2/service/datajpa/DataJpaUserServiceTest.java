@@ -7,7 +7,8 @@ import org.zcorp.java2.model.User;
 import org.zcorp.java2.service.AbstractJpaDataJpaUserServiceTest;
 import org.zcorp.java2.util.exception.NotFoundException;
 
-import static org.zcorp.java2.MealTestData.MEALS;
+import static org.zcorp.java2.MealTestData.ADMIN_MEAL1;
+import static org.zcorp.java2.MealTestData.ADMIN_MEAL2;
 import static org.zcorp.java2.Profiles.DATAJPA;
 import static org.zcorp.java2.UserTestData.*;
 
@@ -17,10 +18,10 @@ public class DataJpaUserServiceTest extends AbstractJpaDataJpaUserServiceTest {
     @Test
     @Override
     public void getWithMeals() {
-        User user = service.getWithMeals(USER_ID);
-//        assertMatchWithMeals(user, USER);
-        assertMatch(user, USER);
-        MealTestData.assertMatch(user.getMeals(), MEALS);
+        User admin = service.getWithMeals(ADMIN_ID);
+//        assertMatchWithMeals(admin, ADMIN);
+        assertMatch(admin, ADMIN);
+        MealTestData.assertMatch(admin.getMeals(), ADMIN_MEAL2, ADMIN_MEAL1);
     }
 
     @Test(expected = NotFoundException.class)
