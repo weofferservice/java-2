@@ -2,15 +2,16 @@ package org.zcorp.java2.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
@@ -21,28 +22,7 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class JdbcUserRepositoryImpl implements UserRepository {
 
-    private static final ResultSetExtractor<List<User>> USER_LIST_RESULT_SET_EXTRACTOR = rs -> {
-        Map<Integer, User> users = new LinkedHashMap<>();
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            User user = users.get(id);
-            if (user == null) {
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                String password = rs.getString("password");
-                boolean enabled = rs.getBoolean("enabled");
-                Date registered = rs.getTimestamp("registered");
-                int caloriesPerDay = rs.getInt("calories_per_day");
-                user = new User(id, name, email, password, caloriesPerDay, enabled, registered, Collections.emptySet());
-                users.put(id, user);
-            }
-            String role = rs.getString("role");
-            if (role != null) {
-                user.getRoles().add(Role.valueOf(role));
-            }
-        }
-        return new ArrayList<>(users.values());
-    };
+    private static final RowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -68,22 +48,20 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-        } else if (namedParameterJdbcTemplate.update(
-                "UPDATE users SET name=:name, email=:email, password=:password, " +
-                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
-            return null;
+            insertRoles(user);
         } else {
-            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+            if (namedParameterJdbcTemplate.update(
+                    "UPDATE users SET name=:name, email=:email, password=:password, " +
+                            "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
+                return null;
+            }
+            // Более правильно, но и более сложно:
+            // 1) получать роли из БД и сравнивать их с теми, что есть в объекте user.
+            // 2) если роли были изменены, то в java высчитываем отличия, и уже тогда делаем нужные delete/insert ролей.
+            // Мы упростим себе задачу, будем удалять все роли и сохранять их заново даже, если они не изменялись
+            deleteRoles(user);
+            insertRoles(user);
         }
-
-        SqlParameterSource[] roles = user.getRoles().stream()
-                .map(role -> new MapSqlParameterSource()
-                        .addValue("role", role.name())
-                        .addValue("user_id", user.getId()))
-                .toArray(MapSqlParameterSource[]::new);
-        namedParameterJdbcTemplate.batchUpdate(
-                "INSERT INTO user_roles (role, user_id) VALUES (:role, :user_id)", roles);
-
         return user;
     }
 
@@ -95,26 +73,62 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     @Override
     public User get(int id) {
-        List<User> users = jdbcTemplate.query(
-                "SELECT u.*, r.role FROM users u LEFT JOIN user_roles r ON u.id=r.user_id WHERE id=?",
-                USER_LIST_RESULT_SET_EXTRACTOR, id);
-        return DataAccessUtils.singleResult(users);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
+        return setRoles(DataAccessUtils.singleResult(users));
     }
 
     @Override
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        List<User> users = jdbcTemplate.query(
-                "SELECT u.*, r.role FROM users u LEFT JOIN user_roles r ON u.id=r.user_id WHERE email=?",
-                USER_LIST_RESULT_SET_EXTRACTOR, email);
-        return DataAccessUtils.singleResult(users);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
+        return setRoles(DataAccessUtils.singleResult(users));
     }
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query(
-                "SELECT u.*, r.role FROM users u LEFT JOIN user_roles r ON u.id=r.user_id ORDER BY u.name, u.email",
-                USER_LIST_RESULT_SET_EXTRACTOR);
+        // Получаем все роли из таблицы user_roles
+        Map<Integer, Set<Role>> roles = new HashMap<>();
+        jdbcTemplate.query("SELECT * FROM user_roles",
+                // RowCallbackHandler (вызывается для каждой строки)
+                rs -> {
+                    roles.computeIfAbsent(rs.getInt("user_id"), userId -> EnumSet.noneOf(Role.class))
+                            .add(Role.valueOf(rs.getString("role")));
+                }
+        );
+
+        // Получаем всех юзеров из таблицы users
+        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+
+        // Не нарушая порядок сортировки юзеров, в каждого юзера загоняем, полученные из таблицы user_roles, роли это юзера
+        users.forEach(user -> user.setRoles(roles.get(user.getId())));
+
+        return users;
+    }
+
+    private void insertRoles(User user) {
+        Set<Role> roles = user.getRoles();
+        if (!CollectionUtils.isEmpty(roles)) {
+            jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", roles, roles.size(),
+                    (ps, role) -> {
+                        ps.setInt(1, user.getId());
+                        ps.setString(2, role.name());
+                    }
+            );
+        }
+    }
+
+    private void deleteRoles(User user) {
+        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+    }
+
+    private User setRoles(User user) {
+        if (user != null) {
+            List<Role> roles = jdbcTemplate.query("SELECT role FROM user_roles WHERE user_id=?",
+                    (rs, rowNum) -> Role.valueOf(rs.getString("role")), // inline RowMapper
+                    user.getId());
+            user.setRoles(roles);
+        }
+        return user;
     }
 
 }
