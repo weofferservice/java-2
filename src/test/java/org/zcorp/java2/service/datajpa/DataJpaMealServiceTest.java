@@ -1,12 +1,13 @@
 package org.zcorp.java2.service.datajpa;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 import org.zcorp.java2.UserTestData;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.AbstractMealServiceTest;
 import org.zcorp.java2.util.exception.NotFoundException;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.zcorp.java2.MealTestData.*;
 import static org.zcorp.java2.Profiles.DATAJPA;
 import static org.zcorp.java2.UserTestData.ADMIN;
@@ -26,8 +27,9 @@ public class DataJpaMealServiceTest extends AbstractMealServiceTest {
 
     @Test
     public void getWithUserNotFound() {
-        thrown.expect(NotFoundException.class);
-        service.getWithUser(MEAL1_ID, ADMIN_ID);
+        assertThrows(
+                NotFoundException.class,
+                () -> service.getWithUser(MEAL1_ID, ADMIN_ID));
     }
 
 }

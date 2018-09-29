@@ -1,7 +1,7 @@
 package org.zcorp.java2.service;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.zcorp.java2.UserTestData.*;
 
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
@@ -24,7 +25,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
     }
@@ -37,9 +38,14 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(service.getAll(), ADMIN, newUser, USER);
     }
 
-    @Test(expected = DataAccessException.class)
+    @Test
     public void createDuplicateMail() throws Exception {
-        service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
+        assertThrows(
+                DataAccessException.class,
+                () -> service.create(
+                        new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER)
+                )
+        );
     }
 
     @Test
@@ -48,9 +54,11 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(service.getAll(), ADMIN);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void deleteNotFound() throws Exception {
-        service.delete(1);
+        assertThrows(
+                NotFoundException.class,
+                () -> service.delete(1));
     }
 
     @Test
@@ -59,9 +67,11 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(user, ADMIN);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void getNotFound() throws Exception {
-        service.get(1);
+        assertThrows(
+                NotFoundException.class,
+                () -> service.get(1));
     }
 
     @Test
@@ -80,11 +90,14 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(service.get(USER_ID), updated);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void updateNotFound() {
         User updated = new User(USER);
         updated.setId(1);
-        service.update(updated);
+        assertThrows(
+                NotFoundException.class,
+                () -> service.update(updated)
+        );
     }
 
     @Test
@@ -93,9 +106,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertMatch(all, ADMIN, USER);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void getWithMeals() {
-        service.getWithMeals(USER_ID);
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> service.getWithMeals(USER_ID)
+        );
     }
 
 }

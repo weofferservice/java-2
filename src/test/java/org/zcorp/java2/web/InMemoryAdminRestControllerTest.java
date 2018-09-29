@@ -1,6 +1,9 @@
 package org.zcorp.java2.web;
 
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -16,13 +19,15 @@ import org.zcorp.java2.web.user.AdminRestController;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.zcorp.java2.UserTestData.ADMIN;
 
 public class InMemoryAdminRestControllerTest {
     private static ConfigurableWebApplicationContext appCtx;
     private static AdminRestController controller;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         ApplicationContext parentAppCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-mock.xml");
         appCtx = new XmlWebApplicationContext();
@@ -34,7 +39,7 @@ public class InMemoryAdminRestControllerTest {
         controller = appCtx.getBean(AdminRestController.class);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         //May cause during JUnit "Cache is not alive (STATUS_SHUTDOWN)" as JUnit share Spring context for speed
         //https://stackoverflow.com/questions/16281802/ehcache-shutdown-causing-an-exception-while-running-test-suite
@@ -43,7 +48,7 @@ public class InMemoryAdminRestControllerTest {
         ((AbstractApplicationContext) appCtx.getParent()).close();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // re-initialize
         InMemoryUserRepositoryImpl repository = appCtx.getBean(InMemoryUserRepositoryImpl.class);
@@ -54,12 +59,14 @@ public class InMemoryAdminRestControllerTest {
     public void delete() throws Exception {
         controller.delete(UserTestData.USER_ID);
         Collection<User> users = controller.getAll();
-        Assert.assertEquals(1, users.size());
-        Assert.assertEquals(ADMIN, users.iterator().next());
+        assertEquals(1, users.size());
+        assertEquals(ADMIN, users.iterator().next());
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void deleteNotFound() throws Exception {
-        controller.delete(10);
+        assertThrows(
+                NotFoundException.class,
+                () -> controller.delete(10));
     }
 }

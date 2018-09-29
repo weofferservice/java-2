@@ -1,7 +1,7 @@
 package org.zcorp.java2.service;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
@@ -16,7 +16,7 @@ public abstract class AbstractJpaDataJpaUserServiceTest extends AbstractUserServ
     @Autowired
     private JpaUtil jpaUtil;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();
