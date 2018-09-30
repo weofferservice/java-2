@@ -26,6 +26,7 @@ public class MealTestData {
     public static final Meal ADMIN_MEAL2;
 
     public static final List<Meal> MEALS;
+    public static final List<Meal> ADMIN_MEALS;
 
     static {
         MEAL1 = new Meal(MEAL1_ID, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);
@@ -38,16 +39,10 @@ public class MealTestData {
         ADMIN_MEAL2 = new Meal(ADMIN_MEAL1_ID + 1, LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500);
 
         MEALS = Arrays.asList(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+        ADMIN_MEALS = Arrays.asList(ADMIN_MEAL2, ADMIN_MEAL1);
 
-        MEAL1.setUser(USER);
-        MEAL2.setUser(USER);
-        MEAL3.setUser(USER);
-        MEAL4.setUser(USER);
-        MEAL5.setUser(USER);
-        MEAL6.setUser(USER);
-
-        ADMIN_MEAL1.setUser(ADMIN);
-        ADMIN_MEAL2.setUser(ADMIN);
+        MEALS.forEach(meal -> meal.setUser(USER));
+        ADMIN_MEALS.forEach(meal -> meal.setUser(ADMIN));
     }
 
     public static Meal getCreated() {

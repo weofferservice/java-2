@@ -10,6 +10,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JacksonObjectMapper extends ObjectMapper {
 
+    private static final ObjectMapper MAPPER = new JacksonObjectMapper();
+
     private JacksonObjectMapper() {
         // Это альтернатива @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE):
         // Сначала отключаем доступ к полям и пропертям
@@ -30,6 +32,10 @@ public class JacksonObjectMapper extends ObjectMapper {
         registerModule(new JavaTimeModule());
         // Просим и LocalDate/Time, и просто Date/Calendar объекты отображаться не как набор цифр, а в читабельном формате
         configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
+
+    public static ObjectMapper getMapper() {
+        return MAPPER;
     }
 
 }
