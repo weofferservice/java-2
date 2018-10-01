@@ -1,6 +1,7 @@
 package org.zcorp.java2.to;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class MealWithExceed {
     private final Integer id;
@@ -14,9 +15,9 @@ public class MealWithExceed {
     private final boolean exceed;
 
     public MealWithExceed(Integer id, LocalDateTime dateTime, String description, int calories, boolean exceed) {
-        this.id = id;
-        this.dateTime = dateTime;
-        this.description = description;
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.dateTime = Objects.requireNonNull(dateTime, "dateTime must not be null");
+        this.description = Objects.requireNonNull(description, "description must not be null");
         this.calories = calories;
         this.exceed = exceed;
     }
@@ -50,5 +51,29 @@ public class MealWithExceed {
                 ", calories=" + calories +
                 ", exceed=" + exceed +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MealWithExceed that = (MealWithExceed) o;
+
+        if (calories != that.calories) return false;
+        if (exceed != that.exceed) return false;
+        if (!id.equals(that.id)) return false;
+        if (!dateTime.equals(that.dateTime)) return false;
+        return description.equals(that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + dateTime.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + calories;
+        result = 31 * result + (exceed ? 1 : 0);
+        return result;
     }
 }
