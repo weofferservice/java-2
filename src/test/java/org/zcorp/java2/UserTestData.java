@@ -1,5 +1,6 @@
 package org.zcorp.java2;
 
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
 
@@ -7,8 +8,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.zcorp.java2.MealTestData.*;
 import static org.zcorp.java2.model.AbstractBaseEntity.START_SEQ;
+import static org.zcorp.java2.web.json.JsonUtil.writeIgnoreProps;
 
 public class UserTestData {
     public static final int USER_ID = START_SEQ;
@@ -38,6 +41,19 @@ public class UserTestData {
                 .isEqualToIgnoringGivenFields(expected, "registered");
     }
 
+    public static User getCreated() {
+        return new User(null, "New", "new@gmail.com", "newPassword", Role.ROLE_USER, Role.ROLE_ADMIN);
+    }
+
+    public static User getUpdated() {
+        User updated = new User(USER);
+        updated.setName("updatedName");
+        updated.setEmail("updatedEmail@ya.ru");
+        updated.setPassword("updatedPassword");
+        updated.setRoles(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));
+        return updated;
+    }
+
     public static void assertMatch(User actual, User expected) {
         assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered", "meals");
     }
@@ -52,5 +68,13 @@ public class UserTestData {
 
     public static void assertMatch(Iterable<User> actual, Iterable<User> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields("registered", "meals").isEqualTo(expected);
+    }
+
+    public static ResultMatcher contentJson(User... expected) {
+        return content().json(writeIgnoreProps(Arrays.asList(expected), "registered", "meals"));
+    }
+
+    public static ResultMatcher contentJson(User expected) {
+        return content().json(writeIgnoreProps(expected, "registered", "meals"));
     }
 }

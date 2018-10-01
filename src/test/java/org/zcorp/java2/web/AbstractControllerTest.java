@@ -12,6 +12,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.zcorp.java2.AllActiveProfileResolver;
 import org.zcorp.java2.repository.JpaUtil;
+import org.zcorp.java2.service.UserService;
 
 import javax.annotation.PostConstruct;
 
@@ -27,6 +28,9 @@ import javax.annotation.PostConstruct;
 //@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @Transactional // используем вместо @Sql
 public abstract class AbstractControllerTest {
+
+    @Autowired
+    protected UserService userService;
 
     @Autowired
     private CacheManager cacheManager;
