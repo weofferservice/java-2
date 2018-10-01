@@ -5,6 +5,8 @@ import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +61,36 @@ public class UserTestData {
     }
 
     public static void assertMatchWithRegisteredField(User actual, User expected) {
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "meals");
+        assertThat(actual)
+                //actual   - это java.sql.Timestamp (дочка java.util.Date)
+                //expected - это java.util.Date
+                /*
+                  AssertJ, когда доходит до поля registered, вызывает метод equals:
+                  1) Если бы он вызывал этот метод у expected-объекта, т.е. у объекта java.util.Date, то AssertJ признал бы объекты равными,
+                     т.к. объект java.util.Date умеет корректно сравнивать себя со своими дочками
+                  2) Но, т.к. на самом деле AssertJ вызывает метод equals у actual-объекта, т.е. у объекта java.sql.Timestamp, то AssertJ
+                     считает, что объекты не равны, т.к. объект java.sql.Timestamp не умеет сравнивать себя со своим родителем java.util.Date
+                     (баг java.sql.Timestamp-а)
+                  Поэтому нужно определить свой компаратор для поля registered
+                 */
+                .usingComparatorForFields(new Comparator<Date>() {
+                    @Override
+                    public int compare(Date actual, Date expected) {
+                        /*
+                          Но и здесь не все так просто:
+                          1) Если вызвать метод compareTo у expected-объекта, т.е. у объекта java.util.Date, то он проводит сравнение
+                             по полю fastTime, которое по задумке авторов объекта java.util.Date хранит Epoch-время, т.е. миллисекунды,
+                             начиная с 1 января 1970 года. Однако сравнение в этом случае пройдет неудачно, т.к. авторы дочернего класса
+                             java.sql.Timestamp сменили концепцию и хранят там тоже Epoch-время, но с точностью до секунды, а не миллисекунды
+                             (может это баг java.sql.Timestamp, а может и баг java.util.Date, т.к. по определению Epoch-времени оно должно
+                             задаваться именно с точностью до секунды, а не миллисекунды, как сделали разработчики класса java.util.Date)
+                          2) Поэтому нужно вызвать метод compareTo у actual-объекта, т.е. у объекта java.sql.Timestamp, т.к. в данном случае
+                             разработчики предусмотрели работу класса java.sql.Timestamp со своим родителем java.util.Date
+                         */
+                        return actual.compareTo(expected);
+                    }
+                }, "registered")
+                .isEqualToIgnoringGivenFields(expected, "meals");
     }
 
     public static void assertMatch(Iterable<User> actual, User... expected) {
