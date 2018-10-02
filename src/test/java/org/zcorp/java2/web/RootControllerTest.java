@@ -1,15 +1,18 @@
 package org.zcorp.java2.web;
 
 import org.junit.jupiter.api.Test;
+import org.zcorp.java2.UserListAssertionMatcher;
 import org.zcorp.java2.util.MealsUtil;
 
-import static org.hamcrest.Matchers.*;
+import java.util.Arrays;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.zcorp.java2.MealTestData.MEALS;
+import static org.zcorp.java2.UserTestData.ADMIN;
 import static org.zcorp.java2.UserTestData.USER;
-import static org.zcorp.java2.model.AbstractBaseEntity.START_SEQ;
 
 public class RootControllerTest extends AbstractControllerTest {
 
@@ -21,12 +24,7 @@ public class RootControllerTest extends AbstractControllerTest {
                 .andExpect(view().name("users"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/users.jsp"))
                 .andExpect(model().attribute("users", hasSize(2)))
-                .andExpect(model().attribute("users", hasItem(
-                        allOf(
-                                hasProperty("id", is(START_SEQ)),
-                                hasProperty("name", is(USER.getName()))
-                        )
-                )));
+                .andExpect(model().attribute("users", new UserListAssertionMatcher(Arrays.asList(ADMIN, USER))));
     }
 
     @Test
