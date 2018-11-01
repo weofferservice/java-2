@@ -21,6 +21,8 @@
 
     <!--<logger name="org.postgresql" level="debug"/>-->
     <!--<logger name="org.springframework.jdbc" level="debug"/>-->
+    <logger name="org.springframework.web" level="debug"/>
+
     <logger name="org.zcorp.java2" level="debug"/>
     <logger name="result" level="info" additivity="false">
         <appender-ref ref="result"/>
