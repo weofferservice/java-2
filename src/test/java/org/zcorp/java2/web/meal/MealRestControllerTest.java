@@ -9,11 +9,11 @@ import org.zcorp.java2.web.AbstractControllerTest;
 import org.zcorp.java2.web.json.JsonUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -87,8 +87,10 @@ public class MealRestControllerTest extends AbstractControllerTest {
         TestUtil.print(
                 mockMvc.perform(
                         get(REST_URL + "filter")
-                                .param("startDateTime", LocalDateTime.of(startDate, startTime).format(ISO_LOCAL_DATE_TIME))
-                                .param("endDateTime", LocalDateTime.of(endDate, endTime).format(ISO_LOCAL_DATE_TIME)))
+                                .param("startDate", startDate.format(ISO_LOCAL_DATE))
+                                .param("endDate", endDate.format(ISO_LOCAL_DATE))
+                                .param("startTime", startTime.format(ISO_LOCAL_TIME))
+                                .param("endTime", endTime.format(ISO_LOCAL_TIME)))
                         .andDo(print()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
