@@ -2,12 +2,10 @@ package org.zcorp.java2;
 
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.zcorp.java2.model.Meal;
-import org.zcorp.java2.to.MealWithExceed;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +14,6 @@ import static org.zcorp.java2.UserTestData.ADMIN;
 import static org.zcorp.java2.UserTestData.USER;
 import static org.zcorp.java2.model.AbstractBaseEntity.START_SEQ;
 import static org.zcorp.java2.web.json.JsonUtil.writeIgnoreProps;
-import static org.zcorp.java2.web.json.JsonUtil.writeValue;
 
 public class MealTestData {
     public static final int MEAL1_ID = START_SEQ + 2;
@@ -76,10 +73,6 @@ public class MealTestData {
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields("user").isEqualTo(expected);
-    }
-
-    public static ResultMatcher contentJson(Collection<MealWithExceed> expected) {
-        return content().json(writeValue(expected));
     }
 
     public static ResultMatcher contentJson(Meal expected) {
