@@ -26,11 +26,11 @@
     </mvc:annotation-driven>
 
     <bean id="conversionService"
-          class="org.springframework.context.support.ConversionServiceFactoryBean">
-        <property name="converters">
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatters">
             <set>
-                <bean class="org.zcorp.java2.util.converters.LocalDateConverter"/>
-                <bean class="org.zcorp.java2.util.converters.LocalTimeConverter"/>
+                <bean class="org.zcorp.java2.web.formatter.DateTimeFormatters.LocalTimeFormatter"/>
+                <bean class="org.zcorp.java2.web.formatter.DateTimeFormatters.LocalDateFormatter"/>
             </set>
         </property>
     </bean>
