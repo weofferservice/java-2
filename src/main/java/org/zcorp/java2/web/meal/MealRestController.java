@@ -16,17 +16,17 @@ import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@RequestMapping(MealRestController.REST_URL)
+@RequestMapping(value = MealRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealRestController extends AbstractMealController {
 
-    static final String REST_URL = "/rest/meals";
+    static final String REST_URL = "/rest/profile/meals";
 
     @Autowired
     public MealRestController(MealService service) {
         super(service);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal) {
         Meal created = super.create(meal);
 
@@ -46,7 +46,7 @@ public class MealRestController extends AbstractMealController {
     }
 
     @Override
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{id}")
     public Meal get(@PathVariable("id") int id) {
         return super.get(id);
     }
@@ -58,7 +58,7 @@ public class MealRestController extends AbstractMealController {
     }
 
     @Override
-    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/filter")
     public List<MealWithExceed> getBetween(@RequestParam(required = false) LocalDate startDate,
                                            @RequestParam(required = false) LocalTime startTime,
                                            @RequestParam(required = false) LocalDate endDate,
@@ -67,7 +67,7 @@ public class MealRestController extends AbstractMealController {
     }
 
     @Override
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<MealWithExceed> getAll() {
         return super.getAll();
     }
