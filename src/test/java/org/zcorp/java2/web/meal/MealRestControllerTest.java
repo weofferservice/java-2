@@ -1,31 +1,32 @@
 package org.zcorp.java2.web.meal;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.zcorp.java2.TestUtil;
 import org.zcorp.java2.model.Meal;
+import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.web.AbstractControllerTest;
 import org.zcorp.java2.web.json.JsonUtil;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
-
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.zcorp.java2.MealTestData.*;
+import static org.zcorp.java2.TestUtil.contentJsonArray;
+import static org.zcorp.java2.TestUtil.contentJsonCollection;
 import static org.zcorp.java2.UserTestData.USER;
 import static org.zcorp.java2.UserTestData.USER_ID;
-import static org.zcorp.java2.util.MealsUtil.getFilteredWithExceeded;
+import static org.zcorp.java2.util.MealsUtil.createWithExceed;
 import static org.zcorp.java2.util.MealsUtil.getWithExceeded;
 
 public class MealRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = MealRestController.REST_URL + '/';
+
+    @Autowired
+    private MealService service;
 
     @Test
     void testCreate() throws Exception {
@@ -45,7 +46,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
         expected.setId(returned.getId());
         assertMatch(returned, expected);
 
-        assertMatch(mealService.getAll(USER_ID), expected, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+        assertMatch(service.getAll(USER_ID), expected, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
     }
 
     @Test
@@ -53,7 +54,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(delete(REST_URL + MEAL1_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertMatch(mealService.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
+        assertMatch(service.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
     }
 
     @Test
@@ -75,26 +76,20 @@ public class MealRestControllerTest extends AbstractControllerTest {
                         .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
                 .andExpect(status().isOk());
-        assertMatch(mealService.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, updated);
+        assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
     @Test
     void testGetBetween() throws Exception {
-        LocalDate startDate = LocalDate.of(2015, Month.MAY, 30);
-        LocalDate endDate = LocalDate.of(2015, Month.MAY, 31);
-        LocalTime startTime = LocalTime.of(12, 0, 0);
-        LocalTime endTime = LocalTime.of(14, 0, 0);
         TestUtil.print(
                 mockMvc.perform(
-                        get(REST_URL + "filter")
-                                .param("startDate", startDate.format(ISO_LOCAL_DATE))
-                                .param("endDate", endDate.format(ISO_LOCAL_DATE))
-                                .param("startTime", startTime.format(ISO_LOCAL_TIME))
-                                .param("endTime", endTime.format(ISO_LOCAL_TIME)))
+                        get(REST_URL + "filter?startDate=2015-05-30&startTime=07:00&endDate=2015-05-31&endTime=11:00"))
                         .andDo(print()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(getFilteredWithExceeded(MEALS, USER.getCaloriesPerDay(), startTime, endTime)));
+                .andExpect(contentJsonArray(
+                        createWithExceed(MEAL4, true),
+                        createWithExceed(MEAL1, false)));
     }
 
     @Test
@@ -104,7 +99,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(getWithExceeded(MEALS, USER.getCaloriesPerDay())));
+                .andExpect(contentJsonCollection(getWithExceeded(MEALS, USER.getCaloriesPerDay())));
     }
 
 }

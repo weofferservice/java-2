@@ -41,7 +41,7 @@ public class MealsUtil {
                 .collect(toList());
     }
 
-    private static MealWithExceed createWithExceed(Meal meal, boolean exceed) {
+    public static MealWithExceed createWithExceed(Meal meal, boolean exceed) {
         return new MealWithExceed(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), exceed);
     }
 
