@@ -31,6 +31,7 @@
             <set>
                 <bean class="org.zcorp.java2.web.formatter.DateTimeFormatters.LocalTimeFormatter"/>
                 <bean class="org.zcorp.java2.web.formatter.DateTimeFormatters.LocalDateFormatter"/>
+                <bean class="org.zcorp.java2.web.formatter.DateTimeFormatters.LocalDateTimeFormatter"/>
             </set>
         </property>
     </bean>
