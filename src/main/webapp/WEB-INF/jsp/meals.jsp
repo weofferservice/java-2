@@ -57,7 +57,7 @@
             <tbody>
             <c:forEach items="${meals}" var="meal">
                 <jsp:useBean id="meal" scope="page" type="org.zcorp.java2.to.MealWithExceed"/>
-                <tr data-mealExceed="${meal.exceed}">
+                <tr data-mealExceed="${meal.exceed}" id="${meal.id}">
                     <td>
                             <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                             <%--<%=DateTimeUtil.toString(meal.getDateTime())%>--%>
@@ -67,7 +67,7 @@
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td><a><span class="fa fa-pencil"></span></a></td>
-                    <td><a class="delete" id="${meal.id}"><span class="fa fa-remove"></span></a></td>
+                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
             </tbody>
