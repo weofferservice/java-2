@@ -13,7 +13,7 @@
 <div class="jumbotron pt-4">
     <div class="container">
         <h3><spring:message code="meal.title"/></h3>
-        <form method="post" action="meals/filter" enctype="application/x-www-form-urlencoded">
+        <form id="filter">
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="startDate" class="col-form-label"><spring:message code="meal.fromdate"/>:</label>
@@ -34,7 +34,7 @@
                     <input type="time" class="form-control" id="endTime" name="endTime" value="${param.endTime}">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" onclick="updateTable()">
                 <spring:message code="common.filter"/>
             </button>
         </form>

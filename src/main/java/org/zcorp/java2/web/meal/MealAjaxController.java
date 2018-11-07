@@ -7,7 +7,9 @@ import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -40,6 +42,15 @@ public class MealAjaxController extends AbstractMealController {
         if (meal.isNew()) {
             super.create(meal);
         }
+    }
+
+    @Override
+    @GetMapping("/filter")
+    public List<MealWithExceed> getBetween(@RequestParam(required = false) LocalDate startDate,
+                                           @RequestParam(required = false) LocalTime startTime,
+                                           @RequestParam(required = false) LocalDate endDate,
+                                           @RequestParam(required = false) LocalTime endTime) {
+        return super.getBetween(startDate, startTime, endDate, endTime);
     }
 
 }

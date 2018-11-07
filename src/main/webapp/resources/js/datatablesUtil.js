@@ -27,10 +27,12 @@ function deleteRow(id) {
     });
 }
 
+function reloadTable(data) {
+    datatableApi.clear().rows.add(data).draw();
+}
+
 function updateTable() {
-    $.get(ajaxUrl, function (data) {
-        datatableApi.clear().rows.add(data).draw();
-    });
+    $.get(ajaxUrl, reloadTable);
 }
 
 function save() {
