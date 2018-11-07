@@ -34,6 +34,9 @@
                     <input type="time" class="form-control" id="endTime" name="endTime" value="${param.endTime}">
                 </div>
             </div>
+            <button type="button" class="btn btn-secondary" onclick="resetFilter()">
+                <spring:message code="common.reset"/>
+            </button>
             <button type="button" class="btn btn-primary" onclick="updateTable()">
                 <spring:message code="common.filter"/>
             </button>
