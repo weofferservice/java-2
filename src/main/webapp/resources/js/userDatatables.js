@@ -1,6 +1,10 @@
 const ajaxUrl = "ajax/admin/users/";
 let datatableApi;
 
+function updateTable() {
+    $.get(ajaxUrl, updateTableByData);
+}
+
 function enable(checkbox) {
     const id = $(checkbox).parents("tr").attr("id");
     const checked = checkbox.checked;

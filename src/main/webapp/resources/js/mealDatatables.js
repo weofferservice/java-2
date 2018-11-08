@@ -6,7 +6,7 @@ function updateTable() {
         url: ajaxUrl + "filter",
         type: "GET",
         data: $("#filter").serialize(),
-        success: reloadTable
+        success: updateTableByData
     });
 }
 
