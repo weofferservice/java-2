@@ -12,7 +12,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <div class="jumbotron pt-4">
     <div class="container">
-        <h3><spring:message code="meal.title"/></h3>
+        <h3 class="text-center"><spring:message code="meal.title"/></h3>
         <form id="filter">
             <div class="form-row">
                 <div class="form-group col-md-4">
