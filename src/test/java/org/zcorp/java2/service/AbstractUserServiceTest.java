@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.zcorp.java2.UserTestData.*;
 
@@ -111,6 +112,20 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertThrows(
                 UnsupportedOperationException.class,
                 () -> service.getWithMeals(USER_ID)
+        );
+    }
+
+    @Test
+    public void enable() {
+        service.enable(USER_ID, !USER.isEnabled());
+        assertEquals(!USER.isEnabled(), service.get(USER_ID).isEnabled());
+    }
+
+    @Test
+    public void enableNotFound() {
+        assertThrows(
+                NotFoundException.class,
+                () -> service.enable(1, false)
         );
     }
 
