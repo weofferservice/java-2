@@ -1,16 +1,15 @@
-var ajaxUrl = "ajax/admin/users/";
-var datatableApi;
+const ajaxUrl = "ajax/admin/users/";
+let datatableApi;
 
 function enable(checkbox) {
-    var id = $(checkbox).parents("tr").attr("id");
-    var checked = checkbox.checked;
+    const id = $(checkbox).parents("tr").attr("id");
+    const checked = checkbox.checked;
     $.ajax({
         url: ajaxUrl + id + "/enable",
         type: "POST",
         data: "enabled=" + checked,
-        success: function () {
-            updateTable();
-        }
+    }).done(function () {
+        updateTable();
     });
 }
 

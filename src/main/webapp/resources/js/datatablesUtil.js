@@ -19,11 +19,10 @@ function add() {
 function deleteRow(id) {
     $.ajax({
         url: ajaxUrl + id,
-        type: "DELETE",
-        success: function () {
-            updateTable();
-            successNoty("Deleted");
-        }
+        type: "DELETE"
+    }).done(function () {
+        updateTable();
+        successNoty("Deleted");
     });
 }
 
@@ -36,20 +35,19 @@ function updateTable() {
 }
 
 function save() {
-    var form = $("#detailsForm");
+    const form = $("#detailsForm");
     $.ajax({
         type: "POST",
         url: ajaxUrl,
-        data: form.serialize(),
-        success: function () {
-            $("#editRow").modal("hide");
-            updateTable();
-            successNoty("Saved");
-        }
+        data: form.serialize()
+    }).done(function () {
+        $("#editRow").modal("hide");
+        updateTable();
+        successNoty("Saved");
     });
 }
 
-var failedNote;
+let failedNote;
 
 function closeNoty() {
     if (failedNote) {

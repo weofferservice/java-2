@@ -1,5 +1,5 @@
-var ajaxUrl = "ajax/profile/meals/";
-var datatableApi;
+const ajaxUrl = "ajax/profile/meals/";
+let datatableApi;
 
 function updateTable() {
     $.ajax({
