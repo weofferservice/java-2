@@ -3,11 +3,21 @@ package org.zcorp.java2.to;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class UserTo extends BaseTo {
+    @NotBlank
+    @Size(min = 2, max = 100)
     private final String name;
 
+    @Email
+    @NotBlank
+    @Size(max = 100)
     private final String email;
 
+    @Size(min = 5, max = 32, message = "length must be between 5 and 32 characters")
     private final String password;
 
     @JsonCreator
