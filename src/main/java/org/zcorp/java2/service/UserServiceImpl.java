@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.repository.UserRepository;
+import org.zcorp.java2.to.UserTo;
+import org.zcorp.java2.util.UserUtil;
 import org.zcorp.java2.util.exception.NotFoundException;
 
 import java.util.List;
@@ -65,6 +67,14 @@ public class UserServiceImpl implements UserService {
     public void update(User user) throws NotFoundException {
         Assert.notNull(user, "user must not be null");
         checkNotFoundWithId(repository.save(user), user.getId());
+    }
+
+    @CacheEvict(value = "users", allEntries = true)
+    @Override
+    @Transactional
+    public void update(UserTo userTo) throws NotFoundException {
+        User user = get(userTo.getId());
+        repository.save(UserUtil.updateFromTo(user, userTo));
     }
 
     @CacheEvict(value = "users", allEntries = true)

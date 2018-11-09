@@ -1,6 +1,7 @@
 package org.zcorp.java2.service;
 
 import org.zcorp.java2.model.User;
+import org.zcorp.java2.to.UserTo;
 import org.zcorp.java2.util.exception.NotFoundException;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface UserService {
     User getByEmail(String email) throws NotFoundException;
 
     void update(User user) throws NotFoundException;
+
+    void update(UserTo user) throws NotFoundException;
 
     List<User> getAll();
 
