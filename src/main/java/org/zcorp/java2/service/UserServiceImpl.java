@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     public void enable(int id, boolean enabled) throws NotFoundException {
         User user = get(id);
         user.setEnabled(enabled);
-        update(user);
+        repository.save(user);  // !! need only for JDBC implementation
     }
 
 }
