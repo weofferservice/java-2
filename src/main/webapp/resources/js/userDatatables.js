@@ -5,15 +5,19 @@ function updateTable() {
     $.get(ajaxUrl, updateTableByData);
 }
 
-function enable(checkbox) {
-    const id = $(checkbox).parents("tr").attr("id");
+function enable(checkbox, id) {
     const checked = checkbox.checked;
+    // https://stackoverflow.com/questions/22213495/jquery-post-done-and-success/22213543#22213543
     $.ajax({
-        url: ajaxUrl + id + "/enable",
+        url: ajaxUrl + id,
         type: "POST",
         data: "enabled=" + checked,
     }).done(function () {
         updateTable();
+        $(checkbox).closest("tr").attr("data-userEnabled", checked);
+        successNoty(checked ? "Enabled" : "Disabled");
+    }).fail(function () {
+        $(checkbox).prop("checked", !checked);
     });
 }
 
