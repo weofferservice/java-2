@@ -1,5 +1,8 @@
 package org.zcorp.java2.to;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserTo extends BaseTo {
     private final String name;
 
@@ -7,7 +10,11 @@ public class UserTo extends BaseTo {
 
     private final String password;
 
-    public UserTo(Integer id, String name, String email, String password) {
+    @JsonCreator
+    public UserTo(@JsonProperty("id") Integer id,
+                  @JsonProperty("name") String name,
+                  @JsonProperty("email") String email,
+                  @JsonProperty("password") String password) {
         super(id);
         this.name = name;
         this.email = email;

@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.zcorp.java2.TestUtil;
 import org.zcorp.java2.model.User;
+import org.zcorp.java2.to.UserTo;
+import org.zcorp.java2.util.UserUtil;
 import org.zcorp.java2.web.AbstractControllerTest;
 import org.zcorp.java2.web.json.JsonUtil;
 
@@ -36,14 +38,14 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        User updated = getUpdated();
+        UserTo updatedTo = getUpdatedTo();
         mockMvc.perform(
                 put(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.writeValue(updated)))
+                        .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
                 .andExpect(status().isOk());
-        assertMatchWithRegisteredField(userService.get(USER_ID), updated);
+        assertMatch(userService.get(USER_ID), UserUtil.updateFromTo(new User(USER), updatedTo));
     }
 
 }

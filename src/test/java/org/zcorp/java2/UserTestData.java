@@ -3,6 +3,7 @@ package org.zcorp.java2;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
+import org.zcorp.java2.to.UserTo;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -55,6 +56,10 @@ public class UserTestData {
         updated.setPassword("updatedPassword");
         updated.setRoles(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));
         return updated;
+    }
+
+    public static UserTo getUpdatedTo() {
+        return new UserTo(USER_ID, "updatedName", "updatedEmail@ya.ru", "updatedPassword");
     }
 
     public static void assertMatch(User actual, User expected) {
