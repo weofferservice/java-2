@@ -1,6 +1,6 @@
 package org.zcorp.java2.web;
 
-import static org.zcorp.java2.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
+import static org.zcorp.java2.util.UserUtil.DEFAULT_CALORIES_PER_DAY;
 import static org.zcorp.java2.model.AbstractBaseEntity.START_SEQ;
 
 public class SecurityUtil {
