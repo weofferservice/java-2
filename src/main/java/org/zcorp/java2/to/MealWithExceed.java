@@ -3,9 +3,7 @@ package org.zcorp.java2.to;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class MealWithExceed {
-    private final Integer id;
-
+public class MealWithExceed extends BaseTo {
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -15,15 +13,11 @@ public class MealWithExceed {
     private final boolean exceed;
 
     public MealWithExceed(Integer id, LocalDateTime dateTime, String description, int calories, boolean exceed) {
-        this.id = Objects.requireNonNull(id, "id must not be null");
+        super(id);
         this.dateTime = Objects.requireNonNull(dateTime, "dateTime must not be null");
         this.description = Objects.requireNonNull(description, "description must not be null");
         this.calories = calories;
         this.exceed = exceed;
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public LocalDateTime getDateTime() {
