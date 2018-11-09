@@ -11,8 +11,8 @@ function updateTable() {
 }
 
 function resetFilter() {
-    $("#filter").find(":input").val("");
-    updateTable();
+    $("#filter")[0].reset();
+    $.get(ajaxUrl, updateTableByData);
 }
 
 $(function () {

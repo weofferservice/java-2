@@ -40,7 +40,8 @@
                 </form>
             </div>
             <div class="card-footer text-right">
-                <button type="button" class="btn btn-secondary" onclick="resetFilter()">
+                <button type="button" class="btn btn-danger" onclick="resetFilter()">
+                    <span class="fa fa-remove"></span>
                     <spring:message code="common.reset"/>
                 </button>
                 <button type="button" class="btn btn-primary" onclick="updateTable()">
