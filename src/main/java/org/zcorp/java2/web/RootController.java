@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.zcorp.java2.service.MealService;
-import org.zcorp.java2.service.UserService;
 import org.zcorp.java2.util.MealsUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +15,6 @@ import static org.zcorp.java2.web.SecurityUtil.*;
 @Controller
 public class RootController {
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private MealService mealService;
 
     @GetMapping("/")
@@ -27,8 +23,7 @@ public class RootController {
     }
 
     @GetMapping("/users")
-    public String users(Model model) {
-        model.addAttribute("users", userService.getAll());
+    public String users() {
         return "users";
     }
 

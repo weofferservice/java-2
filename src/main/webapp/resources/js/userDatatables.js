@@ -24,6 +24,10 @@ function enable(checkbox, id) {
 // $(document).ready(function () {
 $(function () {
     datatableApi = $("#datatable").DataTable({
+        "ajax": {
+            "url": ajaxUrl,
+            "dataSrc": ""
+        },
         "paging": false,
         "info": true,
         "columns": [
@@ -31,24 +35,44 @@ $(function () {
                 "data": "name"
             },
             {
-                "data": "email"
+                "data": "email",
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        return "<a href='mailto:" + data + "'>" + data + "</a>";
+                    }
+                    return data;
+                }
             },
             {
                 "data": "roles"
             },
             {
-                "data": "enabled"
+                "data": "enabled",
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        return "<input type='checkbox' " + (data ? "checked" : "") + " onclick='enable(this, " + row.id + ")'>";
+                    }
+                    return data;
+                }
             },
             {
-                "data": "registered"
+                "data": "registered",
+                "render": function (date, type, row) {
+                    if (type === "display") {
+                        return date.substring(0, 10);
+                    }
+                    return date;
+                }
             },
             {
-                "defaultContent": "Edit",
-                "orderable": false
+                "defaultContent": "",
+                "orderable": false,
+                "render": renderEditBtn
             },
             {
-                "defaultContent": "Delete",
-                "orderable": false
+                "defaultContent": "",
+                "orderable": false,
+                "render": renderDeleteBtn
             }
         ],
         "order": [
@@ -56,7 +80,12 @@ $(function () {
                 0,
                 "asc"
             ]
-        ]
+        ],
+        "createdRow": function (row, data, dataIndex) {
+            if (!data.enabled) {
+                $(row).attr("data-userEnabled", false);
+            }
+        },
+        "initComplete": makeEditable
     });
-    makeEditable();
 });
