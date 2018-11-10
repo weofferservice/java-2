@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.util.MealsUtil;
 
-import javax.servlet.http.HttpServletRequest;
-
-import static org.zcorp.java2.web.SecurityUtil.*;
+import static org.zcorp.java2.web.SecurityUtil.authUserCaloriesPerDay;
+import static org.zcorp.java2.web.SecurityUtil.authUserId;
 
 @Controller
 public class RootController {
@@ -19,19 +17,17 @@ public class RootController {
 
     @GetMapping("/")
     public String root() {
-        return "index";
+        return "redirect:meals";
+    }
+
+    @GetMapping(value = "/login")
+    public String login() {
+        return "login";
     }
 
     @GetMapping("/users")
     public String users() {
         return "users";
-    }
-
-    @PostMapping("/users")
-    public String setUser(HttpServletRequest request) {
-        int userId = Integer.valueOf(request.getParameter("userId"));
-        setAuthUserId(userId);
-        return "redirect:meals";
     }
 
     @GetMapping("/meals")
