@@ -59,7 +59,7 @@ public class UserTestData {
     }
 
     public static UserTo getUpdatedTo() {
-        return new UserTo(USER_ID, "updatedName", "updatedEmail@ya.ru", "updatedPassword");
+        return new UserTo(USER_ID, "updatedName", "updatedEmail@ya.ru", "updatedPassword", 1500);
     }
 
     public static void assertMatch(User actual, User expected) {
