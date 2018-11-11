@@ -1,22 +1,34 @@
 package org.zcorp.java2.web;
 
-import static org.zcorp.java2.util.UserUtil.DEFAULT_CALORIES_PER_DAY;
-import static org.zcorp.java2.model.AbstractBaseEntity.START_SEQ;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.zcorp.java2.AuthorizedUser;
+
+import java.util.Objects;
 
 public class SecurityUtil {
 
-    private static int authUserId = START_SEQ;
+    private static AuthorizedUser safeGet() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return null;
+        }
+        Object principal = auth.getPrincipal();
+        return (principal instanceof AuthorizedUser) ? (AuthorizedUser) principal : null;
+    }
+
+    private static AuthorizedUser get() {
+        AuthorizedUser user = safeGet();
+        Objects.requireNonNull(user, "Not authorized user found");
+        return user;
+    }
 
     public static int authUserId() {
-        return authUserId;
+        return get().getUserTo().getId();
     }
 
     public static int authUserCaloriesPerDay() {
-        return DEFAULT_CALORIES_PER_DAY;
-    }
-
-    public static void setAuthUserId(int userId) {
-        authUserId = userId;
+        return get().getUserTo().getCaloriesPerDay();
     }
 
 }
