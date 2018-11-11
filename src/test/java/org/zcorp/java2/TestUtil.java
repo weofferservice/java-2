@@ -1,8 +1,11 @@
 package org.zcorp.java2;
 
 import org.slf4j.Logger;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.zcorp.java2.model.User;
 import org.zcorp.java2.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -39,6 +42,11 @@ public class TestUtil {
 
     public static <T> ResultMatcher contentJsonCollection(Collection<T> expected) {
         return contentJson(expected);
+    }
+
+    public static void mockAuthorize(User user) {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(new AuthorizedUser(user), null, user.getRoles()));
     }
 
 }

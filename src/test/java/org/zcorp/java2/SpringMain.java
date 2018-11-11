@@ -8,7 +8,6 @@ import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.to.MealWithExceed;
-import org.zcorp.java2.web.SecurityUtil;
 import org.zcorp.java2.web.meal.MealRestController;
 import org.zcorp.java2.web.user.AdminRestController;
 
@@ -20,8 +19,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.zcorp.java2.UserTestData.ADMIN_ID;
-import static org.zcorp.java2.UserTestData.USER_ID;
+import static org.zcorp.java2.TestUtil.mockAuthorize;
+import static org.zcorp.java2.UserTestData.ADMIN;
+import static org.zcorp.java2.UserTestData.USER;
 
 public class SpringMain {
     public static void main(String[] args) {
@@ -46,7 +46,7 @@ public class SpringMain {
             System.out.println(user);
             System.out.println();
 
-            SecurityUtil.setAuthUserId(USER_ID);
+            mockAuthorize(USER);
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             List<MealWithExceed> filteredMealsWithExceeded = mealRestController.getBetween(
                     LocalDate.of(2015, Month.MAY, 30), LocalTime.of(7, 0),
@@ -60,7 +60,7 @@ public class SpringMain {
             System.out.println(meal);
             System.out.println();
 
-            SecurityUtil.setAuthUserId(ADMIN_ID);
+            mockAuthorize(ADMIN);
             Meal newMeal = new Meal(meal.getId(), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "Еда", 1000);
             mealRestController.update(newMeal, newMeal.getId());
         }
