@@ -16,6 +16,8 @@ import org.zcorp.java2.service.UserService;
 
 import javax.annotation.PostConstruct;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+
 //@ExtendWith(SpringExtension.class)
 //@WebAppConfiguration
 //@ContextConfiguration
@@ -63,6 +65,7 @@ public abstract class AbstractControllerTest {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .addFilter(CHARACTER_ENCODING_FILTER)
+                .apply(springSecurity())
                 .build();
     }
 
