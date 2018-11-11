@@ -12,6 +12,7 @@ import org.zcorp.java2.web.json.JsonUtil;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.zcorp.java2.TestUtil.userHttpBasic;
 import static org.zcorp.java2.UserTestData.*;
 
 public class AdminRestControllerTest extends AbstractControllerTest {
@@ -21,7 +22,9 @@ public class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     public void testGet() throws Exception {
         TestUtil.print(
-                mockMvc.perform(get(REST_URL + ADMIN_ID))
+                mockMvc.perform(
+                        get(REST_URL + ADMIN_ID)
+                                .with(userHttpBasic(ADMIN)))
                         .andDo(print()))
                 .andExpect(status().isOk())
                 //https://jira.spring.io/browse/SPR-14472
@@ -33,7 +36,9 @@ public class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     public void testGetByEmail() throws Exception {
         TestUtil.print(
-                mockMvc.perform(get(REST_URL + "by?email=" + USER.getEmail()))
+                mockMvc.perform(
+                        get(REST_URL + "by?email=" + USER.getEmail())
+                                .with(userHttpBasic(ADMIN)))
                         .andDo(print()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -42,10 +47,28 @@ public class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     public void testDelete() throws Exception {
-        mockMvc.perform(delete(REST_URL + USER_ID))
+        mockMvc.perform(
+                delete(REST_URL + USER_ID)
+                        .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertMatch(userService.getAll(), ADMIN);
+    }
+
+    @Test
+    public void testGetAllUnAuth() throws Exception {
+        mockMvc.perform(get(REST_URL))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testGetAllForbidden() throws Exception {
+        mockMvc.perform(
+                get(REST_URL)
+                        .with(userHttpBasic(USER)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -54,7 +77,8 @@ public class AdminRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(
                 put(REST_URL + USER_ID)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.writeValue(updated)))
+                        .content(JsonUtil.writeValue(updated))
+                        .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -68,7 +92,8 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 mockMvc.perform(
                         post(REST_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(JsonUtil.writeValue(expected)))
+                                .content(JsonUtil.writeValue(expected))
+                                .with(userHttpBasic(ADMIN)))
                         .andDo(print()))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
@@ -87,7 +112,9 @@ public class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     public void testGetAll() throws Exception {
         TestUtil.print(
-                mockMvc.perform(get(REST_URL))
+                mockMvc.perform(
+                        get(REST_URL)
+                                .with(userHttpBasic(ADMIN)))
                         .andDo(print()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
