@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java2.zcorp.org/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%--<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>--%>
+
 <!DOCTYPE html>
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
@@ -65,21 +63,6 @@
                 </tr>
             </thead>
             <tbody>
-            <c:forEach items="${meals}" var="meal">
-                <jsp:useBean id="meal" type="org.zcorp.java2.to.MealWithExceed"/>
-                <tr data-mealExceed="${meal.exceed}">
-                    <td>
-                            <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
-                            <%--<%=DateTimeUtil.toString(meal.getDateTime())%>--%>
-                            <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
-                            ${fn:formatDateTime(meal.dateTime)}
-                    </td>
-                    <td>${meal.description}</td>
-                    <td>${meal.calories}</td>
-                    <td><a onclick="updateRow(${meal.id})"><span class="fa fa-pencil"></span></a></td>
-                    <td><a onclick="deleteRow(${meal.id})"><span class="fa fa-remove"></span></a></td>
-                </tr>
-            </c:forEach>
             </tbody>
         </table>
     </div>

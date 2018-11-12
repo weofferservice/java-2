@@ -1,6 +1,10 @@
 const ajaxUrl = "ajax/profile/meals/";
 let datatableApi;
 
+function correctDatePart(datePart) {
+    return datePart < 10 ? "0" + datePart : datePart;
+}
+
 function updateTable() {
     $.ajax({
         url: ajaxUrl + "filter",
@@ -17,11 +21,27 @@ function resetFilter() {
 
 $(function () {
     datatableApi = $("#datatable").DataTable({
+        "ajax": {
+            "url": ajaxUrl,
+            "dataSrc": ""
+        },
         "paging": false,
         "info": true,
         "columns": [
             {
-                "data": "dateTime"
+                "data": "dateTime",
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        const date = new Date(data);
+                        const year = date.getFullYear();
+                        const month = correctDatePart(date.getMonth() + 1);
+                        const day = correctDatePart(date.getDate());
+                        const hours = correctDatePart(date.getHours());
+                        const minutes = correctDatePart(date.getMinutes());
+                        return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+                    }
+                    return data;
+                }
             },
             {
                 "data": "description"
@@ -30,12 +50,14 @@ $(function () {
                 "data": "calories"
             },
             {
-                "defaultContent": "Edit",
-                "orderable": false
+                "defaultContent": "",
+                "orderable": false,
+                "render": renderEditBtn
             },
             {
-                "defaultContent": "Delete",
-                "orderable": false
+                "defaultContent": "",
+                "orderable": false,
+                "render": renderDeleteBtn
             }
         ],
         "order": [
@@ -43,7 +65,10 @@ $(function () {
                 0,
                 "desc"
             ]
-        ]
+        ],
+        "createdRow": function (row, data, dataIndex) {
+            $(row).attr("data-mealExceed", data.exceed);
+        },
+        "initComplete": makeEditable
     });
-    makeEditable();
 });

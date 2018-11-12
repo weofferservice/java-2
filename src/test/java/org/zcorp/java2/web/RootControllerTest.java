@@ -1,13 +1,10 @@
 package org.zcorp.java2.web;
 
 import org.junit.jupiter.api.Test;
-import org.zcorp.java2.util.MealsUtil;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.zcorp.java2.MealTestData.MEALS;
 import static org.zcorp.java2.TestUtil.userAuth;
 import static org.zcorp.java2.UserTestData.ADMIN;
 import static org.zcorp.java2.UserTestData.USER;
@@ -41,9 +38,7 @@ public class RootControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
-                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
-                .andExpect(model().attribute("meals", hasSize(6)))
-                .andExpect(model().attribute("meals", MealsUtil.getWithExceeded(MEALS, USER.getCaloriesPerDay())));
+                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"));
     }
 
 }
