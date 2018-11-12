@@ -1,5 +1,23 @@
 let form;
 
+function padStartDatePart(datePart) {
+    return datePart < 10 ? "0" + datePart : datePart;
+}
+
+function reformatDateTimeFromISO(dateTimeString, isTableRender) {
+    const date = new Date(dateTimeString);
+    const year = date.getFullYear();
+    const month = padStartDatePart(date.getMonth() + 1);
+    const day = padStartDatePart(date.getDate());
+    const hours = padStartDatePart(date.getHours());
+    const minutes = padStartDatePart(date.getMinutes());
+    if (isTableRender) {
+        return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+    } else {
+        return day + "." + month + "." + year + " " + hours + ":" + minutes;
+    }
+}
+
 function makeEditable() {
     form = $('#detailsForm');
 
@@ -8,7 +26,18 @@ function makeEditable() {
     });
 
     // solve problem with cache in IE: https://stackoverflow.com/questions/4303829/how-to-prevent-a-jquery-ajax-request-from-caching-in-internet-explorer/4303862#4303862
-    $.ajaxSetup({cache: false});
+    $.ajaxSetup({
+        cache: false,
+        converters: {
+            "text json": function (text) {
+                const json = JSON.parse(text);
+                if (json.dateTime) {
+                    json.dateTime = reformatDateTimeFromISO(json.dateTime, false);
+                }
+                return json;
+            }
+        }
+    });
 }
 
 function add() {
