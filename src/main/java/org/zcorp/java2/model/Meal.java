@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -29,17 +30,18 @@ public class Meal extends AbstractBaseEntity {
 //    public static final String UPDATE = "Meal.update";
 
     @Column(name = "date_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
-    @NotNull
+    @NotNull(groups = {HttpRequestParamsValidationGroup.class, Default.class})
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
-    @NotBlank
-    @Size(min = 2, max = 120)
+    @NotBlank(groups = {HttpRequestParamsValidationGroup.class, Default.class})
+    @Size(min = 2, max = 120, groups = {HttpRequestParamsValidationGroup.class, Default.class})
     private String description;
 
     @Column(name = "calories", nullable = false, columnDefinition = "INTEGER DEFAULT 1000")
-    @Range(min = 10, max = 5000)
-    private int calories;
+    @NotNull(groups = {HttpRequestParamsValidationGroup.class, Default.class})
+    @Range(min = 10, max = 5000, groups = {HttpRequestParamsValidationGroup.class, Default.class})
+    private Integer calories;
 
     // 1) Говорим Hibernate-у, что у нас в БД стоит ON DELETE CASCADE, а значит при удалении родителя (user) будут
     // автоматически удалены дети (meals). Это знание HIbernate использует, чтобы обновить кэш 2-го уровня.
@@ -58,11 +60,11 @@ public class Meal extends AbstractBaseEntity {
         this(m.getId(), m.getDateTime(), m.getDescription(), m.getCalories());
     }
 
-    public Meal(LocalDateTime dateTime, String description, int calories) {
+    public Meal(LocalDateTime dateTime, String description, Integer calories) {
         this(null, dateTime, description, calories);
     }
 
-    public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
+    public Meal(Integer id, LocalDateTime dateTime, String description, Integer calories) {
         super(id);
         Objects.requireNonNull(dateTime, "dateTime must not be null");
         Objects.requireNonNull(description, "description must not be null");
@@ -99,7 +101,7 @@ public class Meal extends AbstractBaseEntity {
         this.description = description;
     }
 
-    public void setCalories(int calories) {
+    public void setCalories(Integer calories) {
         this.calories = calories;
     }
 
@@ -119,5 +121,8 @@ public class Meal extends AbstractBaseEntity {
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
                 '}';
+    }
+
+    public interface HttpRequestParamsValidationGroup {
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.service.UserService;
 import org.zcorp.java2.to.UserTo;
+import org.zcorp.java2.web.AbstractController;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.zcorp.java2.util.ValidationUtil.assureIdConsistent;
 import static org.zcorp.java2.util.ValidationUtil.checkNew;
 
-public abstract class AbstractUserController {
+public abstract class AbstractUserController extends AbstractController {
     protected final Logger log = getLogger(getClass());
 
     @Autowired
