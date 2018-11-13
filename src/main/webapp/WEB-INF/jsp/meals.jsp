@@ -14,26 +14,24 @@
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
         <%--https://getbootstrap.com/docs/4.1/components/card/--%>
         <div class="card">
-            <div class="card-body py-0 border">
-                <form id="filter" class="my-0">
+            <div class="card-body pb-0">
+                <form id="filter">
                     <div class="row">
-                        <div class="offset-2 col-6">
-                            <div class="form-group">
-                                <label for="startDate" class="col-form-label"><spring:message code="meal.fromdate"/>:</label>
-                                <input type="text" class="form-control col-6" id="startDate" name="startDate">
-
-                                <label for="endDate" class="col-form-label"><spring:message code="meal.todate"/>:</label>
-                                <input type="text" class="form-control col-6" id="endDate" name="endDate">
-                            </div>
+                        <div class="offset-1 col-2">
+                            <label for="startDate"><spring:message code="meal.fromdate"/></label>
+                            <input type="text" class="form-control" id="startDate" name="startDate">
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label for="startTime" class="col-form-label"><spring:message code="meal.fromtime"/>:</label>
-                                <input type="text" class="form-control col-6" id="startTime" name="startTime">
-
-                                <label for="endTime" class="col-form-label"><spring:message code="meal.totime"/>:</label>
-                                <input type="text" class="form-control col-6" id="endTime" name="endTime">
-                            </div>
+                        <div class="col-2">
+                            <label for="endDate"><spring:message code="meal.todate"/></label>
+                            <input type="text" class="form-control" id="endDate" name="endDate">
+                        </div>
+                        <div class="offset-2 col-2">
+                            <label for="startTime"><spring:message code="meal.fromtime"/></label>
+                            <input type="text" class="form-control" id="startTime" name="startTime">
+                        </div>
+                        <div class="col-2">
+                            <label for="endTime"><spring:message code="meal.totime"/></label>
+                            <input type="text" class="form-control" id="endTime" name="endTime">
                         </div>
                     </div>
                 </form>
