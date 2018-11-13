@@ -4,18 +4,14 @@ function padStartDatePart(datePart) {
     return datePart < 10 ? "0" + datePart : datePart;
 }
 
-function reformatDateTimeFromISO(dateTimeString, isTableRender) {
+function reformatDateTimeFromISO(dateTimeString) {
     const date = new Date(dateTimeString);
     const year = date.getFullYear();
     const month = padStartDatePart(date.getMonth() + 1);
     const day = padStartDatePart(date.getDate());
     const hours = padStartDatePart(date.getHours());
     const minutes = padStartDatePart(date.getMinutes());
-    if (isTableRender) {
-        return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
-    } else {
-        return day + "." + month + "." + year + " " + hours + ":" + minutes;
-    }
+    return day + "." + month + "." + year + " " + hours + ":" + minutes;
 }
 
 function makeEditable() {
@@ -32,7 +28,7 @@ function makeEditable() {
             "text json": function (text) {
                 const json = JSON.parse(text);
                 if (json.dateTime) {
-                    json.dateTime = reformatDateTimeFromISO(json.dateTime, false);
+                    json.dateTime = reformatDateTimeFromISO(json.dateTime);
                 }
                 return json;
             }

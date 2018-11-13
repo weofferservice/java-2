@@ -55,11 +55,11 @@ $(function () {
         "columns": [
             {
                 "data": "dateTime",
-                "render": function (data, type, row) {
+                "render": function (date, type, row) {
                     if (type === "display") {
-                        return reformatDateTimeFromISO(data, true);
+                        return date.substr(0, 16).replace('T', ' ');
                     }
-                    return data;
+                    return date;
                 }
             },
             {
