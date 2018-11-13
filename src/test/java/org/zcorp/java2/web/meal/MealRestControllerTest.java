@@ -87,7 +87,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                         .content(JsonUtil.writeValue(updated))
                         .with(userHttpBasic(USER)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 

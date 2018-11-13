@@ -80,7 +80,7 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                         .content(JsonUtil.writeValue(updated))
                         .with(userHttpBasic(ADMIN)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertMatchWithRegisteredField(userService.get(USER_ID), updated);
     }

@@ -53,6 +53,7 @@ public class MealRestController extends AbstractMealController {
 
     @Override
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody Meal meal, @PathVariable("id") int id) {
         super.update(meal, id);
     }
