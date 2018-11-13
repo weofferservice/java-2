@@ -11,6 +11,7 @@ import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.model.Meal.HttpRequestParamsValidationGroup;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
+import org.zcorp.java2.util.ValidationUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -47,7 +48,7 @@ public class MealAjaxController extends AbstractMealController {
     @PostMapping
     public ResponseEntity<String> createOrUpdate(@Validated(HttpRequestParamsValidationGroup.class) Meal meal, BindingResult result) {
         if (result.hasErrors()) {
-            return createErrorResponse(result);
+            return ValidationUtil.createErrorResponse(result);
         }
         if (meal.isNew()) {
             super.create(meal);

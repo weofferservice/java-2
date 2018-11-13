@@ -6,7 +6,6 @@ import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
 import org.zcorp.java2.util.DateTimeUtil;
 import org.zcorp.java2.util.MealsUtil;
-import org.zcorp.java2.web.AbstractController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,7 +18,7 @@ import static org.zcorp.java2.util.ValidationUtil.checkNew;
 import static org.zcorp.java2.web.SecurityUtil.authUserCaloriesPerDay;
 import static org.zcorp.java2.web.SecurityUtil.authUserId;
 
-public abstract class AbstractMealController extends AbstractController {
+public abstract class AbstractMealController {
     private final Logger log = getLogger(getClass());
 
     private final MealService service;
