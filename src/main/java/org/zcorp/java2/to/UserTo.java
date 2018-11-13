@@ -10,6 +10,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+import static org.zcorp.java2.util.UserUtil.DEFAULT_CALORIES_PER_DAY;
+
 public class UserTo extends BaseTo implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +41,7 @@ public class UserTo extends BaseTo implements Serializable {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.caloriesPerDay = caloriesPerDay;
+        this.caloriesPerDay = caloriesPerDay != null ? caloriesPerDay : DEFAULT_CALORIES_PER_DAY;
     }
 
     public String getPassword() {
