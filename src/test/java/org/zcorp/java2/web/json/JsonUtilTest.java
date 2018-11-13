@@ -10,6 +10,9 @@ import org.zcorp.java2.model.User;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.zcorp.java2.MealTestData.*;
 import static org.zcorp.java2.UserTestData.ADMIN;
@@ -64,6 +67,14 @@ public class JsonUtilTest {
         UserTestData.assertMatch(users, expected);
         MealTestData.assertMatch(users.get(0).getMeals(), MEALS);
         MealTestData.assertMatch(users.get(1).getMeals(), ADMIN_MEALS);
+    }
+
+    @Test
+    public void testWriteWithView() {
+        String json = JsonUtil.writeValue(ADMIN_MEAL1, View.JsonUI.class);
+        log.info("jsonMeal =\n" + json);
+        assertThat(json, containsString("\"dateTimeUI\":"));
+        assertThat(json, not(containsString("\"dateTime\":")));
     }
 
 }
