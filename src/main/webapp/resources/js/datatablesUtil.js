@@ -1,19 +1,5 @@
 let form;
 
-function padStartDatePart(datePart) {
-    return datePart < 10 ? "0" + datePart : datePart;
-}
-
-function reformatDateTimeFromISO(dateTimeString) {
-    const date = new Date(dateTimeString);
-    const year = date.getFullYear();
-    const month = padStartDatePart(date.getMonth() + 1);
-    const day = padStartDatePart(date.getDate());
-    const hours = padStartDatePart(date.getHours());
-    const minutes = padStartDatePart(date.getMinutes());
-    return day + "." + month + "." + year + " " + hours + ":" + minutes;
-}
-
 function makeEditable() {
     form = $('#detailsForm');
 
@@ -22,18 +8,7 @@ function makeEditable() {
     });
 
     // solve problem with cache in IE: https://stackoverflow.com/questions/4303829/how-to-prevent-a-jquery-ajax-request-from-caching-in-internet-explorer/4303862#4303862
-    $.ajaxSetup({
-        cache: false,
-        converters: {
-            "text json": function (text) {
-                const json = JSON.parse(text);
-                if (json.dateTime) {
-                    json.dateTime = reformatDateTimeFromISO(json.dateTime);
-                }
-                return json;
-            }
-        }
-    });
+    $.ajaxSetup({cache: false});
 }
 
 function add() {
@@ -46,10 +21,16 @@ function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
-            form.find("input[name='" + key + "']").val(value);
+            form.find("input[name='" + key + "']").val(
+                key === "dateTime" ? formatDate(value) : value
+            );
         });
         $('#editRow').modal();
     });
+}
+
+function formatDate(date) {
+    return date.substr(0, 16).replace('T', ' ');
 }
 
 function deleteRow(id) {

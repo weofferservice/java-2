@@ -8,7 +8,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
 
     // PostgreSQL doesn't support LocalDate.MIN/MAX
     // TODO учесть эту особенность не только при выборке данных, но и при создании/обновлении

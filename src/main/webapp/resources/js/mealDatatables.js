@@ -1,40 +1,11 @@
 const ajaxUrl = "ajax/profile/meals/";
 let datatableApi;
 
-function reformatDateTimeToISO(dateTimeString) {
-    if (dateTimeString === "") {
-        return "";
-    }
-    const dateTimeParts = dateTimeString.split(" ");
-    const date = reformatDateToISO(dateTimeParts[0]);
-    const time = dateTimeParts[1];
-    return date + "T" + time;
-}
-
-function reformatDateToISO(dateString) {
-    if (dateString === "") {
-        return "";
-    }
-    const dateParts = dateString.split(".");
-    const year = dateParts[2];
-    const month = dateParts[1];
-    const day = dateParts[0];
-    return year + "-" + month + "-" + day;
-}
-
-function serializeFilterData() {
-    const startDate = reformatDateToISO($("#startDate").val());
-    const endDate = reformatDateToISO($("#endDate").val());
-    const startTime = $("#startTime").val();
-    const endTime = $("#endTime").val();
-    return "startDate=" + startDate + "&endDate=" + endDate + "&startTime=" + startTime + "&endTime=" + endTime;
-}
-
 function updateTable() {
     $.ajax({
         url: ajaxUrl + "filter",
         type: "GET",
-        data: serializeFilterData(),
+        data: $("#filter").serialize(),
         success: updateTableByData
     });
 }
@@ -57,7 +28,7 @@ $(function () {
                 "data": "dateTime",
                 "render": function (date, type, row) {
                     if (type === "display") {
-                        return date.substr(0, 16).replace('T', ' ');
+                        return formatDate(date);
                     }
                     return date;
                 }
@@ -87,16 +58,7 @@ $(function () {
         ],
         "createdRow": function (row, data, dataIndex) {
             $(row).attr("data-mealExceed", data.exceed);
-        }
+        },
+        "initComplete": makeEditable
     });
-
-    makeEditable();
-
-    form.serialize = function () {
-        const id = $("#id").val();
-        const dateTime = reformatDateTimeToISO($("#dateTime").val());
-        const description = $("#description").val();
-        const calories = $("#calories").val();
-        return "id=" + id + "&dateTime=" + dateTime + "&description=" + description + "&calories=" + calories;
-    };
 });

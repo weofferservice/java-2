@@ -1,22 +1,34 @@
-const timepicker = {
-    datepicker: false,
-    format: "H:i",
-    mask: true
-};
-
-const datepicker = {
-    timepicker: false,
-    format: "d.m.Y",
-    mask: true
-};
-
 $(function () {
-    $("#startDate").datetimepicker(datepicker);
-    $("#endDate").datetimepicker(datepicker);
-    $("#startTime").datetimepicker(timepicker);
-    $("#endTime").datetimepicker(timepicker);
-    $("#dateTime").datetimepicker({
-        format: "d.m.Y H:i",
+    const startDate = $('#startDate');
+    const endDate = $('#endDate');
+    const dateParams = {
+        timepicker: false,
+        format: 'Y-m-d',
+        mask: true
+    };
+    startDate.datetimepicker(Object.assign(dateParams, {
+        onShow: function (ct) {
+            this.setOptions({
+                maxDate: endDate.val() ? endDate.val() : false
+            })
+        }
+    }));
+    endDate.datetimepicker(Object.assign(dateParams, {
+        onShow: function (ct) {
+            this.setOptions({
+                minDate: startDate.val() ? startDate.val() : false
+            })
+        }
+    }));
+
+    $('#startTime, #endTime').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        mask: true
+    });
+
+    $('#dateTime').datetimepicker({
+        format: 'Y-m-d H:i',
         mask: true
     });
 
