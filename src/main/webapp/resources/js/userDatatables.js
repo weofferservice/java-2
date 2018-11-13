@@ -85,6 +85,6 @@ $(function () {
                 $(row).attr("data-userEnabled", false);
             }
         },
-        "initComplete": makeEditable
+        "initComplete": init
     });
 });
