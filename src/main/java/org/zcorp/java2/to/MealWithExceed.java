@@ -1,9 +1,16 @@
 package org.zcorp.java2.to;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.zcorp.java2.util.DateTimeUtil;
+import org.zcorp.java2.web.json.View;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class MealWithExceed extends BaseTo {
+    @JsonView(View.JsonREST.class)
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -21,6 +28,13 @@ public class MealWithExceed extends BaseTo {
     }
 
     public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    @JsonGetter
+    @JsonView(View.JsonUI.class)
+    @JsonFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
+    public LocalDateTime getDateTimeUI() {
         return dateTime;
     }
 

@@ -1,10 +1,14 @@
 package org.zcorp.java2.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.zcorp.java2.util.DateTimeUtil;
+import org.zcorp.java2.web.json.View;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -33,7 +37,7 @@ public class Meal extends AbstractBaseEntity {
 
     @Column(name = "date_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
     @NotNull(groups = {HttpRequestParamsValidationGroup.class, Default.class})
-    @DateTimeFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
+    @JsonView(View.JsonREST.class)
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
@@ -114,6 +118,18 @@ public class Meal extends AbstractBaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @JsonGetter
+    @JsonView(View.JsonUI.class)
+    @JsonFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
+    public LocalDateTime getDateTimeUI() {
+        return dateTime;
+    }
+
+    @DateTimeFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
+    public void setDateTimeUI(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     @Override

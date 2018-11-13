@@ -80,7 +80,7 @@
 
                     <div class="form-group">
                         <label for="dateTime" class="col-form-label"><spring:message code="meal.datetime"/></label>
-                        <input type="text" class="form-control" id="dateTime" name="dateTime">
+                        <input type="text" class="form-control" id="dateTime" name="dateTimeUI">
                     </div>
 
                     <div class="form-group">
