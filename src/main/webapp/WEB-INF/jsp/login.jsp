@@ -6,7 +6,7 @@
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark py-0">
     <div class="container">
         <div class="navbar-brand">
             <img src="resources/images/icon-meal.png"> <spring:message code="app.title"/>
