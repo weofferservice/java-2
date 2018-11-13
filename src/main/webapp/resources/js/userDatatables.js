@@ -14,7 +14,6 @@ function enable(checkbox, id) {
         data: "enabled=" + checked,
     }).done(function () {
         updateTable();
-        $(checkbox).closest("tr").attr("data-userEnabled", checked);
         successNoty(checked ? "common.enabled" : "common.disabled");
     }).fail(function () {
         $(checkbox).prop("checked", !checked);
