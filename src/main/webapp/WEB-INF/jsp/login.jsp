@@ -30,10 +30,10 @@
         </c:if>
         <br>
         <div class="text-center">
-            <button type="button" class="btn btn-lg btn-primary" onclick="setCredentialsAndSubmit('user@yandex.ru', 'password')">
+            <button type="button" class="btn btn-lg btn-primary" onclick="setCredentialsAndLogin('user@yandex.ru', 'password')">
                 <spring:message code="app.login"/> User
             </button>
-            <button type="button" class="btn btn-lg btn-primary" onclick="setCredentialsAndSubmit('admin@gmail.com', 'admin')">
+            <button type="button" class="btn btn-lg btn-primary" onclick="setCredentialsAndLogin('admin@gmail.com', 'admin')">
                 <spring:message code="app.login"/> Admin
             </button>
         </div>
@@ -76,7 +76,7 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 <script type="text/javascript">
-    function setCredentialsAndSubmit(username, password) {
+    function setCredentialsAndLogin(username, password) {
         const form = $('#form-login');
         form.find('input[name="username"]').val(username);
         form.find('input[name="password"]').val(password);
