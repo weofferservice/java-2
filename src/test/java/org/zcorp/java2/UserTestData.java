@@ -25,8 +25,8 @@ public class UserTestData {
     public static final User ADMIN;
 
     static {
-        USER = new User(USER_ID, "User", "user@yandex.ru", "password", Role.ROLE_USER);
-        ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ROLE_ADMIN, Role.ROLE_USER);
+        USER = new User(USER_ID, "User", "user@yandex.ru", "password", 2005, Role.ROLE_USER);
+        ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", 1900, Role.ROLE_ADMIN, Role.ROLE_USER);
 
         USER.setMeals(MEALS);
         ADMIN.setMeals(ADMIN_MEALS);
@@ -46,7 +46,7 @@ public class UserTestData {
     }
 
     public static User getCreated() {
-        return new User(null, "New", "new@gmail.com", "newPassword", Role.ROLE_USER, Role.ROLE_ADMIN);
+        return new User(null, "New", "new@gmail.com", "newPassword", 2300, Role.ROLE_USER, Role.ROLE_ADMIN);
     }
 
     public static User getUpdated() {

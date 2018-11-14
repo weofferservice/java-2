@@ -43,7 +43,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertThrows(
                 DataAccessException.class,
                 () -> service.create(
-                        new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER)
+                        new User(null, "Duplicate", "user@yandex.ru", "newPass", 2017, Role.ROLE_USER)
                 )
         );
     }
