@@ -17,7 +17,7 @@ public class SecurityUtil {
         return (principal instanceof AuthorizedUser) ? (AuthorizedUser) principal : null;
     }
 
-    private static AuthorizedUser get() {
+    public static AuthorizedUser get() {
         AuthorizedUser user = safeGet();
         Objects.requireNonNull(user, "Not authorized user found");
         return user;
