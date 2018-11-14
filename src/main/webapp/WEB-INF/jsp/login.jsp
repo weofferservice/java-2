@@ -6,20 +6,7 @@
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
-<nav class="navbar navbar-dark bg-dark py-0">
-    <div class="container">
-        <div class="navbar-brand">
-            <img src="resources/images/icon-meal.png"> <spring:message code="app.title"/>
-        </div>
-        <form class="form-inline my-2" method="POST" action="spring_security_check" id="form-login">
-            <input class="form-control mr-1" type="text" name="username" placeholder="email">
-            <input class="form-control mr-1" type="password" name="password" placeholder="password">
-            <button class="btn btn-success" type="submit">
-                <span class="fa fa-sign-in"></span>
-            </button>
-        </form>
-    </div>
-</nav>
+<jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-0">
     <div class="container">
