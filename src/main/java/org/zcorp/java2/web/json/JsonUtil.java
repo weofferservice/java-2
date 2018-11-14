@@ -39,14 +39,6 @@ public class JsonUtil {
         }
     }
 
-    public static <T> String writeValue(T obj, Class<?> view) {
-        try {
-            return getMapper().writerWithView(view).writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Invalid write to JSON:\n'" + obj + "'", e);
-        }
-    }
-
     public static <T> String writeIgnoreProps(Collection<T> collection, String... ignoreProps) {
         List<Map<String, Object>> list = collection.stream()
                 .map(e -> getAsMapWithIgnore(e, ignoreProps))

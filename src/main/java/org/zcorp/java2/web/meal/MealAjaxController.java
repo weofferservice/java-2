@@ -1,6 +1,5 @@
 package org.zcorp.java2.web.meal;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +12,6 @@ import org.zcorp.java2.model.Meal.HttpRequestParamsValidationGroup;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
 import org.zcorp.java2.util.ValidationUtil;
-import org.zcorp.java2.web.json.View;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -30,14 +28,12 @@ public class MealAjaxController extends AbstractMealController {
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView(View.JsonUI.class)
     public List<MealWithExceed> getAll() {
         return super.getAll();
     }
 
     @Override
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView(View.JsonUI.class)
     public Meal get(@PathVariable("id") int id) {
         return super.get(id);
     }
@@ -64,7 +60,6 @@ public class MealAjaxController extends AbstractMealController {
 
     @Override
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView(View.JsonUI.class)
     public List<MealWithExceed> getBetween(@RequestParam(required = false) LocalDate startDate,
                                            @RequestParam(required = false) LocalTime startTime,
                                            @RequestParam(required = false) LocalDate endDate,

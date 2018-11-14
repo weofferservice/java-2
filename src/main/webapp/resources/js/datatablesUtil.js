@@ -4,7 +4,7 @@ function init() {
     form = $('#detailsForm');
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
-        failNoty(jqXHR);
+        failNoty(jqXHR, options.dataTypes[1]);
     });
 
     // solve problem with cache in IE: https://stackoverflow.com/questions/4303829/how-to-prevent-a-jquery-ajax-request-from-caching-in-internet-explorer/4303862#4303862
@@ -72,11 +72,16 @@ function successNoty(key) {
     }).show();
 }
 
-function failNoty(jqXHR) {
+function failNoty(jqXHR, dataType) {
     closeNoty();
+    let responseJSON;
+    if (dataType === "json") {
+        // https://stackoverflow.com/questions/48229776/how-to-keep-jquery-jqxhr-responsejson-with-own-converters
+        responseJSON = JSON.parse(jqXHR.responseText);
+    }
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " +
-                                jqXHR.status + (jqXHR.responseJSON ? "<br>" + jqXHR.responseJSON : ""),
+                                jqXHR.status + (responseJSON ? "<br>" + responseJSON : ""),
         type: "error",
         layout: "bottomRight"
     }).show();

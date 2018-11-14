@@ -16,6 +16,19 @@ function resetFilter() {
 }
 
 $(function () {
+    $.ajaxSetup({
+        // https://api.jquery.com/jQuery.ajax/#using-converters
+        converters: {
+            "text json": function (stringData) {
+                const json = JSON.parse(stringData);
+                $(json).each(function () {
+                    this.dateTime = this.dateTime.substr(0, 16).replace('T', ' ');
+                });
+                return json;
+            }
+        }
+    });
+
     datatableApi = $("#datatable").DataTable({
         "ajax": {
             "url": ajaxUrl,
@@ -25,7 +38,7 @@ $(function () {
         "info": true,
         "columns": [
             {
-                "data": "dateTimeUI"
+                "data": "dateTime"
             },
             {
                 "data": "description"

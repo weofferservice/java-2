@@ -22,9 +22,6 @@ public class JacksonObjectMapper extends ObjectMapper {
         // Просим не сериализовать null-поля, хотя это работает не всегда
         setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        // https://stackoverflow.com/questions/22875642/jackson-set-default-view
-        setConfig(getSerializationConfig().withView(View.JsonREST.class));
-
         // Это альтернатива @JsonIgnore:
         // Просим не сериализовать Lazy-поля, если они не заполнены
         // Если же они до Jackson уже были заполнены, то сериализуем их
