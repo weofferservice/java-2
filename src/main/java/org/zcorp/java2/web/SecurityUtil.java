@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class SecurityUtil {
 
-    private static AuthorizedUser safeGet() {
+    public static AuthorizedUser safeGet() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             return null;
