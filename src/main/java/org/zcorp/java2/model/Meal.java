@@ -4,13 +4,13 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.zcorp.java2.ValidationGroup;
 import org.zcorp.java2.util.DateTimeUtil;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.validation.groups.Default;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,18 +32,18 @@ public class Meal extends AbstractBaseEntity {
 //    public static final String UPDATE = "Meal.update";
 
     @Column(name = "date_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
-    @NotNull(groups = {HttpRequestParamsValidationGroup.class, Default.class})
+    @NotNull
     @DateTimeFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
-    @NotBlank(groups = {HttpRequestParamsValidationGroup.class, Default.class})
-    @Size(min = 2, max = 120, groups = {HttpRequestParamsValidationGroup.class, Default.class})
+    @NotBlank
+    @Size(min = 2, max = 120)
     private String description;
 
     @Column(name = "calories", nullable = false, columnDefinition = "INTEGER DEFAULT 1000")
-    @NotNull(groups = {HttpRequestParamsValidationGroup.class, Default.class})
-    @Range(min = 10, max = 5000, groups = {HttpRequestParamsValidationGroup.class, Default.class})
+    @NotNull
+    @Range(min = 10, max = 5000)
     private Integer calories;
 
     // 1) Говорим Hibernate-у, что у нас в БД стоит ON DELETE CASCADE, а значит при удалении родителя (user) будут
@@ -53,7 +53,7 @@ public class Meal extends AbstractBaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_meals", foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;"))
-    @NotNull
+    @NotNull(groups = ValidationGroup.Persist.class)
     private User user;
 
     public Meal() {
@@ -124,8 +124,5 @@ public class Meal extends AbstractBaseEntity {
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
                 '}';
-    }
-
-    public interface HttpRequestParamsValidationGroup {
     }
 }

@@ -5,14 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.zcorp.java2.model.Meal;
-import org.zcorp.java2.model.Meal.HttpRequestParamsValidationGroup;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
 import org.zcorp.java2.util.ValidationUtil;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -46,7 +45,7 @@ public class MealAjaxController extends AbstractMealController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrUpdate(@Validated(HttpRequestParamsValidationGroup.class) Meal meal, BindingResult result) {
+    public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
         if (result.hasErrors()) {
             return ValidationUtil.createErrorResponse(result);
         }
