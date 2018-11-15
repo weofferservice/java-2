@@ -60,6 +60,15 @@ public class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void testDeleteNotFound() throws Exception {
+        mockMvc.perform(
+                delete(REST_URL + ADMIN_MEAL1_ID)
+                        .with(userHttpBasic(USER)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void testGet() throws Exception {
         TestUtil.print(
                 mockMvc.perform(
@@ -76,6 +85,15 @@ public class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(get(REST_URL + MEAL1_ID))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetNotFound() throws Exception {
+        mockMvc.perform(
+                get(REST_URL + ADMIN_MEAL1_ID)
+                        .with(userHttpBasic(USER)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
