@@ -27,4 +27,8 @@ public class UserUtil {
         return user;
     }
 
+    public static UserTo createEmptyTo() {
+        return new UserTo(null, null, null, null, null);
+    }
+
 }

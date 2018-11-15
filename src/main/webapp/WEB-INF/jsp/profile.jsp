@@ -13,8 +13,8 @@
         <div class="row">
             <div class="offset-3 col-5">
                 <%--@elvariable id="userTo" type="org.zcorp.java2.to.UserTo"--%>
-                <h3><spring:message code="app.profile"/> ${userTo.name}</h3>
-                <form:form class="form-group" modelAttribute="userTo" method="POST" action="profile"
+                <h3><spring:message code="${register ? 'app.register' : 'app.profile'}"/> ${userTo.name}</h3>
+                <form:form class="form-group" modelAttribute="userTo" method="POST" action="${register ? 'register' : 'profile'}"
                            charset="utf-8" accept-charset="UTF-8">
 
                     <java-2:inputField labelCode="user.name" name="name"/>

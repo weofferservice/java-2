@@ -15,8 +15,16 @@
                 ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
             </div>
         </c:if>
+        <c:if test="${not empty param.message}">
+            <div class="message">
+                <spring:message code="${param.message}"/>
+            </div>
+        </c:if>
         <br>
         <div class="text-center">
+            <a class="btn btn-lg btn-success" href="register">
+                <spring:message code="app.register"/> &raquo;
+            </a>
             <button type="button" class="btn btn-lg btn-primary" onclick="setCredentialsAndLogin('user@yandex.ru', 'password')">
                 <spring:message code="app.login"/> User
             </button>
@@ -63,12 +71,21 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 <script type="text/javascript">
-    function setCredentialsAndLogin(username, password) {
-        const form = $('#form-login');
+    const form = $('#form-login');
+
+    function setCredentials(username, password) {
         form.find('input[name="username"]').val(username);
         form.find('input[name="password"]').val(password);
+    }
+
+    function setCredentialsAndLogin(username, password) {
+        setCredentials(username, password);
         form.submit();
     }
+
+<c:if test="${not empty param.username}">
+    setCredentials("${param.username}", "");
+</c:if>
 </script>
 </body>
 </html>
