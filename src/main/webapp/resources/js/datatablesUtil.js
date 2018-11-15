@@ -74,14 +74,14 @@ function successNoty(key) {
 
 function failNoty(jqXHR, dataType) {
     closeNoty();
-    let responseJSON;
+    let errorInfo;
     if (dataType === "json") {
         // https://stackoverflow.com/questions/48229776/how-to-keep-jquery-jqxhr-responsejson-with-own-converters
-        responseJSON = JSON.parse(jqXHR.responseText);
+        errorInfo = JSON.parse(jqXHR.responseText);
     }
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " +
-                                jqXHR.status + (responseJSON ? "<br>" + responseJSON : ""),
+                                jqXHR.status + "<br>" + errorInfo.type + "<br>" + errorInfo.details,
         type: "error",
         layout: "bottomRight"
     }).show();
