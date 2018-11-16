@@ -55,6 +55,9 @@ public class UserTestData {
         updated.setName("updatedName");
         updated.setEmail("updatedEmail@ya.ru");
         updated.setPassword("updatedPassword");
+        updated.setEnabled(!USER.isEnabled());
+        updated.setCaloriesPerDay(USER.getCaloriesPerDay() + 1);
+        updated.setRegistered(new Date());
         updated.setRoles(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));
         return updated;
     }
@@ -94,7 +97,13 @@ public class UserTestData {
                           2) Поэтому нужно вызвать метод compareTo у actual-объекта, т.е. у объекта java.sql.Timestamp, т.к. в данном случае
                              разработчики предусмотрели работу класса java.sql.Timestamp со своим родителем java.util.Date
                          */
-                        return actual.compareTo(expected);
+                        if (actual != null && expected != null) {
+                            return actual.compareTo(expected);
+                        }
+                        if (actual == null && expected == null) {
+                            return 0;
+                        }
+                        return expected == null ? 1 : -1;
                     }
                 }, "registered")
                 .isEqualToIgnoringGivenFields(expected, "meals");

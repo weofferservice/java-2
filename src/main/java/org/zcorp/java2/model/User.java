@@ -51,6 +51,7 @@ public class User extends AbstractNamedEntity {
 
     @Column(name = "registered", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
     @NotNull
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date registered;
 
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

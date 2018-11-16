@@ -29,16 +29,18 @@ public class JsonUtilTest {
         log.info("jsonMeal =\n" + jsonMeal);
         Meal meal = JsonUtil.readValue(jsonMeal, Meal.class);
         MealTestData.assertMatch(meal, ADMIN_MEAL1);
+        assertTrue(meal.getUser().getRegistered() == null);
         assertTrue(meal.getUser().getPassword() == null);
         meal.getUser().setPassword(ADMIN.getPassword());
-        UserTestData.assertMatchWithRegisteredField(meal.getUser(), ADMIN);
+        UserTestData.assertMatch(meal.getUser(), ADMIN);
 
         String jsonUser = JsonUtil.writeValue(ADMIN);
         log.info("jsonUser =\n" + jsonUser);
         User user = JsonUtil.readValue(jsonUser, User.class);
+        assertTrue(user.getRegistered() == null);
         assertTrue(user.getPassword() == null);
         user.setPassword(ADMIN.getPassword());
-        UserTestData.assertMatchWithRegisteredField(user, ADMIN);
+        UserTestData.assertMatch(user, ADMIN);
         MealTestData.assertMatch(user.getMeals(), ADMIN_MEALS);
     }
 
@@ -60,9 +62,10 @@ public class JsonUtilTest {
         List<Meal> meals = JsonUtil.readValues(jsonMeals, Meal.class);
         MealTestData.assertMatch(meals, ADMIN_MEALS);
         User user = meals.get(0).getUser();
+        assertTrue(user.getRegistered() == null);
         assertTrue(user.getPassword() == null);
         user.setPassword(ADMIN.getPassword());
-        UserTestData.assertMatchWithRegisteredField(user, ADMIN);
+        UserTestData.assertMatch(user, ADMIN);
         meals.stream().map(Meal::getUser).forEach(u -> assertTrue(u == user));
     }
 

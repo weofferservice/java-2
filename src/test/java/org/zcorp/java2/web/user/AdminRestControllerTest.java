@@ -8,6 +8,11 @@ import org.zcorp.java2.TestUtil;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.web.AbstractControllerTest;
 
+import java.util.Date;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -91,6 +96,8 @@ public class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
+        Date registeredDateExpected = userService.get(USER_ID).getRegistered();
+
         User updated = getUpdated();
         mockMvc.perform(
                 put(REST_URL + USER_ID)
@@ -100,7 +107,11 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        assertMatchWithRegisteredField(userService.get(USER_ID), updated);
+        User user = userService.get(USER_ID);
+        assertMatch(user, updated);
+
+        Date registeredDate = user.getRegistered();
+        assertEquals(registeredDateExpected, registeredDate);
     }
 
     @Test
@@ -124,10 +135,13 @@ public class AdminRestControllerTest extends AbstractControllerTest {
         assertTrue(returned.getPassword() == null);
 
         returned.setPassword(expected.getPassword());
-        assertMatchWithRegisteredField(returned, expected);
+        assertMatch(returned, expected);
         MealTestData.assertMatch(returned.getMeals(), expected.getMeals());
 
         assertMatch(userService.getAll(), ADMIN, expected, USER);
+
+        Date registeredDate = userService.get(returned.getId()).getRegistered();
+        assertThat(registeredDate, greaterThan(expected.getRegistered()));
     }
 
     @Test

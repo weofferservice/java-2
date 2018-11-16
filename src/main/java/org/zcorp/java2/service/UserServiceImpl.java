@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
+        user = UserUtil.refreshRegisteredDate(user);
         return repository.save(user);
     }
 
@@ -77,9 +78,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @CacheEvict(value = "users", allEntries = true)
     @Override
-    public void update(User user) throws NotFoundException {
-        Assert.notNull(user, "user must not be null");
-        checkNotFoundWithId(repository.save(user), user.getId());
+    @Transactional
+    public void update(User userFrom) throws NotFoundException {
+        Assert.notNull(userFrom, "userFrom must not be null");
+        User user = get(userFrom.getId());
+        user = UserUtil.updateFrom(user, userFrom);
+        repository.save(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
