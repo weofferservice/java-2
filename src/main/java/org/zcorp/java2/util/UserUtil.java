@@ -1,5 +1,7 @@
 package org.zcorp.java2.util;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.to.UserTo;
@@ -22,9 +24,11 @@ public class UserUtil {
             ).flatMap(Stream::of).toArray(Field[]::new);
 
     public static User createFromTo(UserTo userTo) {
-        return new User(
-                userTo.getId(), userTo.getName(), userTo.getEmail().toLowerCase(),
-                userTo.getPassword(), userTo.getCaloriesPerDay(), Role.ROLE_USER
+        return toLowerCaseEmail(
+                new User(
+                        userTo.getId(), userTo.getName(), userTo.getEmail(),
+                        userTo.getPassword(), userTo.getCaloriesPerDay(), Role.ROLE_USER
+                )
         );
     }
 
@@ -57,14 +61,25 @@ public class UserUtil {
 
     public static User updateFromTo(User user, UserTo userTo) {
         user.setName(userTo.getName());
-        user.setEmail(userTo.getEmail().toLowerCase());
+        user.setEmail(userTo.getEmail());
         user.setPassword(userTo.getPassword());
         user.setCaloriesPerDay(userTo.getCaloriesPerDay());
-        return user;
+        return toLowerCaseEmail(user);
     }
 
     public static UserTo createEmptyTo() {
         return new UserTo(null, null, null, null, null);
+    }
+
+    public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
+        String password = user.getPassword();
+        user.setPassword(StringUtils.isEmpty(password) ? password : passwordEncoder.encode(password));
+        return toLowerCaseEmail(user);
+    }
+
+    public static User toLowerCaseEmail(User user) {
+        user.setEmail(user.getEmail().toLowerCase());
+        return user;
     }
 
 }

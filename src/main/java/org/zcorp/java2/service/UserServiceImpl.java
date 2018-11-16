@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -17,6 +18,8 @@ import org.zcorp.java2.util.exception.NotFoundException;
 
 import java.util.List;
 
+import static org.zcorp.java2.util.UserUtil.prepareToSave;
+import static org.zcorp.java2.util.UserUtil.updateFromTo;
 import static org.zcorp.java2.util.ValidationUtil.checkNotFound;
 import static org.zcorp.java2.util.ValidationUtil.checkNotFoundWithId;
 
@@ -24,10 +27,12 @@ import static org.zcorp.java2.util.ValidationUtil.checkNotFoundWithId;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -35,7 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
         user = UserUtil.refreshRegisteredDate(user);
-        return repository.save(user);
+        return repository.save(prepareToSave(user, passwordEncoder));
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -83,7 +88,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Assert.notNull(userFrom, "userFrom must not be null");
         User user = get(userFrom.getId());
         user = UserUtil.updateFrom(user, userFrom);
-        repository.save(user);
+        repository.save(prepareToSave(user, passwordEncoder));
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -91,7 +96,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void update(UserTo userTo) throws NotFoundException {
         User user = get(userTo.getId());
-        repository.save(UserUtil.updateFromTo(user, userTo));
+        user = updateFromTo(user, userTo);
+        repository.save(prepareToSave(user, passwordEncoder));
     }
 
     @CacheEvict(value = "users", allEntries = true)

@@ -6,6 +6,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.zcorp.java2.MealTestData;
 import org.zcorp.java2.TestUtil;
 import org.zcorp.java2.model.User;
+import org.zcorp.java2.util.UserUtil;
 import org.zcorp.java2.web.AbstractControllerTest;
 
 import java.util.Date;
@@ -108,7 +109,7 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         User user = userService.get(USER_ID);
-        assertMatch(user, updated);
+        assertMatch(user, UserUtil.toLowerCaseEmail(updated));
 
         Date registeredDate = user.getRegistered();
         assertEquals(registeredDateExpected, registeredDate);

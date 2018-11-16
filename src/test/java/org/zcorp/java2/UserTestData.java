@@ -43,7 +43,7 @@ public class UserTestData {
         // В противном случае работать не будет
         assertThat(actual)
                 .usingComparatorForFields((actualMeals, expectedMeals) -> Objects.equals(expectedMeals, actualMeals) ? 0 : 1, "meals")
-                .isEqualToIgnoringGivenFields(expected, "registered");
+                .isEqualToIgnoringGivenFields(expected, "registered", "password");
     }
 
     public static User getCreated() {
@@ -67,7 +67,7 @@ public class UserTestData {
     }
 
     public static void assertMatch(User actual, User expected) {
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered", "meals");
+        assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered", "password", "meals");
     }
 
     public static void assertMatchWithRegisteredField(User actual, User expected) {
@@ -106,7 +106,7 @@ public class UserTestData {
                         return expected == null ? 1 : -1;
                     }
                 }, "registered")
-                .isEqualToIgnoringGivenFields(expected, "meals");
+                .isEqualToIgnoringGivenFields(expected, "password", "meals");
     }
 
     public static void assertMatch(Iterable<User> actual, User... expected) {
@@ -114,15 +114,15 @@ public class UserTestData {
     }
 
     public static void assertMatch(Iterable<User> actual, Iterable<User> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields("registered", "meals").isEqualTo(expected);
+        assertThat(actual).usingElementComparatorIgnoringFields("registered", "password", "meals").isEqualTo(expected);
     }
 
     public static ResultMatcher contentJson(User... expected) {
-        return content().json(writeIgnoreProps(Arrays.asList(expected), "registered", "meals"));
+        return content().json(writeIgnoreProps(Arrays.asList(expected), "registered", "password", "meals"));
     }
 
     public static ResultMatcher contentJson(User expected) {
-        return content().json(writeIgnoreProps(expected, "registered", "meals"));
+        return content().json(writeIgnoreProps(expected, "registered", "password", "meals"));
     }
 
     public static String writeJsonWithPassword(User user) {
