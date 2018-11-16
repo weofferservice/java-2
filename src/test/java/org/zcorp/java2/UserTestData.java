@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.zcorp.java2.MealTestData.ADMIN_MEALS;
 import static org.zcorp.java2.MealTestData.MEALS;
 import static org.zcorp.java2.model.AbstractBaseEntity.START_SEQ;
+import static org.zcorp.java2.web.json.JsonUtil.writeAdditionProps;
 import static org.zcorp.java2.web.json.JsonUtil.writeIgnoreProps;
 
 public class UserTestData {
@@ -113,5 +114,9 @@ public class UserTestData {
 
     public static ResultMatcher contentJson(User expected) {
         return content().json(writeIgnoreProps(expected, "registered", "meals"));
+    }
+
+    public static String writeJsonWithPassword(User user) {
+        return writeAdditionProps(user, "password", user.getPassword());
     }
 }

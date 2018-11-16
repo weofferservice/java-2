@@ -7,8 +7,8 @@ import org.zcorp.java2.MealTestData;
 import org.zcorp.java2.TestUtil;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.web.AbstractControllerTest;
-import org.zcorp.java2.web.json.JsonUtil;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -95,7 +95,7 @@ public class AdminRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(
                 put(REST_URL + USER_ID)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.writeValue(updated))
+                        .content(writeJsonWithPassword(updated))
                         .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -110,7 +110,7 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 mockMvc.perform(
                         post(REST_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(JsonUtil.writeValue(expected))
+                                .content(writeJsonWithPassword(expected))
                                 .with(userHttpBasic(ADMIN)))
                         .andDo(print()))
                 .andExpect(status().isCreated())
@@ -121,6 +121,9 @@ public class AdminRestControllerTest extends AbstractControllerTest {
 
         expected.setId(returned.getId());
 
+        assertTrue(returned.getPassword() == null);
+
+        returned.setPassword(expected.getPassword());
         assertMatchWithRegisteredField(returned, expected);
         MealTestData.assertMatch(returned.getMeals(), expected.getMeals());
 

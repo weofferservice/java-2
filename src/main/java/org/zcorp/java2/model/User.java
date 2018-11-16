@@ -1,5 +1,6 @@
 package org.zcorp.java2.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -41,6 +42,8 @@ public class User extends AbstractNamedEntity {
     @Column(name = "password", nullable = false, columnDefinition = "VARCHAR")
     @NotBlank
     @Size(min = 5, max = 100)
+    //https://stackoverflow.com/questions/12505141/only-using-jsonignore-during-serialization-but-not-deserialization/12505165#12505165
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "BOOL DEFAULT TRUE")
