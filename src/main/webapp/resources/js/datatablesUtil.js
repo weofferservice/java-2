@@ -9,6 +9,12 @@ function init() {
 
     // solve problem with cache in IE: https://stackoverflow.com/questions/4303829/how-to-prevent-a-jquery-ajax-request-from-caching-in-internet-explorer/4303862#4303862
     $.ajaxSetup({cache: false});
+
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (event, jqXHR, options) {
+        jqXHR.setRequestHeader(header, token);
+    });
 }
 
 function add() {
