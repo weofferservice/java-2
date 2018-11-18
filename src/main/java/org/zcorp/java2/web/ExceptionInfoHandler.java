@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.zcorp.java2.util.ValidationUtil;
-import org.zcorp.java2.util.exception.ErrorInfo;
-import org.zcorp.java2.util.exception.ErrorType;
-import org.zcorp.java2.util.exception.IllegalRequestDataException;
-import org.zcorp.java2.util.exception.NotFoundException;
+import org.zcorp.java2.util.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,7 +38,7 @@ public class ExceptionInfoHandler {
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
-    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({ValidationException.class, IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ErrorInfo illegalRequestDataError(HttpServletRequest request, Exception e) {
         return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR);
     }

@@ -2,13 +2,13 @@ package org.zcorp.java2.web.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.to.UserTo;
 import org.zcorp.java2.util.UserUtil;
 import org.zcorp.java2.util.ValidationUtil;
+import org.zcorp.java2.util.exception.ValidationException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -37,17 +37,16 @@ public class AdminAjaxController extends AbstractUserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void createOrUpdate(@Valid UserTo userTo, BindingResult result) {
         if (result.hasErrors()) {
-            // TODO change to exception handler
-            return ValidationUtil.createErrorResponse(result);
+            throw new ValidationException(ValidationUtil.createErrorResponse(result));
         }
         if (userTo.isNew()) {
             super.create(UserUtil.createFromTo(userTo));
         } else {
             super.update(userTo, userTo.getId());
         }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override

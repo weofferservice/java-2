@@ -1,7 +1,5 @@
 package org.zcorp.java2.util;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.zcorp.java2.HasId;
 import org.zcorp.java2.util.exception.IllegalRequestDataException;
@@ -61,7 +59,7 @@ public class ValidationUtil {
         return e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getClass().getName();
     }
 
-    public static ResponseEntity<String> createErrorResponse(BindingResult result) {
+    public static String createErrorResponse(BindingResult result) {
         StringJoiner joiner = new StringJoiner("<br>");
         result.getFieldErrors().forEach(
                 fe -> {
@@ -71,7 +69,7 @@ public class ValidationUtil {
                     }
                     joiner.add(msg);
                 });
-        return new ResponseEntity<>(joiner.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
+        return joiner.toString();
     }
 
 }

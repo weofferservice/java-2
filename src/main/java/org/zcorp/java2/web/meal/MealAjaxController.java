@@ -3,13 +3,13 @@ package org.zcorp.java2.web.meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
 import org.zcorp.java2.util.ValidationUtil;
+import org.zcorp.java2.util.exception.ValidationException;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -45,17 +45,16 @@ public class MealAjaxController extends AbstractMealController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void createOrUpdate(@Valid Meal meal, BindingResult result) {
         if (result.hasErrors()) {
-            // TODO change to exception handler
-            return ValidationUtil.createErrorResponse(result);
+            throw new ValidationException(ValidationUtil.createErrorResponse(result));
         }
         if (meal.isNew()) {
             super.create(meal);
         } else {
             super.update(meal, meal.getId());
         }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
