@@ -2,9 +2,14 @@ package org.zcorp.java2.web.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.to.UserTo;
+import org.zcorp.java2.util.ValidationUtil;
+import org.zcorp.java2.util.exception.ValidationException;
+
+import javax.validation.Valid;
 
 import static org.zcorp.java2.web.SecurityUtil.authUserId;
 
@@ -27,7 +32,10 @@ public class ProfileRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody UserTo userTo) {
+    public void update(@Valid @RequestBody UserTo userTo, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ValidationException(ValidationUtil.createErrorResponse(result));
+        }
         super.update(userTo, authUserId());
     }
 

@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Objects;
 
 @SuppressWarnings("JpaQlInspection")
 @NamedQueries({
@@ -69,8 +68,6 @@ public class Meal extends AbstractBaseEntity {
 
     public Meal(Integer id, LocalDateTime dateTime, String description, Integer calories) {
         super(id);
-        Objects.requireNonNull(dateTime, "dateTime must not be null");
-        Objects.requireNonNull(description, "description must not be null");
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;

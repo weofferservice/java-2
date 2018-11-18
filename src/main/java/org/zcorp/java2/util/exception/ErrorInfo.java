@@ -6,7 +6,7 @@ public class ErrorInfo {
     private final String details;
 
     public ErrorInfo(CharSequence url, ErrorType type, String details) {
-        this.url = url.toString();
+        this.url = url == null ? null : url.toString();
         this.type = type;
         this.details = details;
     }

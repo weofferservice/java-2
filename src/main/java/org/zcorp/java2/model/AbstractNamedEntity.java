@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 @MappedSuperclass
 public abstract class AbstractNamedEntity extends AbstractBaseEntity {
@@ -19,7 +18,6 @@ public abstract class AbstractNamedEntity extends AbstractBaseEntity {
 
     protected AbstractNamedEntity(Integer id, String name) {
         super(id);
-        Objects.requireNonNull(name, "name must not be null");
         this.name = name;
     }
 

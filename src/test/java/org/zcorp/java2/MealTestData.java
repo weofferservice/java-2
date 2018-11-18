@@ -52,10 +52,22 @@ public class MealTestData {
         return new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 18, 0), "Созданный ужин", 300);
     }
 
+    public static Meal getNotValidCreated() {
+        return new Meal(null, "", 0);
+    }
+
     public static Meal getUpdated() {
         Meal updated = new Meal(MEAL1);
         updated.setDescription("Обновленный завтрак");
         updated.setCalories(200);
+        return updated;
+    }
+
+    public static Meal getNotValidUpdated() {
+        Meal updated = new Meal(MEAL1);
+        updated.setDateTime(null);
+        updated.setDescription("");
+        updated.setCalories(0);
         return updated;
     }
 

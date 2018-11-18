@@ -3,10 +3,14 @@ package org.zcorp.java2.web.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zcorp.java2.model.User;
+import org.zcorp.java2.util.ValidationUtil;
+import org.zcorp.java2.util.exception.ValidationException;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -29,7 +33,11 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@RequestBody User user) {
+    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new ValidationException(ValidationUtil.createErrorResponse(result));
+        }
+
         User created = super.create(user);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -49,10 +57,12 @@ public class AdminRestController extends AbstractUserController {
         super.delete(id);
     }
 
-    @Override
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable("id") int id) {
+    public void update(@Valid @RequestBody User user, BindingResult result, @PathVariable("id") int id) {
+        if (result.hasErrors()) {
+            throw new ValidationException(ValidationUtil.createErrorResponse(result));
+        }
         super.update(user, id);
     }
 

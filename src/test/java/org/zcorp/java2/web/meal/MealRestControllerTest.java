@@ -13,6 +13,7 @@ import org.zcorp.java2.web.json.JsonUtil;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.zcorp.java2.ErrorInfoTestData.contentValidationErrorInfoJson;
 import static org.zcorp.java2.MealTestData.*;
 import static org.zcorp.java2.TestUtil.*;
 import static org.zcorp.java2.UserTestData.USER;
@@ -47,6 +48,23 @@ public class MealRestControllerTest extends AbstractControllerTest {
         assertMatch(returned, expected);
 
         assertMatch(service.getAll(USER_ID), expected, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+    }
+
+    @Test
+    void testCreateNotValid() throws Exception {
+        Meal created = getNotValidCreated();
+        TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtil.writeValue(created))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson());
+
+        assertMatch(service.getAll(USER_ID), MEALS);
     }
 
     @Test
@@ -107,6 +125,23 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
+    }
+
+    @Test
+    void testUpdateNotValid() throws Exception {
+        Meal updated = getNotValidUpdated();
+        TestUtil.print(
+                mockMvc.perform(
+                        put(REST_URL + MEAL1_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtil.writeValue(updated))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson());
+
+        assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
     }
 
     @Test

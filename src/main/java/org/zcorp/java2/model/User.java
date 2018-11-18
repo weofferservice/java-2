@@ -6,6 +6,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.util.CollectionUtils;
+import org.zcorp.java2.ValidationGroup;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -47,10 +48,11 @@ public class User extends AbstractNamedEntity {
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "BOOL DEFAULT TRUE")
-    private boolean enabled;
+    @NotNull
+    private Boolean enabled;
 
     @Column(name = "registered", nullable = false, columnDefinition = "TIMESTAMP DEFAULT now()")
-    @NotNull
+    @NotNull(groups = ValidationGroup.Persist.class)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date registered;
 
@@ -69,8 +71,9 @@ public class User extends AbstractNamedEntity {
     private Set<Role> roles;
 
     @Column(name = "calories_per_day", nullable = false, columnDefinition = "INTEGER DEFAULT 2000")
+    @NotNull
     @Range(min = 10, max = 10000)
-    private int caloriesPerDay;
+    private Integer caloriesPerDay;
 
     /*
     // Заставить Hibernate выполнять отдельные запросы на удаление дочерних объектов (meals) при удалении родителя (user)
@@ -88,15 +91,12 @@ public class User extends AbstractNamedEntity {
         this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getCaloriesPerDay(), u.isEnabled(), u.getRegistered(), u.getRoles());
     }
 
-    public User(Integer id, String name, String email, String password, int caloriesPerDay, Role role, Role... roles) {
+    public User(Integer id, String name, String email, String password, Integer caloriesPerDay, Role role, Role... roles) {
         this(id, name, email, password, caloriesPerDay, true, new Date(), EnumSet.of(role, roles));
     }
 
-    public User(Integer id, String name, String email, String password, int caloriesPerDay, boolean enabled, Date registered, Collection<Role> roles) {
+    public User(Integer id, String name, String email, String password, Integer caloriesPerDay, Boolean enabled, Date registered, Collection<Role> roles) {
         super(id, name);
-        Objects.requireNonNull(email, "email must not be null");
-        Objects.requireNonNull(password, "password must not be null");
-        Objects.requireNonNull(registered, "registered must not be null");
         Objects.requireNonNull(roles, "roles must not be null");
         this.email = email;
         this.password = password;
@@ -134,7 +134,7 @@ public class User extends AbstractNamedEntity {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -142,7 +142,7 @@ public class User extends AbstractNamedEntity {
         return caloriesPerDay;
     }
 
-    public void setCaloriesPerDay(int caloriesPerDay) {
+    public void setCaloriesPerDay(Integer caloriesPerDay) {
         this.caloriesPerDay = caloriesPerDay;
     }
 

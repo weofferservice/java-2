@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.zcorp.java2.ErrorInfoTestData.contentValidationErrorInfoJson;
 import static org.zcorp.java2.TestUtil.userHttpBasic;
 import static org.zcorp.java2.UserTestData.*;
 
@@ -116,6 +117,23 @@ public class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void testUpdateNotValid() throws Exception {
+        User updated = getNotValidUpdated();
+        TestUtil.print(
+                mockMvc.perform(
+                        put(REST_URL + USER_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(updated))
+                                .with(userHttpBasic(ADMIN)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson());
+
+        assertMatch(userService.get(USER_ID), USER);
+    }
+
+    @Test
     public void testCreate() throws Exception {
         User expected = getCreated();
         ResultActions action = TestUtil.print(
@@ -143,6 +161,23 @@ public class AdminRestControllerTest extends AbstractControllerTest {
 
         Date registeredDate = userService.get(returned.getId()).getRegistered();
         assertThat(registeredDate, greaterThan(expected.getRegistered()));
+    }
+
+    @Test
+    public void testCreateNotValid() throws Exception {
+        User created = getNotValidCreated();
+        TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(created))
+                                .with(userHttpBasic(ADMIN)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson());
+
+        assertMatch(userService.getAll(), ADMIN, USER);
     }
 
     @Test

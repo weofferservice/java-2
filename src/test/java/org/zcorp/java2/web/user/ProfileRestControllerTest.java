@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.zcorp.java2.ErrorInfoTestData.contentValidationErrorInfoJson;
 import static org.zcorp.java2.TestUtil.userHttpBasic;
 import static org.zcorp.java2.UserTestData.*;
 import static org.zcorp.java2.web.user.ProfileRestController.REST_URL;
@@ -59,6 +60,23 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertMatch(userService.get(USER_ID), UserUtil.updateFromTo(new User(USER), updatedTo));
+    }
+
+    @Test
+    public void testUpdateNotValid() throws Exception {
+        UserTo updatedTo = getNotValidUpdatedTo();
+        TestUtil.print(
+                mockMvc.perform(
+                        put(REST_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtil.writeValue(updatedTo))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson());
+
+        assertMatch(userService.get(USER_ID), USER);
     }
 
 }

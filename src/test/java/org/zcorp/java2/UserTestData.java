@@ -5,10 +5,7 @@ import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.to.UserTo;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -50,6 +47,10 @@ public class UserTestData {
         return new User(null, "New", "new@gmail.com", "newPassword", 2300, Role.ROLE_USER, Role.ROLE_ADMIN);
     }
 
+    public static User getNotValidCreated() {
+        return new User(null, null, null, null, null, null, null, EnumSet.of(Role.ROLE_USER, Role.ROLE_ADMIN));
+    }
+
     public static User getUpdated() {
         User updated = new User(USER);
         updated.setName("updatedName");
@@ -62,8 +63,24 @@ public class UserTestData {
         return updated;
     }
 
+    public static User getNotValidUpdated() {
+        User updated = new User(USER);
+        updated.setName(null);
+        updated.setEmail(null);
+        updated.setPassword(null);
+        updated.setCaloriesPerDay(null);
+        updated.setEnabled(null);
+        updated.setRegistered(null);
+        updated.setRoles(Arrays.asList(Role.ROLE_USER, Role.ROLE_ADMIN));
+        return updated;
+    }
+
     public static UserTo getUpdatedTo() {
         return new UserTo(USER_ID, "updatedName", "updatedEmail@ya.ru", "updatedPassword", 1500);
+    }
+
+    public static UserTo getNotValidUpdatedTo() {
+        return new UserTo(USER_ID, null, null, null, 0);
     }
 
     public static void assertMatch(User actual, User expected) {
