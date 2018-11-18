@@ -6,13 +6,19 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.zcorp.java2.util.ValidationUtil;
-import org.zcorp.java2.util.exception.*;
+import org.zcorp.java2.util.exception.ErrorInfo;
+import org.zcorp.java2.util.exception.ErrorType;
+import org.zcorp.java2.util.exception.IllegalRequestDataException;
+import org.zcorp.java2.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,9 +44,21 @@ public class ExceptionInfoHandler {
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
-    @ExceptionHandler({ValidationException.class, IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ErrorInfo illegalRequestDataError(HttpServletRequest request, Exception e) {
         return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR);
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
+    public ErrorInfo invalidDataError(HttpServletRequest request, Exception e) {
+        BindingResult result = null;
+        if (e instanceof BindException) { // для AJAX со Spring Binding
+            result = ((BindException) e).getBindingResult();
+        } else if (e instanceof MethodArgumentNotValidException) { // для REST с @Valid @RequestBody
+            result = ((MethodArgumentNotValidException) e).getBindingResult();
+        }
+        return logAndGetErrorInfo(request, ValidationUtil.createErrorResponse(result), VALIDATION_ERROR);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
@@ -58,5 +76,10 @@ public class ExceptionInfoHandler {
             log.warn("{} at request {}: {}", errorType, request.getRequestURL(), rootCause.toString());
         }
         return new ErrorInfo(request.getRequestURL(), errorType, ValidationUtil.getMessage(rootCause));
+    }
+
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, String message, ErrorType errorType) {
+        log.warn("{} at request {}: {}", errorType, request.getRequestURL(), message);
+        return new ErrorInfo(request.getRequestURL(), errorType, message);
     }
 }

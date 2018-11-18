@@ -4,14 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
-import org.zcorp.java2.util.ValidationUtil;
-import org.zcorp.java2.util.exception.ValidationException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -31,11 +28,7 @@ public class MealRestController extends AbstractMealController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ValidationException(ValidationUtil.createErrorResponse(result));
-        }
-
+    public ResponseEntity<Meal> createWithLocation(@Valid @RequestBody Meal meal) {
         Meal created = super.create(meal);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -59,12 +52,10 @@ public class MealRestController extends AbstractMealController {
         return super.get(id);
     }
 
+    @Override
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody Meal meal, BindingResult result, @PathVariable("id") int id) {
-        if (result.hasErrors()) {
-            throw new ValidationException(ValidationUtil.createErrorResponse(result));
-        }
+    public void update(@Valid @RequestBody Meal meal, @PathVariable("id") int id) {
         super.update(meal, id);
     }
 
