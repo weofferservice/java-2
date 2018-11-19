@@ -4,6 +4,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.zcorp.java2.model.Role;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.to.UserTo;
+import org.zcorp.java2.util.UserUtil;
 
 import java.util.*;
 
@@ -51,6 +52,12 @@ public class UserTestData {
         return new User(null, null, null, null, null, null, null, EnumSet.of(Role.ROLE_USER, Role.ROLE_ADMIN));
     }
 
+    public static User getSomeoneElseEmailCreated() {
+        User user = getCreated();
+        user.setEmail(USER.getEmail());
+        return user;
+    }
+
     public static User getUpdated() {
         User updated = new User(USER);
         updated.setName("updatedName");
@@ -75,12 +82,26 @@ public class UserTestData {
         return updated;
     }
 
+    public static User getSomeoneElseEmailUpdated() {
+        User user = new User(USER);
+        user.setEmail(ADMIN.getEmail());
+        return user;
+    }
+
     public static UserTo getUpdatedTo() {
         return new UserTo(USER_ID, "updatedName", "updatedEmail@ya.ru", "updatedPassword", 1500);
     }
 
     public static UserTo getNotValidUpdatedTo() {
         return new UserTo(USER_ID, null, null, null, 0);
+    }
+
+    public static UserTo getToFromUSER() {
+        return UserUtil.asTo(USER);
+    }
+
+    public static UserTo getSomeoneElseEmailUpdatedTo() {
+        return UserUtil.asTo(getSomeoneElseEmailUpdated());
     }
 
     public static void assertMatch(User actual, User expected) {

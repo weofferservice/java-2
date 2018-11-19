@@ -21,7 +21,7 @@ public class TestUtil {
 
     private static final Logger log = getLogger(TestUtil.class);
 
-    private static String getContent(ResultActions action) throws UnsupportedEncodingException {
+    public static String getContent(ResultActions action) throws UnsupportedEncodingException {
         return action.andReturn().getResponse().getContentAsString();
     }
 

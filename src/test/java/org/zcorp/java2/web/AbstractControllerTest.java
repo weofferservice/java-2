@@ -3,6 +3,7 @@ package org.zcorp.java2.web;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.MessageSource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -30,6 +31,9 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @ActiveProfiles(resolver = AllActiveProfileResolver.class) // always DATAJPA
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public abstract class AbstractControllerTest {
+
+    @Autowired
+    protected MessageSource messageSource;
 
     @Autowired
     protected UserService userService;

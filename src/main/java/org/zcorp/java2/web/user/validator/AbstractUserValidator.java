@@ -14,7 +14,7 @@ import static org.springframework.util.StringUtils.isEmpty;
 
 public abstract class AbstractUserValidator<T> implements Validator {
 
-    private static final String EMAIL_ALREADY_EXISTS = "user.emailAlreadyExists";
+    public static final String EMAIL_ALREADY_EXISTS = "user.emailAlreadyExists";
 
     @Autowired
     private MessageSource messageSource;
