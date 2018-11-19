@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
+import org.zcorp.java2.web.meal.validator.MealRestValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -20,7 +22,15 @@ import java.util.List;
 @RequestMapping(value = MealRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealRestController extends AbstractMealController {
 
-    static final String REST_URL = "/rest/profile/meals";
+    public static final String REST_URL = "/rest/profile/meals";
+
+    @Autowired
+    private MealRestValidator validator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+    }
 
     @Autowired
     public MealRestController(MealService service) {

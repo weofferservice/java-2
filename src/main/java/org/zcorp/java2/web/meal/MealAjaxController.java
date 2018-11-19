@@ -3,10 +3,12 @@ package org.zcorp.java2.web.meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
+import org.zcorp.java2.web.meal.validator.MealAjaxValidator;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -16,6 +18,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/ajax/profile/meals")
 public class MealAjaxController extends AbstractMealController {
+
+    @Autowired
+    private MealAjaxValidator validator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+    }
 
     @Autowired
     public MealAjaxController(MealService service) {
