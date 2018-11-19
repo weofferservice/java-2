@@ -17,6 +17,8 @@
                 <form:form class="form-group" modelAttribute="userTo" method="POST" action="${register ? 'register' : 'profile'}"
                            charset="utf-8" accept-charset="UTF-8">
 
+                    <form:hidden path="id"/>
+
                     <java-2:inputField labelCode="user.name" name="name"/>
                     <java-2:inputField labelCode="user.email" name="email"/>
                     <java-2:inputField labelCode="user.password" name="password" inputType="password"/>

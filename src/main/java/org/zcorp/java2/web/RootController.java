@@ -1,20 +1,32 @@
 package org.zcorp.java2.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.support.SessionStatus;
 import org.zcorp.java2.to.UserTo;
 import org.zcorp.java2.util.UserUtil;
 import org.zcorp.java2.web.user.AbstractUserController;
+import org.zcorp.java2.web.user.validator.UserToValidator;
 
 import javax.validation.Valid;
 
 @Controller
 public class RootController extends AbstractUserController {
+    @Autowired
+    private UserToValidator userToValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(userToValidator);
+    }
+
     @GetMapping("/")
     public String root() {
         return "redirect:meals";

@@ -76,4 +76,6 @@
     <mvc:interceptors>
         <bean class="org.zcorp.java2.web.interceptor.ModelInterceptor"/>
     </mvc:interceptors>
+
+    <bean id="defaultValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 </beans>
