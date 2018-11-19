@@ -10,6 +10,9 @@ import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.web.AbstractControllerTest;
 import org.zcorp.java2.web.json.JsonUtil;
 
+import java.util.Locale;
+
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -20,6 +23,7 @@ import static org.zcorp.java2.UserTestData.USER;
 import static org.zcorp.java2.UserTestData.USER_ID;
 import static org.zcorp.java2.util.MealsUtil.createWithExceed;
 import static org.zcorp.java2.util.MealsUtil.getWithExceeded;
+import static org.zcorp.java2.web.meal.validator.AbstractMealValidator.DATETIME_ALREADY_EXISTS;
 
 public class MealRestControllerTest extends AbstractControllerTest {
 
@@ -65,6 +69,47 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(contentValidationErrorInfoJson());
 
         assertMatch(service.getAll(USER_ID), MEALS);
+    }
+
+    @Test
+    void testCreateDuplicateOwnDatetime() throws Exception {
+        Meal created = getDuplicateOwnDatetimeCreated();
+        TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtil.writeValue(created))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson())
+                .andExpect(content().string(containsString(
+                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, Locale.ENGLISH))));
+
+        assertMatch(service.getAll(USER_ID), MEALS);
+    }
+
+    @Test
+    void testCreateDuplicateSomeoneElseDatetime() throws Exception {
+        Meal expected = getDuplicateSomeoneElseDatetimeCreated();
+        ResultActions action = TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtil.writeValue(expected))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        Meal returned = TestUtil.readFromJson(action, Meal.class);
+        action.andExpect(redirectedUrlPattern("**" + REST_URL + returned.getId()));
+
+        expected.setId(returned.getId());
+        assertMatch(returned, expected);
+
+        assertMatch(service.getAll(USER_ID), expected, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
     }
 
     @Test
@@ -142,6 +187,52 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(contentValidationErrorInfoJson());
 
         assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
+    }
+
+    @Test
+    void testUpdateCurrentDatetime() throws Exception {
+        mockMvc.perform(
+                put(REST_URL + MEAL1_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.writeValue(MEAL1))
+                        .with(userHttpBasic(USER)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
+    }
+
+    @Test
+    void testUpdateDuplicateOwnDatetime() throws Exception {
+        Meal updated = getDuplicateOwnDatetimeUpdated();
+        TestUtil.print(
+                mockMvc.perform(
+                        put(REST_URL + MEAL1_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtil.writeValue(updated))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson())
+                .andExpect(content().string(containsString(
+                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, Locale.ENGLISH))));
+
+        assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
+    }
+
+    @Test
+    void testUpdateDuplicateSomeoneElseDatetime() throws Exception {
+        Meal updated = getDuplicateSomeoneElseDatetimeUpdated();
+        mockMvc.perform(
+                put(REST_URL + MEAL1_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.writeValue(updated))
+                        .with(userHttpBasic(USER)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
     @Test

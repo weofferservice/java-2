@@ -15,7 +15,7 @@ import java.util.List;
 import static org.zcorp.java2.web.SecurityUtil.authUserId;
 
 public abstract class AbstractMealValidator implements Validator {
-    private static final String DATETIME_ALREADY_EXISTS = "meal.datetimeAlreadyExists";
+    public static final String DATETIME_ALREADY_EXISTS = "meal.datetimeAlreadyExists";
 
     @Autowired
     private MessageSource messageSource;

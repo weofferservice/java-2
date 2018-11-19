@@ -56,6 +56,18 @@ public class MealTestData {
         return new Meal(null, "", 0);
     }
 
+    public static Meal getDuplicateOwnDatetimeCreated() {
+        Meal meal = getCreated();
+        meal.setDateTime(MEAL1.getDateTime());
+        return meal;
+    }
+
+    public static Meal getDuplicateSomeoneElseDatetimeCreated() {
+        Meal meal = getCreated();
+        meal.setDateTime(ADMIN_MEAL1.getDateTime());
+        return meal;
+    }
+
     public static Meal getUpdated() {
         Meal updated = new Meal(MEAL1);
         updated.setDescription("Обновленный завтрак");
@@ -68,6 +80,18 @@ public class MealTestData {
         updated.setDateTime(null);
         updated.setDescription("");
         updated.setCalories(0);
+        return updated;
+    }
+
+    public static Meal getDuplicateOwnDatetimeUpdated() {
+        Meal updated = new Meal(MEAL1);
+        updated.setDateTime(MEAL2.getDateTime());
+        return updated;
+    }
+
+    public static Meal getDuplicateSomeoneElseDatetimeUpdated() {
+        Meal updated = new Meal(MEAL1);
+        updated.setDateTime(ADMIN_MEAL1.getDateTime());
         return updated;
     }
 
