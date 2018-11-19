@@ -1,11 +1,14 @@
 package org.zcorp.java2.web.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zcorp.java2.model.User;
+import org.zcorp.java2.web.user.validator.rest.UserRestValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -15,7 +18,15 @@ import java.util.List;
 @RequestMapping(AdminRestController.REST_URL)
 public class AdminRestController extends AbstractUserController {
 
-    static final String REST_URL = "/rest/admin/users";
+    public static final String REST_URL = "/rest/admin/users";
+
+    @Autowired
+    private UserRestValidator userRestValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(userRestValidator);
+    }
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
