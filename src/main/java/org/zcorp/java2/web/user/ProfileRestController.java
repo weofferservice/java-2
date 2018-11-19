@@ -7,7 +7,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.to.UserTo;
-import org.zcorp.java2.web.user.validator.rest.UserToRestValidator;
+import org.zcorp.java2.web.validator.user.UserToRestValidator;
 
 import javax.validation.Valid;
 

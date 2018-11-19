@@ -24,7 +24,7 @@ import static org.zcorp.java2.ErrorInfoTestData.contentValidationErrorInfoJson;
 import static org.zcorp.java2.TestUtil.getContent;
 import static org.zcorp.java2.TestUtil.userHttpBasic;
 import static org.zcorp.java2.UserTestData.*;
-import static org.zcorp.java2.web.user.validator.AbstractUserValidator.EMAIL_ALREADY_EXISTS;
+import static org.zcorp.java2.web.validator.user.AbstractUserValidator.EMAIL_ALREADY_EXISTS;
 
 public class AdminRestControllerTest extends AbstractControllerTest {
 

@@ -1,4 +1,4 @@
-package org.zcorp.java2.web.user.validator;
+package org.zcorp.java2.web.validator.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -23,7 +23,7 @@ import static org.zcorp.java2.UserTestData.USER;
 import static org.zcorp.java2.UserTestData.USER_ID;
 import static org.zcorp.java2.util.MealsUtil.createWithExceed;
 import static org.zcorp.java2.util.MealsUtil.getWithExceeded;
-import static org.zcorp.java2.web.meal.validator.AbstractMealValidator.DATETIME_ALREADY_EXISTS;
+import static org.zcorp.java2.web.validator.meal.AbstractMealValidator.DATETIME_ALREADY_EXISTS;
 
 public class MealRestControllerTest extends AbstractControllerTest {
 

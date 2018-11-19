@@ -13,7 +13,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.zcorp.java2.to.UserTo;
 import org.zcorp.java2.util.UserUtil;
 import org.zcorp.java2.web.user.AbstractUserController;
-import org.zcorp.java2.web.user.validator.UserToValidator;
+import org.zcorp.java2.web.validator.user.UserToValidator;
 
 import javax.validation.Valid;
 

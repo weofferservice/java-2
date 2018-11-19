@@ -10,7 +10,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
-import org.zcorp.java2.web.meal.validator.MealRestValidator;
+import org.zcorp.java2.web.validator.meal.MealRestValidator;
 
 import javax.validation.Valid;
 import java.net.URI;

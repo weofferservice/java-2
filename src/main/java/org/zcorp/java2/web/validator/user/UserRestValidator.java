@@ -1,8 +1,7 @@
-package org.zcorp.java2.web.user.validator.rest;
+package org.zcorp.java2.web.validator.user;
 
 import org.springframework.stereotype.Component;
 import org.zcorp.java2.model.User;
-import org.zcorp.java2.web.user.validator.AbstractUserValidator;
 
 import static org.zcorp.java2.util.RequestUtil.getIdFromRequest;
 import static org.zcorp.java2.web.user.AdminRestController.REST_URL;

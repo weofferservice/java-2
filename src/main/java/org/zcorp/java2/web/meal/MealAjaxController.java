@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.to.MealWithExceed;
-import org.zcorp.java2.web.meal.validator.MealAjaxValidator;
+import org.zcorp.java2.web.validator.meal.MealAjaxValidator;
 
 import javax.validation.Valid;
 import java.time.LocalDate;

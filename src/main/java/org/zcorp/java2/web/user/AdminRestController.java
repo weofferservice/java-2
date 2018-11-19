@@ -8,7 +8,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zcorp.java2.model.User;
-import org.zcorp.java2.web.user.validator.rest.UserRestValidator;
+import org.zcorp.java2.web.validator.user.UserRestValidator;
 
 import javax.validation.Valid;
 import java.net.URI;

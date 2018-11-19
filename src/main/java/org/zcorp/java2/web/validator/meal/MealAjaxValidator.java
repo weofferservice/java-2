@@ -1,4 +1,4 @@
-package org.zcorp.java2.web.meal.validator;
+package org.zcorp.java2.web.validator.meal;
 
 import org.springframework.stereotype.Component;
 import org.zcorp.java2.model.Meal;
