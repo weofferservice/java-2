@@ -24,7 +24,7 @@ public class UserUtil {
             ).flatMap(Stream::of).toArray(Field[]::new);
 
     public static User createFromTo(UserTo userTo) {
-        return toLowerCaseEmail(
+        return toLowerCaseAndTrimEmail(
                 new User(
                         userTo.getId(), userTo.getName(), userTo.getEmail(),
                         userTo.getPassword(), userTo.getCaloriesPerDay(), Role.ROLE_USER
@@ -64,7 +64,7 @@ public class UserUtil {
         user.setEmail(userTo.getEmail());
         user.setPassword(userTo.getPassword());
         user.setCaloriesPerDay(userTo.getCaloriesPerDay());
-        return toLowerCaseEmail(user);
+        return toLowerCaseAndTrimEmail(user);
     }
 
     public static UserTo createEmptyTo() {
@@ -74,11 +74,11 @@ public class UserUtil {
     public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
         String password = user.getPassword();
         user.setPassword(StringUtils.isEmpty(password) ? password : passwordEncoder.encode(password));
-        return toLowerCaseEmail(user);
+        return toLowerCaseAndTrimEmail(user);
     }
 
-    public static User toLowerCaseEmail(User user) {
-        user.setEmail(user.getEmail().toLowerCase());
+    public static User toLowerCaseAndTrimEmail(User user) {
+        user.setEmail(user.getEmail().trim().toLowerCase());
         return user;
     }
 

@@ -114,7 +114,7 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         User user = userService.get(USER_ID);
-        assertMatch(user, UserUtil.toLowerCaseEmail(updated));
+        assertMatch(user, UserUtil.toLowerCaseAndTrimEmail(updated));
 
         Date registeredDate = user.getRegistered();
         assertEquals(registeredDateExpected, registeredDate);

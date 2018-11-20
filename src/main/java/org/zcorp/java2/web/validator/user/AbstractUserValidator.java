@@ -35,7 +35,7 @@ public abstract class AbstractUserValidator<T> implements Validator {
             return;
         }
         try {
-            HasId hasId = service.getByEmail(email.toLowerCase());
+            HasId hasId = service.getByEmail(email);
             if (id == null || !id.equals(hasId.getId())) {
                 errors.rejectValue(
                         "email",

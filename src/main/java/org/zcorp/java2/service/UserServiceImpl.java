@@ -62,7 +62,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public AuthorizedUser loadUserByUsername(String email) throws UsernameNotFoundException {
         Assert.notNull(email, "email must not be null");
-        User user = repository.getByEmail(email.toLowerCase());
+        email = email.trim().toLowerCase();
+        User user = repository.getByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("User " + email + " not found");
         }
@@ -72,6 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getByEmail(String email) throws NotFoundException {
         Assert.notNull(email, "email must not be null");
+        email = email.trim().toLowerCase();
         return checkNotFound(repository.getByEmail(email), "email=" + email);
     }
 
