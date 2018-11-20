@@ -172,7 +172,7 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(contentValidationErrorInfoJson());
 
         assertThat(getContent(action), containsString(
-                messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.ENGLISH)));
+                messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.getDefault())));
 
         assertMatch(userService.get(USER_ID), USER);
     }
@@ -239,7 +239,7 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(contentValidationErrorInfoJson());
 
         assertThat(getContent(action), containsString(
-                messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.ENGLISH)));
+                messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.getDefault())));
 
         assertMatch(userService.getAll(), ADMIN, USER);
     }

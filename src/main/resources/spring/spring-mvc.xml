@@ -73,8 +73,12 @@
         <property name="fallbackToSystemLocale" value="false"/>
     </bean>
 
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"
+          p:defaultLocale="ru" p:cookieName="LOCALE"/>
+
     <mvc:interceptors>
         <bean class="org.zcorp.java2.web.interceptor.ModelInterceptor"/>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
     </mvc:interceptors>
 
     <bean id="defaultValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>

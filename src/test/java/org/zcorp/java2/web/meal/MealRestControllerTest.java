@@ -85,7 +85,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(contentValidationErrorInfoJson())
                 .andExpect(content().string(containsString(
-                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, Locale.ENGLISH))));
+                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, Locale.getDefault()))));
 
         assertMatch(service.getAll(USER_ID), MEALS);
     }
@@ -216,7 +216,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(contentValidationErrorInfoJson())
                 .andExpect(content().string(containsString(
-                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, Locale.ENGLISH))));
+                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, Locale.getDefault()))));
 
         assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
     }
