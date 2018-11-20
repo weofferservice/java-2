@@ -3,6 +3,7 @@ package org.zcorp.java2.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.zcorp.java2.MealTestData;
 import org.zcorp.java2.TestUtil;
 import org.zcorp.java2.model.User;
 import org.zcorp.java2.to.UserTo;
@@ -15,11 +16,12 @@ import java.util.Locale;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.zcorp.java2.ErrorInfoTestData.contentValidationErrorInfoJson;
 import static org.zcorp.java2.TestUtil.getContent;
 import static org.zcorp.java2.TestUtil.userHttpBasic;
@@ -56,6 +58,89 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertMatch(userService.getAll(), ADMIN);
+    }
+
+    @Test
+    public void testRegister() throws Exception {
+        User expected = getOrdinaryCreated();
+        UserTo createdTo = UserUtil.asTo(expected);
+
+        ResultActions action = TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL + "/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(createdTo)))
+                        .andDo(print()))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
+        User returned = TestUtil.readFromJson(action, User.class);
+        action.andExpect(redirectedUrlPattern("**" + REST_URL + "/" + returned.getId()));
+
+        expected.setId(returned.getId());
+
+        assertTrue(returned.getPassword() == null);
+
+        returned.setPassword(expected.getPassword());
+        assertMatch(returned, expected);
+        MealTestData.assertMatch(returned.getMeals(), expected.getMeals());
+
+        assertMatch(userService.getAll(), ADMIN, expected, USER);
+        assertMatch(userService.getByEmail(expected.getEmail()), expected);
+
+        Date registeredDate = userService.get(returned.getId()).getRegistered();
+        assertThat(registeredDate, greaterThan(expected.getRegistered()));
+    }
+
+    @Test
+    public void testRegisterNotValid() throws Exception {
+        User expected = getNotValidCreated();
+        UserTo createdTo = UserUtil.asTo(expected);
+
+        TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL + "/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(createdTo)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson());
+
+        assertMatch(userService.getAll(), ADMIN, USER);
+    }
+
+    @Test
+    public void testRegisterAuth() throws Exception {
+        User expected = getOrdinaryCreated();
+        UserTo createdTo = UserUtil.asTo(expected);
+        mockMvc.perform(
+                post(REST_URL + "/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeJsonWithPassword(createdTo))
+                        .with(userHttpBasic(ADMIN)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testRegisterSomeoneElseEmail() throws Exception {
+        User expected = getSomeoneElseEmailOrdinaryCreated();
+        UserTo createdTo = UserUtil.asTo(expected);
+
+        TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL + "/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(createdTo)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentValidationErrorInfoJson())
+                .andExpect(content().string(containsString(
+                        messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.getDefault()))));
+
+        assertMatch(userService.getAll(), ADMIN, USER);
     }
 
     @Test

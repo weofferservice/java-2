@@ -49,12 +49,24 @@ public class UserTestData {
     }
 
     public static User getNotValidCreated() {
-        return new User(null, null, null, null, null, null, null, EnumSet.of(Role.ROLE_USER, Role.ROLE_ADMIN));
+        return new User(null, null, null, null, 0, null, null, EnumSet.of(Role.ROLE_USER, Role.ROLE_ADMIN));
     }
 
     public static User getSomeoneElseEmailCreated() {
         User user = getCreated();
         user.setEmail(USER.getEmail());
+        return user;
+    }
+
+    public static User getOrdinaryCreated() {
+        User user = getCreated();
+        user.setRoles(EnumSet.of(Role.ROLE_USER));
+        return user;
+    }
+
+    public static User getSomeoneElseEmailOrdinaryCreated() {
+        User user = getSomeoneElseEmailCreated();
+        user.setRoles(EnumSet.of(Role.ROLE_USER));
         return user;
     }
 
@@ -164,6 +176,14 @@ public class UserTestData {
     }
 
     public static String writeJsonWithPassword(User user) {
-        return writeAdditionProps(user, "password", user.getPassword());
+        return writeJsonWithPassword(user, user.getPassword());
+    }
+
+    public static String writeJsonWithPassword(UserTo userTo) {
+        return writeJsonWithPassword(userTo, userTo.getPassword());
+    }
+
+    private static <T> String writeJsonWithPassword(T user, String password) {
+        return writeAdditionProps(user, "password", password);
     }
 }
