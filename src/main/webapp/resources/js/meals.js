@@ -38,11 +38,27 @@ function initDatetimepickers() {
         }
     }));
 
-    $('#startTime, #endTime').datetimepicker({
+    const startTime = $('#startTime');
+    const endTime = $('#endTime');
+    const timeParams = {
         datepicker: false,
         format: 'H:i',
         mask: true
-    });
+    };
+    startTime.datetimepicker(Object.assign(timeParams, {
+        onShow: function (ct) {
+            this.setOptions({
+                maxTime: endTime.val() ? endTime.val() : false
+            })
+        }
+    }));
+    endTime.datetimepicker(Object.assign(timeParams, {
+        onShow: function (ct) {
+            this.setOptions({
+                minTime: startTime.val() ? startTime.val() : false
+            })
+        }
+    }));
 
     $('#dateTime').datetimepicker({
         format: 'Y-m-d H:i',
