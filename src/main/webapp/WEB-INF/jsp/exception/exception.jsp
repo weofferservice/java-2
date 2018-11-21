@@ -1,6 +1,5 @@
 <%@ page isErrorPage="true" contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -9,7 +8,7 @@
 <jsp:include page="../fragments/bodyHeader.jsp"/>
 <div class="jumbotron">
     <div class="container text-center">
-        <h3><spring:message code="common.appError"/></h3>
+        <h3>${typeMessage}</h3>
         <div class="text-left error">
             ${message}
         </div>
