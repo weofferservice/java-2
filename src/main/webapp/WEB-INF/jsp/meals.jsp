@@ -53,7 +53,7 @@
         <table class="table table-striped" id="datatable">
             <thead>
                 <tr>
-                    <th><spring:message code="meal.datetime"/></th>
+                    <th><spring:message code="meal.dateTime"/></th>
                     <th><spring:message code="meal.description"/></th>
                     <th><spring:message code="meal.calories"/></th>
                     <th></th>
@@ -78,7 +78,7 @@
                     <input type="hidden" id="id" name="id">
 
                     <div class="form-group">
-                        <label for="dateTime" class="col-form-label"><spring:message code="meal.datetime"/></label>
+                        <label for="dateTime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
                         <input type="text" class="form-control" id="dateTime" name="dateTime">
                     </div>
 
