@@ -1,6 +1,7 @@
 package org.zcorp.java2.web;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +20,7 @@ import org.zcorp.java2.util.exception.ErrorInfo;
 import org.zcorp.java2.util.exception.ErrorType;
 import org.zcorp.java2.util.exception.IllegalRequestDataException;
 import org.zcorp.java2.util.exception.NotFoundException;
+import org.zcorp.java2.web.validator.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +31,9 @@ import static org.zcorp.java2.util.exception.ErrorType.*;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ExceptionInfoHandler {
     private static final Logger log = getLogger(ExceptionInfoHandler.class);
+
+    @Autowired
+    private MessageUtil messageUtil;
 
     //https://stackoverflow.com/questions/22358281/400-vs-422-response-to-post-that-references-an-unknown-entity/22358422#22358422
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
@@ -74,8 +79,7 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(request, e, true, APP_ERROR);
     }
 
-    //https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType, String... details) {
+    private ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType, String... details) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(errorType + " at request " + request.getRequestURL(), rootCause);
@@ -83,6 +87,7 @@ public class ExceptionInfoHandler {
             log.warn("{} at request {}: {}", errorType, request.getRequestURL(), rootCause.toString());
         }
         return new ErrorInfo(request.getRequestURL(), errorType,
+                messageUtil.getMessage(errorType.getErrorCode()),
                 details.length != 0 ? details : new String[]{ValidationUtil.getMessage(rootCause)});
     }
 }
