@@ -47,6 +47,7 @@ function add() {
 function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ajaxUrl + id, function (data) {
+        form.find(":input").val("");
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });
