@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.zcorp.java2.ErrorInfoTestData.contentValidationErrorInfoJson;
 import static org.zcorp.java2.TestUtil.getContent;
 import static org.zcorp.java2.TestUtil.userHttpBasic;
 import static org.zcorp.java2.UserTestData.*;
+import static org.zcorp.java2.util.exception.ErrorType.VALIDATION_ERROR;
 import static org.zcorp.java2.web.user.ProfileRestController.REST_URL;
 import static org.zcorp.java2.web.validator.user.AbstractUserValidator.EMAIL_ALREADY_EXISTS;
 
@@ -105,7 +105,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentValidationErrorInfoJson());
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()));
 
         assertMatch(userService.getAll(), ADMIN, USER);
     }
@@ -136,7 +136,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentValidationErrorInfoJson())
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()))
                 .andExpect(content().string(containsString(
                         messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.getDefault()))));
 
@@ -168,7 +168,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentValidationErrorInfoJson());
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()));
 
         assertMatch(userService.get(USER_ID), USER);
     }
@@ -207,7 +207,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentValidationErrorInfoJson());
+                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()));
 
         assertThat(getContent(action), containsString(
                 messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.getDefault())));
