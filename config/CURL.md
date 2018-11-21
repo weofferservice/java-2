@@ -23,3 +23,7 @@
 ###### Проверка
 `curl -v -X GET http://localhost:8080/java-2/rest/profile/meals/100010 --user user@yandex.ru:password`
 `curl -v -X GET http://localhost:8080/java-2/rest/profile/meals --user user@yandex.ru:password`
+
+#### validate with errors
+`curl -v -H "Content-Type: application/json" -X PUT http://localhost:8080/java-2/rest/profile/meals/100003 -d "{ \"dateTime\": \"2015-05-30T07:00\" }" --user user@yandex.ru:password`
+`curl -v -H "Content-Type: application/json" -X POST http://localhost:8080/java-2/rest/admin/users -d "{}" --user admin@gmail.com:admin`
