@@ -1,11 +1,8 @@
 package org.zcorp.java2.util;
 
-import org.springframework.validation.BindingResult;
 import org.zcorp.java2.HasId;
 import org.zcorp.java2.util.exception.IllegalRequestDataException;
 import org.zcorp.java2.util.exception.NotFoundException;
-
-import java.util.StringJoiner;
 
 public class ValidationUtil {
 
@@ -57,19 +54,6 @@ public class ValidationUtil {
 
     public static String getMessage(Throwable e) {
         return e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getClass().getName();
-    }
-
-    public static String createErrorResponse(BindingResult result) {
-        StringJoiner joiner = new StringJoiner("<br>");
-        result.getFieldErrors().forEach(
-                fe -> {
-                    String msg = fe.getDefaultMessage();
-                    if (!msg.startsWith(fe.getField())) {
-                        msg = fe.getField() + ' ' + msg;
-                    }
-                    joiner.add(msg);
-                });
-        return joiner.toString();
     }
 
 }

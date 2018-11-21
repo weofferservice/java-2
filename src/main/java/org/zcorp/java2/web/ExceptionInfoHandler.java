@@ -58,7 +58,14 @@ public class ExceptionInfoHandler {
         } else if (e instanceof MethodArgumentNotValidException) { // для REST с @Valid @RequestBody
             result = ((MethodArgumentNotValidException) e).getBindingResult();
         }
-        return logAndGetErrorInfo(request, ValidationUtil.createErrorResponse(result), VALIDATION_ERROR);
+
+        String[] details = result.getFieldErrors().stream()
+                .map(fe -> {
+                    String msg = fe.getDefaultMessage();
+                    return msg.startsWith(fe.getField()) ? msg : fe.getField() + ' ' + msg;
+                }).toArray(String[]::new);
+
+        return logAndGetErrorInfo(request, e, false, VALIDATION_ERROR, details);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
@@ -68,18 +75,14 @@ public class ExceptionInfoHandler {
     }
 
     //https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType) {
+    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, Exception e, boolean logException, ErrorType errorType, String... details) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(errorType + " at request " + request.getRequestURL(), rootCause);
         } else {
             log.warn("{} at request {}: {}", errorType, request.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(request.getRequestURL(), errorType, ValidationUtil.getMessage(rootCause));
-    }
-
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest request, String message, ErrorType errorType) {
-        log.warn("{} at request {}: {}", errorType, request.getRequestURL(), message);
-        return new ErrorInfo(request.getRequestURL(), errorType, message);
+        return new ErrorInfo(request.getRequestURL(), errorType,
+                details.length != 0 ? details : new String[]{ValidationUtil.getMessage(rootCause)});
     }
 }
