@@ -28,7 +28,11 @@ function extendDataTableOpts(opts) {
             },
             "paging": false,
             "info": true,
-            "initComplete": init
+            "initComplete": init,
+            "language": {
+                "search": i18n["common.search"],
+                "info": i18n["common.tableInfo"]
+            }
         }
     );
     return opts;
