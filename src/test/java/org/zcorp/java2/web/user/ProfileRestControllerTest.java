@@ -12,17 +12,14 @@ import org.zcorp.java2.web.AbstractControllerTest;
 import org.zcorp.java2.web.json.JsonUtil;
 
 import java.util.Date;
-import java.util.Locale;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.zcorp.java2.TestUtil.getContent;
 import static org.zcorp.java2.TestUtil.userHttpBasic;
 import static org.zcorp.java2.UserTestData.*;
 import static org.zcorp.java2.util.exception.ErrorType.VALIDATION_ERROR;
@@ -105,7 +102,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()));
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
 
         assertMatch(userService.getAll(), ADMIN, USER);
     }
@@ -136,9 +133,8 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()))
-                .andExpect(content().string(containsString(
-                        messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.getDefault()))));
+                .andExpect(jsonErrorType(VALIDATION_ERROR))
+                .andExpect(jsonErrorDetails(EMAIL_ALREADY_EXISTS));
 
         assertMatch(userService.getAll(), ADMIN, USER);
     }
@@ -168,7 +164,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()));
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
 
         assertMatch(userService.get(USER_ID), USER);
     }
@@ -198,7 +194,7 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
     public void testUpdateSomeoneElseEmail() throws Exception {
         UserTo updatedTo = getSomeoneElseEmailUpdatedTo();
 
-        ResultActions action = TestUtil.print(
+        TestUtil.print(
                 mockMvc.perform(
                         put(REST_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -207,10 +203,8 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()));
-
-        assertThat(getContent(action), containsString(
-                messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, Locale.getDefault())));
+                .andExpect(jsonErrorType(VALIDATION_ERROR))
+                .andExpect(jsonErrorDetails(EMAIL_ALREADY_EXISTS));
 
         assertMatch(userService.get(USER_ID), USER);
     }

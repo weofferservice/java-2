@@ -3,22 +3,26 @@ package org.zcorp.java2.web;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.MessageSource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.zcorp.java2.AllActiveProfileResolver;
 import org.zcorp.java2.repository.JpaUtil;
 import org.zcorp.java2.service.UserService;
+import org.zcorp.java2.util.exception.ErrorType;
+import org.zcorp.java2.web.validator.MessageUtil;
 
 import javax.annotation.PostConstruct;
+import java.util.Locale;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 //@ExtendWith(SpringExtension.class)
 //@WebAppConfiguration
@@ -33,7 +37,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 public abstract class AbstractControllerTest {
 
     @Autowired
-    protected MessageSource messageSource;
+    private MessageUtil messageUtil;
 
     @Autowired
     protected UserService userService;
@@ -71,6 +75,18 @@ public abstract class AbstractControllerTest {
                 .addFilter(CHARACTER_ENCODING_FILTER)
                 .apply(springSecurity())
                 .build();
+    }
+
+    protected ResultMatcher jsonErrorType(ErrorType type) {
+        return jsonPath("$.type").value(type.name());
+    }
+
+    protected ResultMatcher jsonErrorDetails(String code) {
+        return jsonPath("$.details").value(getMessage(code));
+    }
+
+    private String getMessage(String code) {
+        return messageUtil.getMessage(code, Locale.getDefault());
     }
 
 }

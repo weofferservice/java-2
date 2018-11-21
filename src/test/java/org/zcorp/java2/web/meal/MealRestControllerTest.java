@@ -10,9 +10,6 @@ import org.zcorp.java2.service.MealService;
 import org.zcorp.java2.web.AbstractControllerTest;
 import org.zcorp.java2.web.json.JsonUtil;
 
-import java.util.Locale;
-
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -66,7 +63,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()));
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
 
         assertMatch(service.getAll(USER_ID), MEALS);
     }
@@ -83,9 +80,8 @@ public class MealRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()))
-                .andExpect(content().string(containsString(
-                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, Locale.getDefault()))));
+                .andExpect(jsonErrorType(VALIDATION_ERROR))
+                .andExpect(jsonErrorDetails(DATETIME_ALREADY_EXISTS));
 
         assertMatch(service.getAll(USER_ID), MEALS);
     }
@@ -184,7 +180,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()));
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
 
         assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
     }
@@ -214,9 +210,8 @@ public class MealRestControllerTest extends AbstractControllerTest {
                         .andDo(print()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.type").value(VALIDATION_ERROR.name()))
-                .andExpect(content().string(containsString(
-                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, Locale.getDefault()))));
+                .andExpect(jsonErrorType(VALIDATION_ERROR))
+                .andExpect(jsonErrorDetails(DATETIME_ALREADY_EXISTS));
 
         assertMatch(service.get(MEAL1_ID, USER_ID), MEAL1);
     }
