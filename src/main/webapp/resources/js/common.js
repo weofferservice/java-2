@@ -17,6 +17,23 @@ function init() {
     });
 }
 
+function extendDataTableOpts(opts) {
+    // https://api.jquery.com/jquery.extend/#jQuery-extend-deep-target-object1-objectN
+    // $.extend - это jQuery-альтернатива javascript-овому методу Object.assign
+    $.extend(true, opts,
+        {
+            "ajax": {
+                "url": ajaxUrl,
+                "dataSrc": ""
+            },
+            "paging": false,
+            "info": true,
+            "initComplete": init
+        }
+    );
+    return opts;
+}
+
 function add() {
     $("#modalTitle").html(i18n["addTitle"]);
     form.find(":input").val("");

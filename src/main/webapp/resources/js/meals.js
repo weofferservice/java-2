@@ -84,13 +84,7 @@ $(function () {
         }
     });
 
-    datatableApi = $("#datatable").DataTable({
-        "ajax": {
-            "url": ajaxUrl,
-            "dataSrc": ""
-        },
-        "paging": false,
-        "info": true,
+    datatableApi = $("#datatable").DataTable(extendDataTableOpts({
         "columns": [
             {
                 "data": "dateTime"
@@ -120,9 +114,8 @@ $(function () {
         ],
         "createdRow": function (row, data, dataIndex) {
             $(row).attr("data-mealExceed", data.exceed);
-        },
-        "initComplete": init
-    });
+        }
+    }));
 
     initDatetimepickers();
 });
