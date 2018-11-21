@@ -1,5 +1,4 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page import="org.springframework.context.i18n.LocaleContextHolder" %>
 
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -7,11 +6,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set value="${requestScope['javax.servlet.forward.request_uri']}" var="currentPage"/>
+<c:set value="${pageContext.response.locale}" var="localeCode"/>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark py-0">
     <div class="container">
         <a class="navbar-brand" href="meals"><img src="resources/images/icon-meal.png"> <spring:message code="app.title"/></a>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <sec:authorize access="isAuthenticated()">
@@ -37,7 +37,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="dropdown-toggle nav-link my-1 ml-2" data-toggle="dropdown">
-                        <%=LocaleContextHolder.getLocale()%>
+                        ${localeCode}
                     </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="${currentPage}?lang=en">English</a>
@@ -48,3 +48,6 @@
         </div>
     </div>
 </nav>
+<script type="text/javascript">
+    const localeCode = "${localeCode}";
+</script>

@@ -16,6 +16,8 @@ function resetFilter() {
 }
 
 function initDatetimepickers() {
+    $.datetimepicker.setLocale(localeCode);
+
     const startDate = $('#startDate');
     const endDate = $('#endDate');
     const dateParams = {
