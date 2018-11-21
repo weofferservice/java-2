@@ -2,13 +2,12 @@ package org.zcorp.java2.web.validator.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.zcorp.java2.HasId;
 import org.zcorp.java2.service.UserService;
 import org.zcorp.java2.util.exception.NotFoundException;
+import org.zcorp.java2.web.validator.MessageUtil;
 
 import static org.springframework.util.StringUtils.isEmpty;
 
@@ -17,7 +16,7 @@ public abstract class AbstractUserValidator<T> implements Validator {
     public static final String EMAIL_ALREADY_EXISTS = "user.emailAlreadyExists";
 
     @Autowired
-    private MessageSource messageSource;
+    private MessageUtil messageUtil;
 
     @Autowired
     private UserService service;
@@ -40,7 +39,7 @@ public abstract class AbstractUserValidator<T> implements Validator {
                 errors.rejectValue(
                         "email",
                         EMAIL_ALREADY_EXISTS,
-                        messageSource.getMessage(EMAIL_ALREADY_EXISTS, null, LocaleContextHolder.getLocale()));
+                        messageUtil.getMessage(EMAIL_ALREADY_EXISTS));
             }
         } catch (NotFoundException ignored) {
         }

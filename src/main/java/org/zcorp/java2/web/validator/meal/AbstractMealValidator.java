@@ -2,12 +2,11 @@ package org.zcorp.java2.web.validator.meal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
+import org.zcorp.java2.web.validator.MessageUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +17,7 @@ public abstract class AbstractMealValidator implements Validator {
     public static final String DATETIME_ALREADY_EXISTS = "meal.datetimeAlreadyExists";
 
     @Autowired
-    private MessageSource messageSource;
+    private MessageUtil messageUtil;
 
     @Autowired
     private MealService service;
@@ -34,7 +33,7 @@ public abstract class AbstractMealValidator implements Validator {
         if (!meals.isEmpty()) {
             if (id == null || !id.equals(meals.get(0).getId())) {
                 errors.rejectValue("dateTime", DATETIME_ALREADY_EXISTS,
-                        messageSource.getMessage(DATETIME_ALREADY_EXISTS, null, LocaleContextHolder.getLocale()));
+                        messageUtil.getMessage(DATETIME_ALREADY_EXISTS));
             }
         }
     }
