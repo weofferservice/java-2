@@ -27,6 +27,9 @@
                 </property>
             </bean>
         </mvc:message-converters>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver"/>
+        </mvc:argument-resolvers>
     </mvc:annotation-driven>
 
     <bean id="conversionService"
@@ -78,7 +81,6 @@
           p:defaultLocale="ru" p:cookieName="LOCALE"/>
 
     <mvc:interceptors>
-        <bean class="org.zcorp.java2.web.interceptor.ModelInterceptor"/>
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
     </mvc:interceptors>
 
