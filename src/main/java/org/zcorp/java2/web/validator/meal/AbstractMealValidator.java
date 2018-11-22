@@ -3,9 +3,10 @@ package org.zcorp.java2.web.validator.meal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
+import org.springframework.validation.SmartValidator;
 import org.zcorp.java2.model.Meal;
 import org.zcorp.java2.service.MealService;
+import org.zcorp.java2.web.validator.AbstractValidator;
 import org.zcorp.java2.web.validator.MessageUtil;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static org.zcorp.java2.web.SecurityUtil.authUserId;
 
-public abstract class AbstractMealValidator implements Validator {
+public abstract class AbstractMealValidator extends AbstractValidator {
     public static final String DATETIME_ALREADY_EXISTS = "meal.datetimeAlreadyExists";
 
     @Autowired
@@ -24,7 +25,7 @@ public abstract class AbstractMealValidator implements Validator {
 
     @Autowired
     @Qualifier("defaultValidator")
-    private Validator defaultValidator;
+    private SmartValidator defaultValidator;
 
     protected abstract Integer getId(Meal meal);
 
@@ -39,8 +40,8 @@ public abstract class AbstractMealValidator implements Validator {
     }
 
     @Override
-    public void validate(Object target, Errors errors) {
-        defaultValidator.validate(target, errors);
+    public void validate(Object target, Errors errors, Object... validationHints) {
+        defaultValidator.validate(target, errors, validationHints);
         Meal meal = (Meal) target;
         LocalDateTime dateTime = meal.getDateTime();
         if (dateTime != null) {

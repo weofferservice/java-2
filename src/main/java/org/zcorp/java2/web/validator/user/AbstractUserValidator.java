@@ -3,15 +3,16 @@ package org.zcorp.java2.web.validator.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
+import org.springframework.validation.SmartValidator;
 import org.zcorp.java2.HasId;
 import org.zcorp.java2.service.UserService;
 import org.zcorp.java2.util.exception.NotFoundException;
+import org.zcorp.java2.web.validator.AbstractValidator;
 import org.zcorp.java2.web.validator.MessageUtil;
 
 import static org.springframework.util.StringUtils.isEmpty;
 
-public abstract class AbstractUserValidator<T> implements Validator {
+public abstract class AbstractUserValidator<T> extends AbstractValidator {
 
     public static final String EMAIL_ALREADY_EXISTS = "user.emailAlreadyExists";
 
@@ -23,7 +24,7 @@ public abstract class AbstractUserValidator<T> implements Validator {
 
     @Autowired
     @Qualifier("defaultValidator")
-    private Validator defaultValidator;
+    private SmartValidator defaultValidator;
 
     protected abstract Integer getId(T target);
 
@@ -46,8 +47,8 @@ public abstract class AbstractUserValidator<T> implements Validator {
     }
 
     @Override
-    public void validate(Object target, Errors errors) {
-        defaultValidator.validate(target, errors);
+    public void validate(Object target, Errors errors, Object... validationHints) {
+        defaultValidator.validate(target, errors, validationHints);
         checkEmailAlreadyExists(getId((T) target), getEmail((T) target), errors);
     }
 
