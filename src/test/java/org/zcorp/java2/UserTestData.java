@@ -70,6 +70,16 @@ public class UserTestData {
         return user;
     }
 
+    public static User getHtmlUnsafeCreated() {
+        User user = getCreated();
+        user.setName("<script>alert('Name')</script>");
+        return user;
+    }
+
+    public static UserTo getHtmlUnsafeCreatedTo() {
+        return UserUtil.asTo(getHtmlUnsafeCreated());
+    }
+
     public static User getUpdated() {
         User updated = new User(USER);
         updated.setName("updatedName");
@@ -100,6 +110,12 @@ public class UserTestData {
         return user;
     }
 
+    public static User getHtmlUnsafeUpdated() {
+        User user = getUpdated();
+        user.setName("<script>alert('Name')</script>");
+        return user;
+    }
+
     public static UserTo getUpdatedTo() {
         return new UserTo(USER_ID, "updatedName", "updatedEmail@ya.ru", "updatedPassword", 1500);
     }
@@ -114,6 +130,10 @@ public class UserTestData {
 
     public static UserTo getSomeoneElseEmailUpdatedTo() {
         return UserUtil.asTo(getSomeoneElseEmailUpdated());
+    }
+
+    public static UserTo getHtmlUnsafeUpdatedTo() {
+        return UserUtil.asTo(getHtmlUnsafeUpdated());
     }
 
     public static void assertMatch(User actual, User expected) {

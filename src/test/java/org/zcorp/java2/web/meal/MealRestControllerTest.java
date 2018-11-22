@@ -109,6 +109,23 @@ public class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void testCreateHtmlUnsafe() throws Exception {
+        Meal invalid = getHtmlUnsafeCreated();
+        TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtil.writeValue(invalid))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
+
+        assertMatch(service.getAll(USER_ID), MEALS);
+    }
+
+    @Test
     void testDelete() throws Exception {
         mockMvc.perform(
                 delete(REST_URL + MEAL1_ID)
@@ -228,6 +245,23 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
+    }
+
+    @Test
+    void testUpdateHtmlUnsafe() throws Exception {
+        Meal invalid = getHtmlUnsafeUpdated();
+        TestUtil.print(
+                mockMvc.perform(
+                        put(REST_URL + MEAL1_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtil.writeValue(invalid))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
+
+        assertMatch(service.getAll(USER_ID), MEALS);
     }
 
     @Test

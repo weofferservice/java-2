@@ -173,6 +173,23 @@ public class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void testUpdateHtmlUnsafe() throws Exception {
+        User updated = getHtmlUnsafeUpdated();
+        TestUtil.print(
+                mockMvc.perform(
+                        put(REST_URL + USER_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(updated))
+                                .with(userHttpBasic(ADMIN)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
+
+        assertMatch(userService.get(USER_ID), USER);
+    }
+
+    @Test
     public void testCreate() throws Exception {
         User expected = getCreated();
         ResultActions action = TestUtil.print(
@@ -233,6 +250,23 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonErrorType(VALIDATION_ERROR))
                 .andExpect(jsonErrorDetails(EMAIL_ALREADY_EXISTS));
+
+        assertMatch(userService.getAll(), ADMIN, USER);
+    }
+
+    @Test
+    public void testCreateHtmlUnsafe() throws Exception {
+        User created = getHtmlUnsafeCreated();
+        TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(created))
+                                .with(userHttpBasic(ADMIN)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
 
         assertMatch(userService.getAll(), ADMIN, USER);
     }

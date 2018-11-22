@@ -140,6 +140,23 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void testRegisterHtmlUnsafe() throws Exception {
+        UserTo createdTo = getHtmlUnsafeCreatedTo();
+
+        TestUtil.print(
+                mockMvc.perform(
+                        post(REST_URL + "/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(createdTo)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
+
+        assertMatch(userService.getAll(), ADMIN, USER);
+    }
+
+    @Test
     public void testUpdate() throws Exception {
         UserTo updatedTo = getUpdatedTo();
         mockMvc.perform(
@@ -205,6 +222,24 @@ public class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonErrorType(VALIDATION_ERROR))
                 .andExpect(jsonErrorDetails(EMAIL_ALREADY_EXISTS));
+
+        assertMatch(userService.get(USER_ID), USER);
+    }
+
+    @Test
+    public void testUpdateHtmlUnsafe() throws Exception {
+        UserTo updatedTo = getHtmlUnsafeUpdatedTo();
+
+        TestUtil.print(
+                mockMvc.perform(
+                        put(REST_URL)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(writeJsonWithPassword(updatedTo))
+                                .with(userHttpBasic(USER)))
+                        .andDo(print()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonErrorType(VALIDATION_ERROR));
 
         assertMatch(userService.get(USER_ID), USER);
     }

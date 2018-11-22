@@ -68,6 +68,12 @@ public class MealTestData {
         return meal;
     }
 
+    public static Meal getHtmlUnsafeCreated() {
+        Meal meal = getCreated();
+        meal.setDescription("<script>alert('Description')</script>");
+        return meal;
+    }
+
     public static Meal getUpdated() {
         Meal updated = new Meal(MEAL1);
         updated.setDescription("Обновленный завтрак");
@@ -93,6 +99,12 @@ public class MealTestData {
         Meal updated = new Meal(MEAL1);
         updated.setDateTime(ADMIN_MEAL1.getDateTime());
         return updated;
+    }
+
+    public static Meal getHtmlUnsafeUpdated() {
+        Meal meal = getUpdated();
+        meal.setDescription("<script>alert('Description')</script>");
+        return meal;
     }
 
     public static void assertMatch(Meal actual, Meal expected) {
