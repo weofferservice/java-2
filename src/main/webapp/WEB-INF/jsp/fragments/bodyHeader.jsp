@@ -19,7 +19,10 @@
                             <sec:authorize access="hasRole('ROLE_ADMIN')">
                                 <a class="btn btn-info mr-1" href="users"><spring:message code="user.title"/></a>
                             </sec:authorize>
-                            <a class="btn btn-info mr-1" href="profile"><spring:message code="app.profile"/> ${userTo.name}</a>
+                            <a class="btn btn-info mr-1" href="profile">
+                                <spring:message code="app.profile"/>
+                                <sec:authentication property="principal.userTo.name"/>
+                            </a>
                             <button type="submit" class="btn btn-primary">
                                 <span class="fa fa-sign-out"></span>
                             </button>
