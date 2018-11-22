@@ -1,5 +1,8 @@
 package org.zcorp.java2.model;
 
+import org.hibernate.validator.constraints.SafeHtml;
+import org.zcorp.java2.ValidationGroup;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +14,7 @@ public abstract class AbstractNamedEntity extends AbstractBaseEntity {
     @Column(name = "name", nullable = false, columnDefinition = "VARCHAR")
     @NotBlank
     @Size(min = 2, max = 100)
+    @SafeHtml(groups = {ValidationGroup.Web.class})
     protected String name;
 
     protected AbstractNamedEntity() {

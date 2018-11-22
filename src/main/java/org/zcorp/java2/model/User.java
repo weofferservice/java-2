@@ -5,6 +5,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.util.CollectionUtils;
 import org.zcorp.java2.ValidationGroup;
 
@@ -38,6 +39,7 @@ public class User extends AbstractNamedEntity {
     @Email
     @NotBlank
     @Size(max = 100)
+    @SafeHtml(groups = {ValidationGroup.Web.class}) // https://stackoverflow.com/questions/17480809/are-xss-attacks-possible-through-email-addresses
     private String email;
 
     @Column(name = "password", nullable = false, columnDefinition = "VARCHAR")

@@ -3,6 +3,7 @@ package org.zcorp.java2.model;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.zcorp.java2.ValidationGroup;
 import org.zcorp.java2.util.DateTimeUtil;
@@ -38,6 +39,7 @@ public class Meal extends AbstractBaseEntity {
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     @NotBlank
     @Size(min = 2, max = 120)
+    @SafeHtml(groups = {ValidationGroup.Web.class})
     private String description;
 
     @Column(name = "calories", nullable = false, columnDefinition = "INTEGER DEFAULT 1000")

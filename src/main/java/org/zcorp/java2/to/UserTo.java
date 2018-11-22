@@ -3,6 +3,7 @@ package org.zcorp.java2.to;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -17,11 +18,13 @@ public class UserTo extends BaseTo implements Serializable {
 
     @NotBlank
     @Size(min = 2, max = 100)
+    @SafeHtml
     private final String name;
 
     @Email
     @NotBlank
     @Size(max = 100)
+    @SafeHtml // https://stackoverflow.com/questions/17480809/are-xss-attacks-possible-through-email-addresses
     private final String email;
 
     @NotBlank
