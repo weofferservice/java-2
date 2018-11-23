@@ -36,6 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public abstract class AbstractControllerTest {
 
+    private static final Locale RU_LOCALE = new Locale("ru");
+
     @Autowired
     private MessageUtil messageUtil;
 
@@ -86,7 +88,7 @@ public abstract class AbstractControllerTest {
     }
 
     private String getMessage(String code, String... args) {
-        return messageUtil.getMessage(code, Locale.getDefault(), args);
+        return messageUtil.getMessage(code, RU_LOCALE, args);
     }
 
 }
