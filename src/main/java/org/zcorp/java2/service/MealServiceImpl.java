@@ -62,7 +62,7 @@ public class MealServiceImpl implements MealService {
     }
 
     private static String createErrorMessage(Integer id, int userId) {
-        return "id=" + id + " for userId=" + userId;
+        return "id=" + id + " & userId=" + userId;
     }
 
     private static String createErrorMessage(Meal meal, int userId) {

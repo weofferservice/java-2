@@ -6,6 +6,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.zcorp.java2.util.ValidationUtil;
+import org.zcorp.java2.util.exception.ApplicationException;
 import org.zcorp.java2.util.exception.ErrorInfo;
 import org.zcorp.java2.util.exception.ErrorType;
 import org.zcorp.java2.util.exception.IllegalRequestDataException;
-import org.zcorp.java2.util.exception.NotFoundException;
 import org.zcorp.java2.web.validator.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,11 +36,10 @@ public class ExceptionInfoHandler {
     @Autowired
     private MessageUtil messageUtil;
 
-    //https://stackoverflow.com/questions/22358281/400-vs-422-response-to-post-that-references-an-unknown-entity/22358422#22358422
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY) // 422
-    @ExceptionHandler(NotFoundException.class)
-    public ErrorInfo handleError(HttpServletRequest request, NotFoundException e) {
-        return logAndGetErrorInfo(request, e, false, DATA_NOT_FOUND);
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorInfo> applicationError(HttpServletRequest request, ApplicationException appEx) {
+        ErrorInfo errorInfo = logAndGetErrorInfo(request, appEx, false, appEx.getType(), messageUtil.getMessage(appEx));
+        return new ResponseEntity(errorInfo, appEx.getHttpStatus());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT) // 409
