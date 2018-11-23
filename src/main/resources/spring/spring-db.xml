@@ -33,7 +33,7 @@
               p:username="${database.username}"
               p:password="${database.password}"/>
     </beans>
-    <beans profile="postgres, heroku">
+    <beans profile="postgres">
         <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
 
         <bean id="dataSource"
@@ -47,6 +47,29 @@
         <context:property-placeholder location="classpath:db/tomcat.properties" system-properties-mode="OVERRIDE"/>
 
         <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/java-2"/>
+    </beans>
+    <beans profile="heroku">
+        <context:property-placeholder location="classpath:db/heroku.properties" system-properties-mode="OVERRIDE"/>
+
+        <bean class="java.net.URI" id="dbUrl">
+            <constructor-arg value="${DATABASE_URL}"/>
+        </bean>
+        <bean id="dataSource"
+              class="org.apache.tomcat.jdbc.pool.DataSource"
+              p:driverClassName="org.postgresql.Driver"
+              p:url="#{'jdbc:postgresql://' + @dbUrl.getHost() + @dbUrl.getPath()}"
+              p:username="#{@dbUrl.getUserInfo().split(':')[0]}"
+              p:password="#{@dbUrl.getUserInfo().split(':')[1]}"
+              p:validationQuery="SELECT 1"
+              p:initialSize="2"
+              p:minIdle="2"
+              p:maxIdle="5"
+              p:maxActive="10"
+              p:maxWait="20000"
+              p:testOnBorrow="true"
+              p:testOnConnect="true"
+              p:testWhileIdle="true"
+              p:removeAbandoned="true"/>
     </beans>
 
     <beans profile="jdbc">
