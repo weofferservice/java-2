@@ -81,12 +81,12 @@ public abstract class AbstractControllerTest {
         return jsonPath("$.type").value(type.name());
     }
 
-    protected ResultMatcher jsonErrorDetails(String code) {
-        return jsonPath("$.details").value(getMessage(code));
+    protected ResultMatcher jsonErrorDetails(String code, String... args) {
+        return jsonPath("$.details").value(getMessage(code, args));
     }
 
-    private String getMessage(String code) {
-        return messageUtil.getMessage(code, Locale.getDefault());
+    private String getMessage(String code, String... args) {
+        return messageUtil.getMessage(code, Locale.getDefault(), args);
     }
 
 }
