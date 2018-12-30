@@ -10,6 +10,7 @@ Web-cлой (front-end):
 - [Bootstrap](https://getbootstrap.com/)
 - [jQuery](https://jquery.com/)
 - [jQuery DataTables plugin](https://datatables.net/)
+- [jQuery DateTimePicker plugin](https://xdsoft.net/jqplugins/datetimepicker/)
 - [JavaScript Notifications Noty](https://ned.im/noty/#/)
 - [WebJars](https://www.webjars.org/)
 
@@ -26,6 +27,7 @@ Data-слой (back-end):
 
 Валидация данных (back-end):
 - [Hibernate Validator](https://hibernate.org/validator/)
+- [jsoup](https://jsoup.org/)
 
 Кеширование данных в data-слое (back-end):
 - [EHCACHE](https://www.ehcache.org/)
