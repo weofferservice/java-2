@@ -48,7 +48,7 @@ public class Meal extends AbstractBaseEntity {
     private Integer calories;
 
     // 1) Говорим Hibernate-у, что у нас в БД стоит ON DELETE CASCADE, а значит при удалении родителя (user) будут
-    // автоматически удалены дети (meals). Это знание HIbernate использует, чтобы обновить кэш 2-го уровня.
+    // автоматически удалены дети (meals). Это знание Hibernate использует, чтобы обновить кэш 2-го уровня.
     // 2) Предположение о том, что эта аннотация при генерации скриптов по entity создаст строку ON DELETE CASCADE
     // в этих скриптах - ошибочно
     @OnDelete(action = OnDeleteAction.CASCADE)
